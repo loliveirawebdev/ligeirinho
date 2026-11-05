@@ -1,0 +1,12 @@
+{
+  "name": "ligeirinho",
+  "version": "0.1.0",
+  "description": "Processo de desenvolvimento opinativo e proporcional para o Claude Code: clarify, plano curto, preview das telas, build em pedaços com teste primeiro e fechamento com gate.",
+  "author": {
+    "name": "Lucas Oliveira",
+    "url": "https://github.com/loliveirawebdev"
+  },
+  "homepage": "https://github.com/loliveirawebdev/ligeirinho",
+  "repository": "https://github.com/loliveirawebdev/ligeirinho",
+  "keywords": ["workflow", "tdd", "nx", "nestjs", "angular", "process"]
+}

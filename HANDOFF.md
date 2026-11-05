@@ -4,7 +4,7 @@ Processo de desenvolvimento reaproveitável para todos os projetos do Lucas, pen
 Code. Nasceu de uma conversa em 2026-11-05, no projeto Plidio, depois de sentir que o Spec Kit pesava demais
 (9 documentos e ~550–770 linhas por spec, sessões reaprendendo contexto, tela feita duas vezes: board e código).
 
-**Status:** só conversa. Nada foi construído. Este arquivo é o ponto de partida da próxima sessão.
+**Status:** passos 1 e 2 da §14 construídos (`rules/`, skills e hooks do plugin). Falta revisar as regras, decidir o §13 e fazer o passo 3 (`template/` + pacotes).
 
 Responder ao Lucas em português (PT-BR). Ele quer um processo **super opinativo**: as regras vêm prontas, ele não
 deve ter que pedir qualidade, segurança ou testes.
