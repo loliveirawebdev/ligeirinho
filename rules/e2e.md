@@ -1,32 +1,32 @@
 # E2E
 
-## Só jornadas críticas, de ponta a ponta de verdade
+## Only critical journeys, truly end to end
 
-E2E cobre as jornadas que, se quebrarem, o produto para: login, convite e aceite, criar e ver na lista, permissão
-negada, pagamento… Front, API e banco reais, **sem mock**.
+E2E covers the journeys that stop the product if they break: login, invite and accept, create and see it in the
+list, permission denied, payment… Real front end, API and database, **no mocks**.
 
-**Por quê:** e2e é caro e lento. O resto já está coberto por unidade, componente e integração.
+**Why:** e2e is expensive and slow. Everything else is already covered by unit, component and integration tests.
 
-**Quem cobra:** o plano lista as jornadas tocadas; **jornada crítica nova sem e2e não fecha** (checklist do
-fechamento).
+**Enforced by:** the plan lists the journeys touched; **a new critical journey without e2e doesn't close** (close
+checklist).
 
-## Como escrever
+## How to write them
 
-| Regra | Por quê |
+| Rule | Why |
 |---|---|
-| Elementos por papel e texto acessível (`getByRole`, `getByLabel`), **nunca por classe CSS** | testa o que o usuário vê; de quebra cobra acessibilidade |
-| **Sem `sleep`** / `waitForTimeout`; esperar por estado (`expect(...).toBeVisible()`) | sleep é lento e instável ao mesmo tempo |
-| **Cada teste cria os próprios dados** (pelas fábricas/seed) | testes rodam em paralelo e em qualquer ordem |
-| Trace guardado quando falha | dá para ver o que aconteceu sem rodar de novo |
-| Mesma seed do Bruno e do previewer | um dado de exemplo só (ver [testes.md](testes.md)) |
+| Elements by role and accessible text (`getByRole`, `getByLabel`), **never by CSS class** | tests what the user sees, and enforces accessibility on the side |
+| **No `sleep`** / `waitForTimeout`; wait for state (`expect(...).toBeVisible()`) | sleep is slow and flaky at the same time |
+| **Each test creates its own data** (through the factories/seed) | tests run in parallel and in any order |
+| Trace kept on failure | you can see what happened without running it again |
+| Same seed as Bruno and the previewer | a single example dataset (see [testing.md](testing.md)) |
 
-**Quem cobra:** lint do Playwright (`eslint-plugin-playwright`: `no-wait-for-timeout`, `prefer-native-locators`,
-regra que proíbe `locator('.classe')`); config do `e2e-kit` com `trace: 'retain-on-failure'`.
+**Enforced by:** Playwright lint (`eslint-plugin-playwright`: `no-wait-for-timeout`, `prefer-native-locators`, a
+rule that forbids `locator('.class')`); `e2e-kit` config with `trace: 'retain-on-failure'`.
 
-## Onde roda
+## Where it runs
 
-Stack inteira em Docker com banco limpo:
+The whole stack in Docker with a clean database:
 
-- `make check` → jornadas afetadas pela mudança;
-- gate completo e CI → todas;
-- `make e2e` → sob demanda.
+- `make check` → journeys affected by the change;
+- full gate and CI → all of them;
+- `make e2e` → on demand.

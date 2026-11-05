@@ -1,35 +1,37 @@
 ---
 name: init
-description: Prepara um repositório para usar o ligeirinho - cria .ligeirinho.yml, habilita o plugin no .claude/settings.json, enxuga o CLAUDE.md e cria docs/areas e docs/features. Use quando o Lucas pedir para adotar o ligeirinho num projeto (novo ou existente).
+description: Sets up a repository to use ligeirinho - creates .ligeirinho.yml, enables the plugin for Claude Code, Codex and Antigravity, trims the agent instructions file and creates docs/areas and docs/features. Use when the user asks to adopt ligeirinho in a project (new or existing).
 ---
 
 # Init
 
-## Projeto existente (modo adoção)
+## Existing project (adoption mode)
 
-1. Leia o Makefile, o `package.json` e o CLAUDE.md para achar os comandos de teste, gate e preview.
-2. Crie o `.ligeirinho.yml` (formato em `docs/ligeirinho-yml.md` do plugin) com `adocao.ativa: true` e os
-   comandos achados. Confirme os comandos com o Lucas.
-3. Crie ou complete o `.claude/settings.json` do repo:
-   ```json
-   {
-     "extraKnownMarketplaces": {
-       "ligeirinho": { "source": { "source": "github", "repo": "loliveirawebdev/ligeirinho" } }
-     },
-     "enabledPlugins": { "ligeirinho@ligeirinho": true }
-   }
+1. Read the Makefile, `package.json` and the agent instructions files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`) to
+   find the test, gate and preview commands.
+2. Create `.ligeirinho.yml` (format in the plugin's `docs/config.md`) with `adoption.enabled: true` and the
+   commands you found. Confirm the commands with the user.
+3. Enable the plugin for each agent the team uses (see the plugin's `docs/agents.md`), preserving whatever is
+   already in each file:
+   - **Claude Code**: `.claude/settings.json` with `extraKnownMarketplaces` and `enabledPlugins`.
+   - **Codex**: `.codex/config.toml` with `[plugins."ligeirinho@ligeirinho"] enabled = true`.
+   - **Antigravity**: nothing in the repo; each person runs `agy plugin install
+     https://github.com/loliveirawebdev/ligeirinho`.
+4. Add to the top of `AGENTS.md` (create it if needed) the fallback for agents without the plugin or without hooks:
+   ```markdown
+   This repo uses [ligeirinho](https://github.com/loliveirawebdev/ligeirinho). Follow its flow
+   (FLOW.md) and rules (rules/). If your agent has no ligeirinho hooks, run the test command from
+   .ligeirinho.yml before every commit yourself.
    ```
-   Preserve o que já existir no arquivo.
-4. Crie `docs/areas/` e `docs/features/` (com um `README.md` curto em cada dizendo o que vai ali; ver
+5. Create `docs/areas/` and `docs/features/` (with a short `README.md` in each saying what goes there; see
    `rules/docs.md`).
-5. Proponha o CLAUDE.md enxuto (ver `rules/docs.md`): "este repo usa o ligeirinho", comandos, o que é
-   específico. O que era regra de área vai para `docs/areas/<area>.md`. Mostre o antes/depois ao Lucas antes de
-   substituir.
-6. Adicione `.ligeirinho/` ao `.gitignore`.
-7. Lint e configs dos pacotes do ligeirinho entram depois, área por área, com as regras não cumpridas como aviso.
+6. Propose the lean instructions file (see `rules/docs.md`): "this repo uses ligeirinho", commands, what's
+   specific. Whatever was an area rule goes to `docs/areas/<area>.md`. Show the before/after to the user before
+   replacing it.
+7. Add `.ligeirinho/` to `.gitignore`.
+8. Lint and the configs from ligeirinho's packages come later, one area at a time, with unmet rules as warnings.
 
-## Projeto novo
+## New project
 
-O `template/` (Nx + Nest + Angular + Prisma + Vitest + Spartan, Docker, Makefile) ainda não existe. Por
-enquanto, faça os passos 2 a 6 com `adocao.ativa: false` e avise o Lucas que o template é o próximo passo do
-ligeirinho.
+The `template/` (Nx + Nest + Angular + Prisma + Vitest + Spartan, Docker, Makefile) doesn't exist yet. For now, do
+steps 2 to 7 with `adoption.enabled: false` and tell the user the template is ligeirinho's next step.

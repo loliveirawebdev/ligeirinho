@@ -1,36 +1,37 @@
 ---
 name: parallel
-description: Distribui os pedaços independentes do plano aprovado do ligeirinho em sessões paralelas, cada uma no seu worktree, e junta tudo no fim. Use no build quando o plano tem dois ou mais pedaços que não dependem um do outro nem mexem nos mesmos arquivos.
+description: Splits the independent chunks of an approved ligeirinho plan across parallel sessions or subagents, each in its own git worktree, and merges them at the end. Use during the build when the plan has two or more chunks that don't depend on each other or touch the same files.
 ---
 
-# Pedaços em paralelo
+# Chunks in parallel
 
-## Quando vale
+## When it's worth it
 
-Dois ou mais pedaços que: não precisam do resultado um do outro, não mexem nos mesmos arquivos e podem ser
-commitados separados. Se sobra só um, faça aqui mesmo.
+Two or more chunks that: don't need each other's results, don't touch the same files and can be committed
+separately. If only one is left, do it here. If your agent can't run parallel sessions or subagents, do the chunks
+one after another.
 
-## Brief de cada sessão
+## Brief for each session
 
-Cada sessão nasce num worktree próprio, a partir do commit atual, e recebe como brief:
+Each session starts in its own git worktree, from the current commit, and gets as its brief:
 
-1. "Este repo usa o ligeirinho. Faça só o pedaço abaixo, no loop do `ligeirinho:build`."
-2. O **plano aprovado inteiro** (para contexto) e, destacado, **o pedaço dela**: o que muda, os testes, os
-   arquivos que pode tocar.
-3. "Não mexa em arquivo fora do pedaço. Não faça push. Ao terminar, responda com o nome do branch e a lista de
+1. "This repo uses ligeirinho. Do only the chunk below, in the `build` skill loop."
+2. The **whole approved plan** (for context) and, highlighted, **its chunk**: what changes, the tests, the files it
+   may touch.
+3. "Don't touch files outside the chunk. Don't push. When done, reply with the branch name and the list of
    commits."
 
-## Recursos da máquina
+## Machine resources
 
-O `gate.sh` tem lock: só um gate roda por vez na máquina, os outros esperam. Os testes rápidos (`comandos.teste`)
-rodam no toolbox de pé, com `docker compose exec`. Se algo morrer com exit 137, é memória: espere o outro
-terminar, não cace bug.
+`gate.sh` has a lock: only one gate runs at a time on the machine, the others wait. Fast tests (`commands.test`)
+run in the always-up toolbox, with `docker compose exec`. If something dies with exit 137, it's memory: wait for
+the other one to finish, don't hunt for a bug.
 
-## Juntar
+## Merge
 
-Quando todas terminarem:
+When they're all done:
 
-1. Confira o diff de cada branch contra o pedaço do plano.
-2. Junte os branches no branch da feature, um por vez, rodando `comandos.teste` depois de cada um.
-3. Conflito: resolva preservando os dois pedaços e rode os testes de novo.
-4. Siga para o fechamento.
+1. Check each branch's diff against its chunk in the plan.
+2. Merge the branches into the feature branch one at a time, running `commands.test` after each one.
+3. Conflicts: resolve them keeping both chunks and run the tests again.
+4. Move on to the close.

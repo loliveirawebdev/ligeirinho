@@ -1,32 +1,32 @@
-# Stack fixa
+# Fixed stack
 
-| Peça | Escolha | Observação |
+| Piece | Choice | Notes |
 |---|---|---|
-| Monorepo | **Nx** | cache, "só o afetado", limites entre módulos |
-| Back | **NestJS** | um módulo por área, com domínio/aplicação/infra/apresentação; validação nos DTOs; OpenAPI pelo `@nestjs/swagger` |
-| Front | **Angular** | signals; `input()`/`output()`; view-model com `computed()` |
-| Banco | **Postgres + Prisma** | Prisma só na infraestrutura, atrás das portas |
-| Testes | **Vitest** no front e no back | |
-| Design system | **Spartan** (shadcn para Angular) | |
-| Responsivo e e2e | **Playwright** | |
-| Ambiente | **Tudo em Docker** | o host só precisa de Docker e `make` |
+| Monorepo | **Nx** | cache, "affected only", module boundaries |
+| Back end | **NestJS** | one module per area, with domain/application/infrastructure/presentation; validation in DTOs; OpenAPI through `@nestjs/swagger` |
+| Front end | **Angular** | signals; `input()`/`output()`; view-model with `computed()` |
+| Database | **Postgres + Prisma** | Prisma only in infrastructure, behind the ports |
+| Tests | **Vitest** on front and back end | |
+| Design system | **Spartan** (shadcn for Angular) | |
+| Responsive and e2e | **Playwright** | |
+| Environment | **Everything in Docker** | the host only needs Docker and `make` |
 
-**Por quê fixa:** uma stack só faz as regras, o template e os pacotes valerem para todo projeto. Trocar uma peça
-é decisão do ligeirinho, não do projeto.
+**Why fixed:** a single stack lets the rules, the template and the packages apply to every project. Changing a
+piece is a ligeirinho decision, not a project decision.
 
-## Docker (lições do Plidio)
+## Docker
 
-| Regra | Por quê |
+| Rule | Why |
 |---|---|
-| Uma imagem de ferramentas (**toolbox**) com tudo fixado em versão exata | mesma versão em todo lugar; nada instalado no host |
-| **Toolbox sempre de pé** no desenvolvimento; hooks e testes com `docker compose exec` | quase instantâneo. No Plidio cada commit subia um container novo e custava segundos |
-| Container novo (`run --rm`) só no gate final e no CI | o gate prova que funciona do zero |
-| Dependências em volumes (`node_modules`, store do pnpm), **nunca na pasta montada** | pasta montada é lenta no Mac |
-| Cache de tarefas do Nx compartilhado entre worktrees | sessões paralelas não refazem o mesmo trabalho |
-| Gate só do que mudou (Nx affected); mudança de infra roda tudo | rápido sem perder segurança |
-| **Lock da máquina** para os gates: um por vez entre sessões paralelas | dois gates juntos estouram a memória da VM |
-| Exit 137 é avisado como **falta de memória**, não como bug | evita caçar bug que não existe |
-| Concorrência limitada; o gate derruba o stack de dev antes de rodar; serviços de teste separados | memória previsível |
+| A single tools image (**toolbox**) with everything pinned to exact versions | same versions everywhere; nothing installed on the host |
+| **Toolbox always up** during development; hooks and tests use `docker compose exec` | almost instant; starting a new container on every commit costs seconds each time |
+| A new container (`run --rm`) only for the final gate and CI | the gate proves it works from scratch |
+| Dependencies in volumes (`node_modules`, the pnpm store), **never in the mounted folder** | mounted folders are slow on macOS |
+| Nx task cache shared across worktrees | parallel sessions don't redo the same work |
+| Gate runs only what changed (Nx affected); infrastructure changes run everything | fast without losing safety |
+| **Machine-wide lock** for gates: one at a time across parallel sessions | two gates at once exhaust the VM's memory |
+| Exit 137 is reported as **out of memory**, not as a bug | avoids hunting a bug that doesn't exist |
+| Limited concurrency; the gate brings down the dev stack before running; separate test services | predictable memory |
 
-**Quem cobra:** o `template/` já vem assim; o script de gate do plugin (`scripts/gate.sh`) aplica o lock e
-traduz o exit 137.
+**Enforced by:** the `template/` ships this way; the plugin's gate script (`scripts/gate.sh`) applies the lock and
+translates exit 137.

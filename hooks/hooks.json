@@ -1,33 +1,21 @@
 {
-  "description": "Ligeirinho: carrega o fluxo, roda testes antes do commit, mantém views puras e exige gate e nota no fechamento. Só age em repositórios com .ligeirinho.yml.",
+  "description": "Ligeirinho (Claude Code and Codex): loads the flow, runs tests before commits, keeps views pure, and requires a green gate and a feature note to close. Only acts in repositories with .ligeirinho.yml.",
   "hooks": {
     "SessionStart": [
-      {
-        "hooks": [
-          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/inicio-de-sessao.sh\"", "timeout": 10 }
-        ]
-      }
+      { "hooks": [ { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/session-start.sh\"", "timeout": 10 } ] }
     ],
     "PreToolUse": [
       {
         "matcher": "Bash",
-        "hooks": [
-          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/antes-do-commit.sh\"", "timeout": 900 }
-        ]
+        "hooks": [ { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/before-commit.sh\"", "timeout": 900 } ]
       },
       {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/view-pura.sh\"", "timeout": 10 }
-        ]
+        "matcher": "Write|Edit|MultiEdit|apply_patch",
+        "hooks": [ { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/pure-view.sh\"", "timeout": 10 } ]
       }
     ],
     "Stop": [
-      {
-        "hooks": [
-          { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/fim-de-sessao.sh\"", "timeout": 10 }
-        ]
-      }
+      { "hooks": [ { "type": "command", "command": "\"${CLAUDE_PLUGIN_ROOT}/scripts/stop.sh\"", "timeout": 10 } ] }
     ]
   }
 }

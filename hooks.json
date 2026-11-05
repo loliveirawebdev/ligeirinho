@@ -1,0 +1,20 @@
+{
+  "ligeirinho": {
+    "SessionStart": [
+      { "type": "command", "command": "./scripts/session-start.sh", "timeout": 10 }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [ { "type": "command", "command": "./scripts/before-commit.sh", "timeout": 900 } ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [ { "type": "command", "command": "./scripts/pure-view.sh", "timeout": 10 } ]
+      }
+    ],
+    "Stop": [
+      { "type": "command", "command": "./scripts/stop.sh", "timeout": 10 }
+    ]
+  }
+}

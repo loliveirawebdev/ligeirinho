@@ -1,10 +1,10 @@
-# API: coleção Bruno
+# API: Bruno collection
 
-| Regra | Por quê | Quem cobra |
+| Rule | Why | Enforced by |
 |---|---|---|
-| Coleção Bruno no repo (`bruno/`), **pastas espelhando as URLs** | achar o request de uma rota sem procurar | drift check |
-| Um ambiente por lugar: `local`, `dev`, `prod` | trocar de ambiente sem editar request | — |
-| Segredos em `.env` **fora do git** | segredo nunca no código (ver [seguranca.md](seguranca.md)) | gitleaks no gate |
-| **Drift check** contra o OpenAPI: rota sem request, request órfão ou com corpo inválido quebra | a coleção nunca fica velha | `bruno-tools` no gate |
-| Pasta `fluxos/` com requests em sequência para fluxos de várias chamadas | testar à mão um fluxo inteiro (convite → aceite → login) | — |
-| Seed local (`make bruno-env`) gera dados e tokens de teste e preenche o ambiente `local` | abrir o Bruno e já sair chamando | `bruno-tools` |
+| Bruno collection in the repo (`bruno/`), **folders mirroring the URLs** | find a route's request without searching | drift check |
+| One environment per place: `local`, `dev`, `prod` | switch environments without editing requests | — |
+| Secrets in `.env`, **outside git** | secrets never in code (see [security.md](security.md)) | gitleaks in the gate |
+| **Drift check** against the OpenAPI: a route without a request, an orphan request or one with an invalid body fails | the collection never goes stale | `bruno-tools` in the gate |
+| A `flows/` folder with requests in sequence for multi-call flows | test a whole flow by hand (invite → accept → login) | — |
+| A local seed (`make bruno-env`) creates test data and tokens and fills in the `local` environment | open Bruno and start calling right away | `bruno-tools` |

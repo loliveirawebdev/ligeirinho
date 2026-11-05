@@ -1,41 +1,41 @@
-# Front em MVVM de verdade
+# Real MVVM on the front end
 
-Três peças por tela, cada uma num arquivo com sufixo fixo:
+Three pieces per screen, each in a file with a fixed suffix:
 
-| Peça | Arquivo | Pode | Não pode |
+| Piece | File | May | May not |
 |---|---|---|---|
-| **View** | `*.view.ts` (+ `.html`) | receber o view-model por `input()`, emitir intenções por `output()`, usar componentes do design system | `inject()`, construtor com dependência, buscar dado, conhecer rota, conhecer HTTP |
-| **View-model** | `*.view-model.ts` | função pura `montarXxxViewModel(estado) → XxxViewModel` | IO, Angular, signals, efeitos |
-| **Página** | `*.page.ts` | injetar serviços, buscar dado, guardar estado em signals, montar o view-model com `computed()`, ligar outputs a ações | regra de apresentação (ela fica no view-model) |
+| **View** | `*.view.ts` (+ `.html`) | receive the view-model through `input()`, emit intents through `output()`, use design system components | `inject()`, constructor with dependencies, fetch data, know about routes, know about HTTP |
+| **View-model** | `*.view-model.ts` | pure function `buildXxxViewModel(state) → XxxViewModel` | IO, Angular, signals, effects |
+| **Page** | `*.page.ts` | inject services, fetch data, keep state in signals, build the view-model with `computed()`, wire outputs to actions | presentation logic (it belongs in the view-model) |
 
-Mais um arquivo ao lado da view: `*.scenarios.ts` com os cenários (vazia, cheia, erro, só leitura…), cada um um
-view-model de exemplo. Os cenários são as fixtures dos testes e do previewer (ver [testes.md](testes.md)).
+Plus one file next to the view: `*.scenarios.ts` with the scenarios (empty, full, error, read-only…), each one an
+example view-model. Scenarios are the fixtures for the tests and the previewer (see [testing.md](testing.md)).
 
-**Por quê:**
-- View pura renderiza no previewer com qualquer cenário, sem mock de serviço.
-- View-model por função pura é testado com uma linha por caso, sem TestBed.
-- Página fina tem pouca coisa para dar errado e o teste dela é só de ligação.
+**Why:**
+- A pure view renders in the previewer with any scenario, without mocking services.
+- A view-model built by a pure function is tested with one line per case, without TestBed.
+- A thin page has little that can go wrong, and its test only covers the wiring.
 
-**Quem cobra:**
-- **hook** do plugin: barra `inject(` e construtor com parâmetros em `*.view.ts` na hora da escrita.
-- **lint**: regra no `@angular-eslint`/`no-restricted-syntax` do template para o mesmo caso em `*.view.ts`;
-  `no-restricted-imports` impede `*.view-model.ts` de importar `@angular/*`.
-- **checklist**: regra de apresentação (formatar data, decidir se botão aparece) dentro da página ou da view.
+**Enforced by:**
+- **hook** in the plugin: blocks `inject(` and constructors with parameters in `*.view.ts` as they are written.
+- **lint**: an `@angular-eslint` / `no-restricted-syntax` rule in the template for the same case in `*.view.ts`;
+  `no-restricted-imports` prevents `*.view-model.ts` from importing `@angular/*`.
+- **checklist**: presentation logic inside the page or the view.
 
-## Elementos crus só no design system
+## Raw elements only in the design system
 
-Fora da biblioteca de componentes (Spartan + componentes do projeto) é proibido usar `<button>`, `<input>`,
-`<select>`, `<textarea>`, `<table>`, `<dialog>` crus no template.
+Outside the component library (Spartan + the project's own components), raw `<button>`, `<input>`, `<select>`,
+`<textarea>`, `<table>` and `<dialog>` are forbidden in templates.
 
-**Por quê:** acessibilidade, estados (foco, desabilitado, carregando) e responsivo resolvidos uma vez.
+**Why:** accessibility, states (focus, disabled, loading) and responsiveness solved once.
 
-**Quem cobra:** lint de template (`@angular-eslint/template` com regra de elementos proibidos).
+**Enforced by:** template lint (`@angular-eslint/template` with a forbidden-elements rule).
 
 ## Signals
 
-`input()` / `output()` / `computed()` / `signal()`. Nada de `@Input()` decorator, `EventEmitter` manual ou
-`BehaviorSubject` para estado de tela.
+`input()` / `output()` / `computed()` / `signal()`. No `@Input()` decorator, hand-made `EventEmitter` or
+`BehaviorSubject` for screen state.
 
-**Por quê:** um modelo de reatividade só, com detecção de mudança previsível.
+**Why:** a single reactivity model, with predictable change detection.
 
-**Quem cobra:** lint (`@angular-eslint/prefer-signals`, `prefer-output-readonly`).
+**Enforced by:** lint (`@angular-eslint/prefer-signals`, `prefer-output-readonly`).

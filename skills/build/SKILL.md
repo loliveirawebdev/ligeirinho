@@ -1,48 +1,50 @@
 ---
 name: build
-description: Constrói a feature aprovada do ligeirinho por pedaços, cada um no loop teste que falha → código → testes verdes → checklist no diff → commit. Use depois do plano (e do preview) aprovados, ou para um ajuste pequeno.
+description: Builds the approved ligeirinho feature chunk by chunk, each in the loop failing test → code → green tests → checklist on the diff → commit. Use after the plan (and preview) are approved, or for a small change.
 ---
 
 # Build
 
-## Loop por pedaço
+## Loop per chunk
 
-Para cada pedaço do plano, na ordem (os independentes podem ir para `ligeirinho:parallel`):
+For each chunk in the plan, in order (independent ones can go to the `parallel` skill):
 
-1. **Teste que falha.** Escreva os testes do pedaço que estão na lista do plano, pelo comportamento público. Rode
-   e veja falhar pelo motivo certo.
-2. **Código.** O mínimo para passar, seguindo as camadas (`rules/arquitetura.md`) e o MVVM (`rules/mvvm.md`).
-   Fakes em vez de mocks.
-3. **Testes do pedaço verdes.** Rode `comandos.teste` do `.ligeirinho.yml`.
-4. **Checklist no diff** (abaixo). Corrija o que falhar.
-5. **Commit.** Mensagem curta no formato `tipo(area): o que mudou` (ex.: `feat(inscricoes): cancelar com
-   estorno`). O hook roda os testes antes; se barrar, corrija e tente de novo. Nunca contorne o hook.
+1. **Failing test.** Write the chunk's tests from the plan's list, through public behavior. Run them and watch them
+   fail for the right reason.
+2. **Code.** The minimum to pass, following the layers (`rules/architecture.md`) and MVVM (`rules/mvvm.md`). Fakes
+   instead of mocks.
+3. **The chunk's tests green.** Run `commands.test` from `.ligeirinho.yml`.
+4. **Checklist on the diff** (below). Fix whatever fails.
+5. **Commit.** A short message in the form `type(area): what changed` (e.g. `feat(registrations): cancel with
+   refund`). The hook runs the tests first; if it blocks, fix and try again. Never get around the hook.
 
-Um pedaço por commit. Nada de commit com teste vermelho, nada de "arrumo depois".
+One chunk per commit. No commits with red tests, no "I'll fix it later".
 
-## Checklist no diff (antes de cada commit)
+## Checklist on the diff (before every commit)
 
-Rode `git diff --staged` e confira:
+Run `git diff --staged` and check:
 
-- [ ] Nomes explícitos, na língua do negócio; nada de `data`, `tmp`, `res`, `aux`, abreviação.
-- [ ] Sem `any`, `!`, cast de "confia em mim".
-- [ ] Validação só na borda; erro tipado, nenhum `catch` que esconde.
-- [ ] Funções pequenas; nenhum booleano que muda comportamento.
-- [ ] Dependências só para dentro; view sem serviço; regra de apresentação no view-model.
-- [ ] Nada repetido (literal ou por significado) com o que já existe no repo: procure antes de criar.
-- [ ] Sem `utils`/`helpers`/`manager` novo.
-- [ ] Rota nova: negada por padrão, teste de quem pode e quem não pode, contrato igual ao plano.
-- [ ] Listagem paginada; consulta nova com índice; sem N+1.
-- [ ] Segredo fora do código, do log e da URL; operação sensível com auditoria.
-- [ ] Sem código morto, sem TODO, comentário só para o porquê.
-- [ ] Elementos crus só no design system; nada dependente de hover; alvo de toque ≥ 44 px.
+- [ ] Explicit names, in the business language; no `data`, `tmp`, `res`, `aux`, abbreviations.
+- [ ] No `any`, `!` or "trust me" casts.
+- [ ] Validation only at the edge; typed errors, no `catch` that hides them.
+- [ ] Small functions; no boolean that changes behavior.
+- [ ] Dependencies point inward only; views without services; presentation logic in the view-model.
+- [ ] Nothing repeated (literally or by meaning) from what already exists in the repo: search before creating.
+- [ ] No new `utils`/`helpers`/`manager`.
+- [ ] New route: denied by default, tests for who can and who can't, contract matching the plan.
+- [ ] Lists paginated; new queries with an index; no N+1.
+- [ ] Secrets out of code, logs and URLs; sensitive operations audited.
+- [ ] No dead code, no TODOs, comments only for the why.
+- [ ] Raw elements only in the design system; nothing that depends on hover; touch targets ≥ 44 px.
 
-## Dúvida no meio
+If your agent has no hooks, also run `commands.test` yourself right before each commit and don't commit if it fails.
 
-Surgiu dúvida que muda produto? Pare e pergunte (formato do clarify). Detalhe técnico: decida e anote para a
-nota da feature.
+## Questions midway
 
-## Fim do build
+Did a question come up that changes the product? Stop and ask (clarify format). Technical details: decide and note
+them for the feature note.
 
-Com todos os pedaços commitados, rode `scripts/estado.sh NNN-nome fechamento` e siga para `ligeirinho:close`.
-Ajuste pequeno (sem feature) termina no commit.
+## End of the build
+
+With every chunk committed, run `scripts/state.sh NNN-name close` and move on to the `close` skill. A small change
+(no feature) ends at the commit.

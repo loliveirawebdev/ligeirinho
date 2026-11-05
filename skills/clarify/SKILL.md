@@ -1,33 +1,35 @@
 ---
 name: clarify
-description: Faz as perguntas de produto antes de planejar, uma por vez, com recomendação e opções. Use no começo de uma feature do ligeirinho, ou em qualquer etapa quando surgir dúvida que muda produto, regra, contrato ou experiência.
+description: Asks the product questions before planning, one at a time, with a recommendation and options. Use at the start of a ligeirinho feature, or at any stage when a question comes up that changes the product, a rule, the contract or the experience.
 ---
 
 # Clarify
 
-Pergunte antes de planejar. Já evitou muito problema.
+Ask before planning. It prevents a lot of problems.
 
-## Regras
+## Rules
 
-1. **Uma pergunta por vez.** A mais importante primeiro: a que, respondida diferente, mais muda o resto.
-2. **Sempre com recomendação e opções.** Formato:
-   > **Pergunta:** quem pode cancelar uma inscrição paga?
-   > **Recomendo:** só o organizador, com estorno automático, porque … (cite a fonte se for padrão de mercado).
-   > **Opções:** (a) só o organizador · (b) organizador e o próprio inscrito até X dias antes · (c) outra
-   Use a ferramenta de pergunta do Claude Code (`AskUserQuestion`) quando ela existir, com a recomendação como
-   primeira opção.
-3. **Sem limite de perguntas.** Pare quando acabar o que muda **produto, regra, contrato ou experiência**.
-4. **Detalhe técnico não é pergunta.** Biblioteca, nome de tabela, estrutura de pasta: você decide e conta no
-   plano.
-5. **Aproveite o que já foi decidido.** Antes de perguntar, procure a resposta no doc da área, nas notas de
-   feature e na conversa. Se achou, não pergunte; cite de onde veio no plano.
-6. Pergunte também o que as regras obrigam a decidir e o pedido não diz: quem pode e quem não pode (zero
-   trust), o que é operação sensível (auditoria), o que acontece em repetição (idempotência), estados vazios e
-   de erro das telas.
+1. **One question at a time.** Most important first: the one that, answered differently, changes the rest the
+   most.
+2. **Always with a recommendation and options.** Format:
+   > **Question:** who can cancel a paid registration?
+   > **I recommend:** only the organizer, with an automatic refund, because … (cite the source if it's a common
+   > industry pattern).
+   > **Options:** (a) only the organizer · (b) the organizer and the registrant up to X days before · (c) other
+   If your agent has a structured question tool, use it, with the recommendation as the first option.
+3. **No question limit.** Stop when nothing is left that changes **the product, a rule, the contract or the
+   experience**.
+4. **Technical details aren't questions.** Library, table name, folder structure: you decide and explain it in the
+   plan.
+5. **Reuse what was already decided.** Before asking, look for the answer in the area doc, the feature notes and
+   the conversation. If you find it, don't ask; cite where it came from in the plan.
+6. Also ask what the rules require to be decided and the request doesn't say: who can and who can't (zero trust),
+   which operations are sensitive (auditing), what happens on retries (idempotency), empty and error states of the
+   screens.
 
-## Saída
+## Output
 
-Guarde perguntas e respostas para a seção **Clarify** da nota da feature (`docs/features/NNN-nome.md`). Pode
-criar a nota já agora com **Pedido** e **Clarify** preenchidos.
+Keep the questions and answers for the **Clarify** section of the feature note (`docs/features/NNN-name.md`). You
+can create the note right now with **Request** and **Clarify** filled in.
 
-Ao terminar, siga para `ligeirinho:plan` e rode `scripts/estado.sh NNN-nome plano`.
+When done, move on to the `plan` skill and run `scripts/state.sh NNN-name plan`.

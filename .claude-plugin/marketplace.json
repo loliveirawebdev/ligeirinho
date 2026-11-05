@@ -1,14 +1,11 @@
 {
   "name": "ligeirinho",
-  "owner": {
-    "name": "Lucas Oliveira",
-    "url": "https://github.com/loliveirawebdev"
-  },
+  "owner": { "name": "Lucas Oliveira", "url": "https://github.com/loliveirawebdev" },
   "plugins": [
     {
       "name": "ligeirinho",
       "source": "./",
-      "description": "Processo de desenvolvimento opinativo e proporcional para o Claude Code."
+      "description": "An opinionated, proportional development process for coding agents."
     }
   ]
 }

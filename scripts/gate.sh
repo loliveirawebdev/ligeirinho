@@ -1,71 +1,70 @@
 #!/usr/bin/env bash
-# Roda o gate do projeto (comandos.gate do .ligeirinho.yml) com:
-#   - lock da máquina: um gate por vez entre sessões paralelas (senão estoura a memória da VM);
-#   - aviso de falta de memória quando algo morre com exit 137;
-#   - carimbo de gate verde (.ligeirinho/gate-verde = commit atual) que o fechamento confere.
-# Uso: gate.sh [completo]   (sem argumento roda comandos.gate; "completo" roda comandos.gate_completo)
+# Runs the project gate (commands.gate in .ligeirinho.yml) with:
+#   - a machine-wide lock: one gate at a time across parallel sessions (otherwise the Docker VM runs out of memory);
+#   - an out-of-memory warning when something dies with exit 137;
+#   - a green-gate stamp (.ligeirinho/gate-green = current commit) that the close stage checks.
+# Usage: gate.sh [full]   (no argument runs commands.gate; "full" runs commands.full_gate)
 set -uo pipefail
 source "$(dirname "$0")/lib.sh"
 
-if ! projeto_usa_ligeirinho; then
-  echo "ligeirinho: este repositório não tem .ligeirinho.yml." >&2
+if ! project_uses_ligeirinho; then
+  echo "ligeirinho: this repository has no .ligeirinho.yml." >&2
   exit 1
 fi
 
-chave="comandos.gate"
-[ "${1:-}" = "completo" ] && chave="comandos.gate_completo"
-comando_do_gate="$(ler_configuracao "$chave")"
-if [ -z "$comando_do_gate" ]; then
-  echo "ligeirinho: .ligeirinho.yml não define $chave." >&2
+config_key="commands.gate"
+[ "${1:-}" = "full" ] && config_key="commands.full_gate"
+gate_command="$(read_config "$config_key")"
+if [ -z "$gate_command" ]; then
+  echo "ligeirinho: .ligeirinho.yml does not define $config_key." >&2
   exit 1
 fi
 
-cd "$(raiz_do_projeto)" || exit 1
-if [ -n "$(git status --porcelain -- . ':!.ligeirinho')" ]; then
-  echo "ligeirinho: há mudanças sem commit. O gate roda sobre um commit, para o carimbo valer." >&2
+cd "$(project_root)" || exit 1
+if [ -n "$(git status --porcelain)" ]; then
+  echo "ligeirinho: there are uncommitted changes. The gate runs on a commit so the stamp means something." >&2
   exit 1
 fi
 
-pasta_do_lock="${LIGEIRINHO_LOCK:-$HOME/.cache/ligeirinho/gate.lock}"
-mkdir -p "$(dirname "$pasta_do_lock")"
+lock_dir="${LIGEIRINHO_LOCK:-$HOME/.cache/ligeirinho/gate.lock}"
+mkdir -p "$(dirname "$lock_dir")"
 
-lock_esta_abandonado() {
-  local dono
-  dono="$(cat "$pasta_do_lock/pid" 2>/dev/null || echo)"
-  [ -z "$dono" ] || ! kill -0 "$dono" 2>/dev/null
+lock_is_abandoned() {
+  local owner
+  owner="$(cat "$lock_dir/pid" 2>/dev/null || echo)"
+  [ -z "$owner" ] || ! kill -0 "$owner" 2>/dev/null
 }
 
-avisou_espera=false
-until mkdir "$pasta_do_lock" 2>/dev/null; do
-  if lock_esta_abandonado; then
-    rm -rf "$pasta_do_lock"
+announced_wait=false
+until mkdir "$lock_dir" 2>/dev/null; do
+  if lock_is_abandoned; then
+    rm -rf "$lock_dir"
     continue
   fi
-  if [ "$avisou_espera" = false ]; then
-    echo "ligeirinho: outro gate está rodando ($(cat "$pasta_do_lock/projeto" 2>/dev/null)). Esperando a vez…"
-    avisou_espera=true
+  if [ "$announced_wait" = false ]; then
+    echo "ligeirinho: another gate is running ($(cat "$lock_dir/project" 2>/dev/null)). Waiting for its turn…"
+    announced_wait=true
   fi
   sleep 5
 done
-echo $$ > "$pasta_do_lock/pid"
-raiz_do_projeto > "$pasta_do_lock/projeto"
-trap 'rm -rf "$pasta_do_lock"' EXIT
+echo $$ > "$lock_dir/pid"
+project_root > "$lock_dir/project"
+trap 'rm -rf "$lock_dir"' EXIT
 
-echo "ligeirinho: rodando o gate: $comando_do_gate"
-bash -c "$comando_do_gate"
-codigo_de_saida=$?
+echo "ligeirinho: running the gate: $gate_command"
+bash -c "$gate_command"
+exit_code=$?
 
-if [ "$codigo_de_saida" -eq 0 ]; then
-  mkdir -p "$(pasta_de_estado)"
-  [ -f "$(pasta_de_estado)/.gitignore" ] || echo '*' > "$(pasta_de_estado)/.gitignore"
-  git rev-parse HEAD > "$(pasta_de_estado)/gate-verde"
-  echo "ligeirinho: gate verde em $(git rev-parse --short HEAD)."
+if [ "$exit_code" -eq 0 ]; then
+  ensure_state_dir
+  git rev-parse HEAD > "$(state_dir)/gate-green"
+  echo "ligeirinho: gate green at $(git rev-parse --short HEAD)."
   exit 0
 fi
 
-if [ "$codigo_de_saida" -eq 137 ]; then
-  echo "ligeirinho: o gate morreu com exit 137 (falta de memória), provavelmente não é bug." >&2
-  echo "Confira a memória da VM do Docker e se não há stack de dev de pé." >&2
+if [ "$exit_code" -eq 137 ]; then
+  echo "ligeirinho: the gate died with exit 137 (out of memory), most likely not a bug." >&2
+  echo "Check the Docker VM memory and whether a dev stack is still up." >&2
 fi
-echo "ligeirinho: gate vermelho (exit $codigo_de_saida)." >&2
-exit "$codigo_de_saida"
+echo "ligeirinho: gate red (exit $exit_code)." >&2
+exit "$exit_code"

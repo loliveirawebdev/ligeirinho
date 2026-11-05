@@ -1,43 +1,43 @@
 # Docs
 
-## Regra vive num lugar só: o doc da área
+## A rule lives in one place: the area doc
 
-`docs/areas/<area>.md` tem as regras **atuais** da área e o porquê de cada uma. Mudou a regra, **edita no
-lugar**. Proibido acrescentar "a partir de X mudou" embaixo do texto velho.
+`docs/areas/<area>.md` holds the area's **current** rules and the why behind each one. When a rule changes, **edit
+it in place**. Appending "from X on, this changed" below the old text is forbidden.
 
-**Por quê:** quem lê (pessoa ou Claude) precisa saber como é hoje, não reconstruir a história. No Plidio, regra
-espalhada em specs fez sessões reaprenderem contexto toda vez.
+**Why:** whoever reads it (a person or an agent) needs to know how things are today, not rebuild the history.
+Rules scattered across specs make every session relearn the context.
 
-**Quem cobra:** checklist do fechamento: se a feature mudou regra, o doc da área foi editado **no mesmo commit**
-e não sobrou trecho dizendo o contrário.
+**Enforced by:** the close checklist: if the feature changed a rule, the area doc was edited **in the same
+commit** and nothing left in it says otherwise.
 
-## Nota da feature
+## The feature note
 
-`docs/features/NNN-nome.md`, mais ou menos uma página:
+`docs/features/NNN-name.md`, about one page:
 
-1. **Pedido** — o que o Lucas pediu, nas palavras dele.
-2. **Clarify** — perguntas e respostas.
-3. **Decisões** — o que foi decidido e por quê (inclusive o que o Claude decidiu sozinho).
-4. **Contrato** — rotas, campos, erros (ou link para o OpenAPI).
-5. **Áreas** — link para o doc de cada área tocada.
+1. **Request** — what the user asked for, in their words.
+2. **Clarify** — questions and answers.
+3. **Decisions** — what was decided and why (including what the agent decided on its own).
+4. **Contract** — routes, fields, errors (or a link to the OpenAPI).
+5. **Areas** — a link to the doc of each area touched.
 
-A nota **não guarda regra** (regra é no doc da área). Se uma decisão for desfeita depois, a nota ganha
-"substituída por [NNN-outra](NNN-outra.md)" ao lado da decisão.
+The note **holds no rules** (rules go in the area doc). If a decision is reversed later, the note gets
+"superseded by [NNN-other](NNN-other.md)" next to the decision.
 
-**Quem cobra:** o hook de fim de sessão não deixa encerrar o fechamento sem a nota.
+**Enforced by:** the stop hook doesn't let the close stage end without the note.
 
-## CLAUDE.md do projeto enxuto
+## A lean agent instructions file
 
-Só três coisas:
+`AGENTS.md` (plus `CLAUDE.md` / `GEMINI.md` if they exist) holds only three things:
 
-1. "Este repo usa o ligeirinho."
-2. Comandos de `make`.
-3. O que é específico do projeto (domínio em uma frase, integrações externas, armadilhas conhecidas).
+1. "This repo uses ligeirinho."
+2. The `make` commands.
+3. What's specific to the project (the domain in one sentence, external integrations, known pitfalls).
 
-Todo o resto vem do plugin. Nada de resumo de feature no CLAUDE.md.
+Everything else comes from the plugin. No feature summaries in the instructions file.
 
-**Por quê:** no Plidio o CLAUDE.md chegou a 881 linhas porque cada spec acrescentou o resumo de si e ninguém
-reescreveu.
+**Why:** an instructions file that every feature appends to grows to hundreds of lines nobody rewrites, and the
+agent reads all of it every session.
 
-**Quem cobra:** checklist do fechamento: CLAUDE.md cresceu? Tem que ser coisa específica do projeto, senão vai
-para o doc da área.
+**Enforced by:** the close checklist: did the instructions file grow? It has to be something project-specific;
+otherwise it goes to the area doc.
