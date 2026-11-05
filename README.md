@@ -4,7 +4,9 @@ Um jeito de trabalhar com o [Claude Code](https://claude.com/claude-code) em que
 processo de desenvolvimento pronto: pergunta o que precisa, planeja, testa, commita e documenta, sem você ter que
 pedir.
 
-Ele substitui o Spec Kit, que gerava documento demais para qualquer tarefa.
+Nasceu de uso pessoal: eu estava usando o Spec Kit num projeto meu e gostava do resultado, mas o processo ficava
+muito lento e gerava muita coisa que não fazia sentido pra mim. O ligeirinho é a minha tentativa de manter o que
+funcionava e deixar o resto de lado.
 
 ## O que muda no dia a dia
 
