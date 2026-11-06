@@ -1,7 +1,9 @@
 <main class="@container mx-auto w-full max-w-xl px-5 pt-10 pb-16 sm:pt-16">
   <header class="mb-6">
     <h1 class="text-3xl font-semibold">Tasks</h1>
-    <p class="text-muted-foreground mt-1 text-sm tabular-nums">{{ model().openTaskCountLabel }}</p>
+    @if (model().openTaskCountLabel) {
+      <p class="text-muted-foreground mt-1 text-sm tabular-nums">{{ model().openTaskCountLabel }}</p>
+    }
   </header>
 
   <form
@@ -15,7 +17,7 @@
       name="title"
       autocomplete="off"
       maxlength="200"
-      placeholder="Add a task…"
+      placeholder="What needs doing?"
       class="flex-1 border-0 bg-transparent px-3 shadow-none focus-visible:ring-0 dark:bg-transparent"
       [value]="newTaskTitle()"
       (input)="updateNewTaskTitle($event)"
@@ -32,8 +34,8 @@
   @if (model().showError) {
     <section role="alert" class="bg-card shadow-surface mt-6 flex flex-col items-start gap-3 rounded-xl p-5">
       <div>
-        <p class="font-medium">We couldn't load your tasks.</p>
-        <p class="text-muted-foreground mt-1 text-sm">Check your connection and try again.</p>
+        <p class="font-medium">Couldn’t load your tasks</p>
+        <p class="text-muted-foreground mt-1 text-sm">Check your connection, then try again.</p>
       </div>
       <button hlmBtn variant="outline" type="button" (click)="retry.emit()">Try again</button>
     </section>
@@ -42,7 +44,7 @@
   @if (model().showEmptyState) {
     <div class="mt-6 rounded-xl border border-dashed px-6 py-12 text-center">
       <p class="font-medium">No tasks yet</p>
-      <p class="text-muted-foreground mt-1 text-sm">Add the first one above.</p>
+      <p class="text-muted-foreground mt-1 text-sm">Tasks you add will show up here.</p>
     </div>
   }
 
@@ -102,7 +104,7 @@
 
   @if (model().canLoadMore) {
     <div class="mt-4 flex justify-center">
-      <button hlmBtn variant="ghost" type="button" class="text-muted-foreground" (click)="loadMore.emit()">Load more</button>
+      <button hlmBtn variant="ghost" type="button" class="text-muted-foreground" (click)="loadMore.emit()">Show more</button>
     </div>
   }
 </main>

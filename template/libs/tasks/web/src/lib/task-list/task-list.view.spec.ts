@@ -42,7 +42,7 @@ describe('task list view', () => {
       inputs: { model: taskListScenarios.scenarios.full },
       on: { completeTask: (taskId: string) => completedTaskIds.push(taskId) },
     });
-    await userEvent.click(screen.getByRole('button', { name: 'Complete "Review the plan with the team"' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Complete “Review the plan with the team”' }));
     expect(completedTaskIds).toEqual(['10000000-0000-4000-8000-000000000003']);
   });
 

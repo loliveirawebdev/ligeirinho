@@ -12,8 +12,8 @@ test.describe('tasks journey', () => {
     await expect(page.getByRole('listitem').filter({ hasText: 'Ship the template' })).toBeVisible();
     await expect(page.getByText('1 open task')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Complete "Ship the template"' }).click();
-    await expect(page.getByText('0 open tasks')).toBeVisible();
+    await page.getByRole('button', { name: 'Complete “Ship the template”' }).click();
+    await expect(page.getByText('All done')).toBeVisible();
 
     await page.reload();
     await expect(page.getByRole('listitem').filter({ hasText: 'Ship the template' })).toContainText('Done');
@@ -22,6 +22,6 @@ test.describe('tasks journey', () => {
   test('a user without permission sees the failure, not someone else data', async ({ page }) => {
     await signInAsNewUser(page, []);
     await page.goto('/');
-    await expect(page.getByRole('alert')).toContainText("We couldn't load your tasks");
+    await expect(page.getByRole('alert')).toContainText('Couldn’t load your tasks');
   });
 });

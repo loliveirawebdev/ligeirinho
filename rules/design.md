@@ -43,9 +43,30 @@ Generated UI fails in five ways. Name the one you see before fixing anything:
 | **Real words:** labels and sample data from the domain (the scenarios' data), never lorem ipsum or "Item 1" | fake text hides whether the layout works with real lengths |
 | **Scenarios include the hard cases:** the long name that wraps, the empty list, the error, one item, many items | layouts break on the cases nobody drew |
 | **Empty and error states say what happened and what to do next,** with the action right there | "No data" is a dead end |
-| **Sentence case** for titles, labels and buttons | Title Case Everywhere reads like a form from 2005 |
-| **Buttons say what they do** ("Create task", "Send invite"), not "OK", "Submit" or "Confirm" | the label is the last thing read before acting |
 | **Keep the domain's signature content:** the avatar, the thumbnail, the status the user scans for | swapping it for generic rows makes every screen look the same |
+
+## Words
+
+The copy is part of the design: generic copy makes a well-drawn screen look generated. Write like a careful product
+writer talking to one person who is busy. Drawn from the content guides of Shopify Polaris, GOV.UK, Material and
+Apple's HIG.
+
+| Rule | Why |
+|---|---|
+| **Plain, short, specific.** Cut filler (*simply*, *just*, *please*, *successfully*, *in order to*); front-load the word the user scans for | every extra word is read on every visit |
+| **No "Oops", no "Uh-oh", no exclamation marks, no emoji, no jokes in errors**; no "Welcome to…", "Let's…", "Unlock", "Seamless", "Effortless", "Powerful" | cheerful filler and marketing verbs are the clearest tells of generated copy |
+| **One word per concept,** used everywhere: if the thing is a *task*, it is never an *item*, *todo* or *entry*; the button verb, the in-progress state and the result share a verb (*Add task* → *Adding…* → *Added today*) | synonyms make users wonder whether they are different things |
+| **Titles name the thing** (*Tasks*, *Billing*), not the user (*My tasks*) or the app (*Task Manager*) | the screen is already theirs |
+| **Buttons are verb + object** (*Add task*, *Delete invoice*), never *OK*, *Submit*, *Yes*; a destructive button names what is destroyed | the label is the last thing read before acting |
+| **Labels are short nouns without colons;** the placeholder is a hint or example (*What needs doing?*), never the label and never a copy of the button | placeholders vanish on typing; repeating the button adds nothing |
+| **Counts as digits, with real plurals, and zero in words:** *1 open task*, *2 open tasks*, *All done* or *Nothing open* rather than *0 open tasks*; don't show a count next to an empty state that already says it | *0 items* reads like a database, and saying it twice is noise |
+| **Dates relative while recent** (*today*, *yesterday*), then *Mar 3*, adding the year only when it isn't the current one | users think in days, not timestamps |
+| **Empty states say what will be here and how to start,** and differ by case: first use (*No tasks yet*), no results (*No tasks match "x"*), all done (*All done*) | one generic "No data" fits none of them |
+| **Errors: what happened, then what to do,** in human words, without blame, codes or *Error:* prefixes; never *Something went wrong* on its own | the user needs the next step, not an apology |
+| **Headlines and labels have no final period; body sentences do.** Sentence case everywhere | periods on labels look like prose; Title Case reads like a form from 2005 |
+| **Real typography:** curly apostrophes and quotes (’ “ ”), the ellipsis character (…), an en dash for ranges (9–5); *…* ends in-progress states (*Saving…*) and actions that open another step | straight quotes and three dots are what unedited text looks like |
+| **Icon-only and repeated buttons get a full accessible name** with their object: *Complete “Review the plan”*, not *Complete* ten times | a screen reader user hears the list out of context |
+| **Never build a sentence by concatenating fragments;** each full string lives in one place (the view-model) so it can be translated | word order changes between languages |
 
 ## Type
 
@@ -134,7 +155,7 @@ it back with "what is this?". If you can picture that screenshot (a badge off it
 two icons of different weights, a gray hover on a blue button), that is the next fix.
 
 1. Name which of the five failures it has, if any, and fix that first.
-2. Then go through hierarchy, content, type, spacing, color, icons and density above, and fix what doesn't pass.
+2. Then go through hierarchy, content, words, type, spacing, color, icons and density above, and fix what doesn't pass.
 3. Say in one line what the focal element is. If you can't, the screen isn't done.
 
 **Enforced by:** checklist in the `preview` stage (before the user sees the screen) and again at the close; axe in
