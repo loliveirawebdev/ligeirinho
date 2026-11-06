@@ -1,7 +1,9 @@
 # The template
 
-`template/` is the starting point for new projects. `scripts/init.sh <dir>` copies it, packs ligeirinho's
-packages into `<dir>/vendor/ligeirinho/` (they aren't on a registry yet) and makes the first commit.
+`template/` is the starting point for new projects. `scripts/init.sh <dir>` copies it, names the project after the
+folder (or `--name`) and makes the first commit. The project installs ligeirinho's packages from this repository's
+[GitHub Releases](https://github.com/loliveirawebdev/ligeirinho/releases): public tarballs, no registry and no
+token.
 
 ## What's in it
 
@@ -40,7 +42,17 @@ Vitest 5, Playwright 1.65, Spartan 1.9 with Tailwind 4, Postgres 18, ESLint 10. 
 
 `make gate` runs the same for everything in a fresh container, as CI does.
 
-## Changing the template
+## Releasing the packages
 
-After changing `template/package.json` or any package, run `scripts/update-template-lockfile.sh`: the lockfile pins
-each package tarball's hash. `pnpm pack` is deterministic, so the tarballs `init.sh` packs later match it.
+1. Bump `version` in every `packages/*/package.json` (they move together).
+2. Commit, then push a tag `v<version>`. The `release` workflow checks the versions, runs every package's tests,
+   packs them and creates the GitHub Release with the tarballs attached.
+3. Run `scripts/update-template-lockfile.sh <version>`: it points `template/package.json` at the new release and
+   refreshes `template/pnpm-lock.yaml`. Commit.
+
+An existing project updates by changing the version in its six `@ligeirinho/*` URLs and running `pnpm install`.
+
+## Trying package changes before a release
+
+`scripts/init.sh <dir> --local` packs the packages from this checkout into `<dir>/vendor/ligeirinho/` and installs
+them from there (needs pnpm on the host).

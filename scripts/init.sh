@@ -1,22 +1,25 @@
 #!/usr/bin/env bash
 # Starts a new project from ligeirinho's template.
-# usage: scripts/init.sh <target-dir> [--name <project-name>]
+# usage: scripts/init.sh <target-dir> [--name <project-name>] [--local]
 #
-# ligeirinho's packages aren't on a registry yet, so they are packed from this checkout into
-# <target-dir>/vendor/ligeirinho/ and installed from there (committed with the project, so clones work).
+# The template installs ligeirinho's packages from this repository's GitHub Releases. --local instead packs
+# them from this checkout into <target-dir>/vendor/ligeirinho/ (committed with the project), to try package
+# changes before they are released; it needs pnpm on the host.
 set -euo pipefail
 
 target_dir=""
 project_name=""
+use_local_packages=false
 while [ $# -gt 0 ]; do
   case "$1" in
     --name) project_name="${2:?--name needs a value}"; shift 2 ;;
-    -h|--help) sed -n '2,6p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --local) use_local_packages=true; shift ;;
+    -h|--help) sed -n '2,7p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     -*) echo "init: unknown option $1" >&2; exit 2 ;;
     *) target_dir="$1"; shift ;;
   esac
 done
-[ -n "$target_dir" ] || { echo "usage: scripts/init.sh <target-dir> [--name <project-name>]" >&2; exit 2; }
+[ -n "$target_dir" ] || { echo "usage: scripts/init.sh <target-dir> [--name <project-name>] [--local]" >&2; exit 2; }
 if [ -e "$target_dir" ] && [ -n "$(ls -A "$target_dir" 2>/dev/null)" ]; then
   echo "init: $target_dir exists and is not empty" >&2
   exit 2
@@ -34,13 +37,17 @@ fi
 echo "Copying the template to $target_dir"
 cp -R "$ligeirinho_root/template/." "$target_dir/"
 
-echo "Packing ligeirinho's packages into vendor/ligeirinho"
-"$ligeirinho_root/scripts/pack-local.sh" "$target_dir/vendor/ligeirinho" >/dev/null
-
 # The template is called "app"; only the visible names change (the @app/* import prefix stays).
 sed -i.bak "s/\"name\": \"app\"/\"name\": \"$project_name\"/" "$target_dir/package.json" "$target_dir/bruno/bruno.json"
 sed -i.bak "1s/^# app$/# $project_name/" "$target_dir/AGENTS.md"
 sed -i.bak "s/:-app-nx-cache}/:-$project_name-nx-cache}/" "$target_dir/compose.yaml"
+
+if [ "$use_local_packages" = true ]; then
+  echo "Packing ligeirinho's packages into vendor/ligeirinho"
+  "$ligeirinho_root/scripts/pack-local.sh" "$target_dir/vendor/ligeirinho" >/dev/null
+  sed -i.bak -E 's#"https://github.com/loliveirawebdev/ligeirinho/releases/download/v[^/]+/(ligeirinho-[a-z-]+\.tgz)"#"file:vendor/ligeirinho/\1"#' "$target_dir/package.json"
+  (cd "$target_dir" && pnpm install --lockfile-only >/dev/null)
+fi
 find "$target_dir" -maxdepth 2 -name '*.bak' -delete
 
 cd "$target_dir"

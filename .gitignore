@@ -6,5 +6,3 @@ test-results/
 playwright-report/
 .nx/
 
-# template: tarballs written by scripts/init.sh and scripts/update-template-lockfile.sh
-template/vendor/

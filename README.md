@@ -42,7 +42,7 @@ Some are enforced on the spot by hooks:
 
 ## Using it in a project
 
-**New project:** from a clone of this repository (needs Docker, make and pnpm on the host for this one step):
+**New project:** from a clone of this repository (needs only Docker and make):
 
 ```sh
 scripts/init.sh ../my-app
@@ -75,5 +75,5 @@ without that file aren't affected by the plugin.
 
 The rules, the plugin, the template and the packages are ready for review. A project created with `init.sh` passes
 `make check` (lint, types, unit, integration and e2e tests, responsive checks, API contract) in Docker. The hooks
-were tested with each agent's payload format, but only outside the real agents so far. The packages aren't on a
-registry yet: `init.sh` packs them into the new project. Still missing: a pilot project.
+were tested with each agent's payload format, but only outside the real agents so far. The packages are published as
+[GitHub Release](https://github.com/loliveirawebdev/ligeirinho/releases) tarballs. Still missing: a pilot project.

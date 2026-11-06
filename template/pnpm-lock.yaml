@@ -130,23 +130,23 @@ importers:
         specifier: 10.0.1
         version: 10.0.1(eslint@10.14.0(jiti@2.4.2))
       '@ligeirinho/bruno-tools':
-        specifier: file:vendor/ligeirinho/ligeirinho-bruno-tools.tgz
-        version: file:vendor/ligeirinho/ligeirinho-bruno-tools.tgz
+        specifier: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-bruno-tools.tgz
+        version: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-bruno-tools.tgz
       '@ligeirinho/e2e-kit':
-        specifier: file:vendor/ligeirinho/ligeirinho-e2e-kit.tgz
-        version: file:vendor/ligeirinho/ligeirinho-e2e-kit.tgz(@playwright/test@1.65.0)(playwright-core@1.65.0)
+        specifier: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-e2e-kit.tgz
+        version: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-e2e-kit.tgz(@playwright/test@1.65.0)(playwright-core@1.65.0)
       '@ligeirinho/eslint-config':
-        specifier: file:vendor/ligeirinho/ligeirinho-eslint-config.tgz
-        version: file:vendor/ligeirinho/ligeirinho-eslint-config.tgz(@babel/traverse@7.29.13)(@swc-node/register@1.11.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.15.8(@swc/helpers@0.5.18))(@typescript-eslint/parser@8.72.1(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3))(@typescript-eslint/types@8.72.1)(chokidar@5.0.0)(eslint-config-prettier@10.1.8(eslint@10.14.0(jiti@2.4.2)))(eslint@10.14.0(jiti@2.4.2))(nx@24.0.4(@swc-node/register@1.11.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.15.8(@swc/helpers@0.5.18)))(typescript@6.0.3)
+        specifier: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-eslint-config.tgz
+        version: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-eslint-config.tgz(@babel/traverse@7.29.13)(@swc-node/register@1.11.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.15.8(@swc/helpers@0.5.18))(@typescript-eslint/parser@8.72.1(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3))(@typescript-eslint/types@8.72.1)(chokidar@5.0.0)(eslint-config-prettier@10.1.8(eslint@10.14.0(jiti@2.4.2)))(eslint@10.14.0(jiti@2.4.2))(nx@24.0.4(@swc-node/register@1.11.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.15.8(@swc/helpers@0.5.18)))(typescript@6.0.3)
       '@ligeirinho/jscpd-config':
-        specifier: file:vendor/ligeirinho/ligeirinho-jscpd-config.tgz
-        version: file:vendor/ligeirinho/ligeirinho-jscpd-config.tgz
+        specifier: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-jscpd-config.tgz
+        version: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-jscpd-config.tgz
       '@ligeirinho/previewer':
-        specifier: file:vendor/ligeirinho/ligeirinho-previewer.tgz
-        version: file:vendor/ligeirinho/ligeirinho-previewer.tgz(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/router@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2))
+        specifier: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-previewer.tgz
+        version: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-previewer.tgz(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/router@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2))
       '@ligeirinho/spectral-ruleset':
-        specifier: file:vendor/ligeirinho/ligeirinho-spectral-ruleset.tgz
-        version: file:vendor/ligeirinho/ligeirinho-spectral-ruleset.tgz(@stoplight/spectral-cli@6.17.0)
+        specifier: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-spectral-ruleset.tgz
+        version: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-spectral-ruleset.tgz(@stoplight/spectral-cli@6.17.0)
       '@nestjs/schematics':
         specifier: ^11.0.0
         version: 11.1.0(chokidar@5.0.0)(prettier@3.9.10)(typescript@6.0.3)
@@ -2648,33 +2648,33 @@ packages:
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
 
-  '@ligeirinho/bruno-tools@file:vendor/ligeirinho/ligeirinho-bruno-tools.tgz':
-    resolution: {integrity: sha512-Kg+ajhdS1bSUPU/p/YtswJH6Htd4SADGa4Iid8kohKsenHC2n+BUnsN5yz2Zk+rrmckpV0noSAMkl9+PcnOaZA==, tarball: file:vendor/ligeirinho/ligeirinho-bruno-tools.tgz}
-    version: 0.1.0
+  '@ligeirinho/bruno-tools@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-bruno-tools.tgz':
+    resolution: {tarball: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-bruno-tools.tgz}
+    version: 0.1.1
     engines: {node: '>=24'}
     hasBin: true
 
-  '@ligeirinho/e2e-kit@file:vendor/ligeirinho/ligeirinho-e2e-kit.tgz':
-    resolution: {integrity: sha512-Ly/j6Dsl5nBJExBJdYv1TdkRtyv4moI8UpO/f5MYOowft6pR5gc09Y/K9XjUfOY/weVAhjpHYqF6wC7WMVXHFQ==, tarball: file:vendor/ligeirinho/ligeirinho-e2e-kit.tgz}
-    version: 0.1.0
+  '@ligeirinho/e2e-kit@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-e2e-kit.tgz':
+    resolution: {tarball: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-e2e-kit.tgz}
+    version: 0.1.1
     peerDependencies:
       '@playwright/test': ^1.65.0
 
-  '@ligeirinho/eslint-config@file:vendor/ligeirinho/ligeirinho-eslint-config.tgz':
-    resolution: {integrity: sha512-H6Gf2Mle+letE+iu2b0bRzBByxL73tlDLH2XH1M/aB+HsS9kK9iWsq8W3NvqHE+brAm2KzTbv3GU/dZ8ddI28w==, tarball: file:vendor/ligeirinho/ligeirinho-eslint-config.tgz}
-    version: 0.1.0
+  '@ligeirinho/eslint-config@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-eslint-config.tgz':
+    resolution: {tarball: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-eslint-config.tgz}
+    version: 0.1.1
     peerDependencies:
       eslint: ^10.0.0
       typescript: '>=5.8.0 <6.1.0'
 
-  '@ligeirinho/jscpd-config@file:vendor/ligeirinho/ligeirinho-jscpd-config.tgz':
-    resolution: {integrity: sha512-qeLkNo7EDOO7+jjy/q23l0k0UUeWiTWTBMDlIkhyp1ltVxlFc4mWu1QLll1cMNQBTo0HygGZ2vB+qqWkQAvhUw==, tarball: file:vendor/ligeirinho/ligeirinho-jscpd-config.tgz}
-    version: 0.1.0
+  '@ligeirinho/jscpd-config@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-jscpd-config.tgz':
+    resolution: {tarball: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-jscpd-config.tgz}
+    version: 0.1.1
     hasBin: true
 
-  '@ligeirinho/previewer@file:vendor/ligeirinho/ligeirinho-previewer.tgz':
-    resolution: {integrity: sha512-oD3eBIW1IceVFYLY8hYVax6ZxXk8vyYlT+hZOD7BlSo1390bJg4aTfmaiEunLyLkpxVcy/eFex+e1oe0H121CA==, tarball: file:vendor/ligeirinho/ligeirinho-previewer.tgz}
-    version: 0.1.0
+  '@ligeirinho/previewer@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-previewer.tgz':
+    resolution: {tarball: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-previewer.tgz}
+    version: 0.1.1
     hasBin: true
     peerDependencies:
       '@angular/common': ^22.2.4
@@ -2682,9 +2682,9 @@ packages:
       '@angular/platform-browser': ^22.2.4
       '@angular/router': ^22.2.4
 
-  '@ligeirinho/spectral-ruleset@file:vendor/ligeirinho/ligeirinho-spectral-ruleset.tgz':
-    resolution: {integrity: sha512-pYJfew5juJdu7CiYHY5lWRRRocJodZlVim1fRez6V4CXYThgs3lq/HjO3yh5KhXZwz3XL4yowksOBWa9IdqebQ==, tarball: file:vendor/ligeirinho/ligeirinho-spectral-ruleset.tgz}
-    version: 0.1.0
+  '@ligeirinho/spectral-ruleset@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-spectral-ruleset.tgz':
+    resolution: {tarball: https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-spectral-ruleset.tgz}
+    version: 0.1.1
     peerDependencies:
       '@stoplight/spectral-cli': ^6.17.0
     peerDependenciesMeta:
@@ -12995,18 +12995,18 @@ snapshots:
 
   '@leichtgewicht/ip-codec@2.0.5': {}
 
-  '@ligeirinho/bruno-tools@file:vendor/ligeirinho/ligeirinho-bruno-tools.tgz':
+  '@ligeirinho/bruno-tools@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-bruno-tools.tgz':
     dependencies:
       yaml: 2.9.1
 
-  '@ligeirinho/e2e-kit@file:vendor/ligeirinho/ligeirinho-e2e-kit.tgz(@playwright/test@1.65.0)(playwright-core@1.65.0)':
+  '@ligeirinho/e2e-kit@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-e2e-kit.tgz(@playwright/test@1.65.0)(playwright-core@1.65.0)':
     dependencies:
       '@axe-core/playwright': 4.14.0(playwright-core@1.65.0)
       '@playwright/test': 1.65.0
     transitivePeerDependencies:
       - playwright-core
 
-  '@ligeirinho/eslint-config@file:vendor/ligeirinho/ligeirinho-eslint-config.tgz(@babel/traverse@7.29.13)(@swc-node/register@1.11.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.15.8(@swc/helpers@0.5.18))(@typescript-eslint/parser@8.72.1(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3))(@typescript-eslint/types@8.72.1)(chokidar@5.0.0)(eslint-config-prettier@10.1.8(eslint@10.14.0(jiti@2.4.2)))(eslint@10.14.0(jiti@2.4.2))(nx@24.0.4(@swc-node/register@1.11.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.15.8(@swc/helpers@0.5.18)))(typescript@6.0.3)':
+  '@ligeirinho/eslint-config@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-eslint-config.tgz(@babel/traverse@7.29.13)(@swc-node/register@1.11.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.15.8(@swc/helpers@0.5.18))(@typescript-eslint/parser@8.72.1(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3))(@typescript-eslint/types@8.72.1)(chokidar@5.0.0)(eslint-config-prettier@10.1.8(eslint@10.14.0(jiti@2.4.2)))(eslint@10.14.0(jiti@2.4.2))(nx@24.0.4(@swc-node/register@1.11.1(@swc/core@1.15.8(@swc/helpers@0.5.18))(@swc/types@0.1.28)(typescript@6.0.3))(@swc/core@1.15.8(@swc/helpers@0.5.18)))(typescript@6.0.3)':
     dependencies:
       '@angular-eslint/eslint-plugin': 22.6.0(@typescript-eslint/utils@8.72.1(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3))(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3)
       '@angular-eslint/eslint-plugin-template': 22.6.0(@angular-eslint/template-parser@22.6.0(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3))(@typescript-eslint/types@8.72.1)(@typescript-eslint/utils@8.72.1(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3))(eslint@10.14.0(jiti@2.4.2))(typescript@6.0.3)
@@ -13033,11 +13033,11 @@ snapshots:
       - supports-color
       - verdaccio
 
-  '@ligeirinho/jscpd-config@file:vendor/ligeirinho/ligeirinho-jscpd-config.tgz':
+  '@ligeirinho/jscpd-config@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-jscpd-config.tgz':
     dependencies:
       jscpd: 4.3.0
 
-  '@ligeirinho/previewer@file:vendor/ligeirinho/ligeirinho-previewer.tgz(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/router@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2))':
+  '@ligeirinho/previewer@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-previewer.tgz(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(@angular/router@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2))':
     dependencies:
       '@angular/common': 22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2)
       '@angular/core': 22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)
@@ -13045,7 +13045,7 @@ snapshots:
       '@angular/router': 22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(@angular/platform-browser@22.2.4(@angular/common@22.2.4(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2))(rxjs@7.8.2))(@angular/core@22.2.4(@angular/compiler@22.2.4)(rxjs@7.8.2)(zone.js@0.16.2)))(rxjs@7.8.2)
       tslib: 2.9.1
 
-  '@ligeirinho/spectral-ruleset@file:vendor/ligeirinho/ligeirinho-spectral-ruleset.tgz(@stoplight/spectral-cli@6.17.0)':
+  '@ligeirinho/spectral-ruleset@https://github.com/loliveirawebdev/ligeirinho/releases/download/v0.1.1/ligeirinho-spectral-ruleset.tgz(@stoplight/spectral-cli@6.17.0)':
     dependencies:
       '@stoplight/spectral-core': 1.24.0
       '@stoplight/spectral-formats': 1.9.0

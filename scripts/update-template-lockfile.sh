@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
-# Refreshes template/pnpm-lock.yaml after a change to the template's dependencies or to a package.
-# The lockfile records each package tarball's hash. pnpm doesn't refresh the hash of a local tarball
-# whose path didn't change, so this script writes it. pnpm pack is deterministic, so the tarballs
-# init.sh packs later match it as long as the packages don't change.
+# Points the template at a released version of ligeirinho's packages and refreshes its lockfile.
+# usage: scripts/update-template-lockfile.sh <version>     (e.g. 0.2.0; the GitHub Release must exist)
 set -euo pipefail
+version="${1:?usage: scripts/update-template-lockfile.sh <version>}"
 ligeirinho_root="$(cd "$(dirname "$0")/.." && pwd)"
-vendor_dir="$ligeirinho_root/template/vendor/ligeirinho"
-"$ligeirinho_root/scripts/pack-local.sh" "$vendor_dir" >/dev/null
 cd "$ligeirinho_root/template"
-pnpm install --lockfile-only >/dev/null
-for tarball in "$vendor_dir"/ligeirinho-*.tgz; do
-  file_name="$(basename "$tarball")"
-  integrity="sha512-$(openssl dgst -sha512 -binary "$tarball" | base64 | tr -d '\n')"
-  # The line after the package's key holds `resolution: {integrity: ..., tarball: file:vendor/ligeirinho/<file>}`.
-  sed -i.bak -E "s#integrity: sha512-[A-Za-z0-9+/=]+, tarball: file:vendor/ligeirinho/$file_name\}#integrity: $integrity, tarball: file:vendor/ligeirinho/$file_name}#" pnpm-lock.yaml
-done
-rm -f pnpm-lock.yaml.bak
-echo "template/pnpm-lock.yaml is up to date"
+node - "$version" <<'NODE'
+const fs = require('node:fs');
+const version = process.argv[2];
+const manifest = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+for (const name of Object.keys(manifest.devDependencies)) {
+  if (name.startsWith('@ligeirinho/')) {
+    const packageName = name.slice('@ligeirinho/'.length);
+    manifest.devDependencies[name] =
+      `https://github.com/loliveirawebdev/ligeirinho/releases/download/v${version}/ligeirinho-${packageName}.tgz`;
+  }
+}
+fs.writeFileSync('package.json', `${JSON.stringify(manifest, null, 2)}\n`);
+NODE
+# --ignore-workspace: template/ sits inside ligeirinho's own pnpm workspace, which pnpm would use instead.
+pnpm install --lockfile-only --ignore-workspace
+echo "template now uses ligeirinho v$version"
