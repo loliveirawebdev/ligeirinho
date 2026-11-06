@@ -1,6 +1,6 @@
 {
   "name": "@ligeirinho/e2e-kit",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Playwright config and responsive/accessibility checks over every previewer scenario.",
   "license": "MIT",
   "repository": {

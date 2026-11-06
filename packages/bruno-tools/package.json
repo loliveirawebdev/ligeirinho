@@ -1,6 +1,6 @@
 {
   "name": "@ligeirinho/bruno-tools",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Keeps a Bruno collection in sync with an OpenAPI document: drift check, local environment writer and request scaffolding.",
   "license": "MIT",
   "repository": {
