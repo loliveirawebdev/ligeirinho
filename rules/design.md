@@ -86,6 +86,7 @@ Apple's HIG.
 | **Spacing from the scale only** (Tailwind's 4 px steps); no arbitrary values like `mt-[13px]` | a scale makes rhythm; arbitrary values make drift |
 | **Proximity groups:** things that belong together are closer to each other than to anything else; never spread items evenly to fill a space | even spacing erases the structure |
 | **Text keeps an inset of at least 12 px (16 px is the default)** from the edge of a card, panel or row; nothing touches a border | text touching an edge is the clearest "unfinished" signal |
+| **Inputs, selects and buttons share one height** (`h-11`, 44 px, the template's default for both); a button next to a field never uses another size | mismatched control heights in a row are the first thing a designer spots |
 | **A button sits 8 to 12 px from the field or block it belongs to** | touching reads as a mistake; far away it belongs to nothing |
 | **No near-tangents:** two edges either line up exactly or are at least 8 px apart | edges 1 to 3 px apart look like an accident |
 | **Nested rounded shapes:** outer radius = inner radius + the padding between them; even padding on every side | mismatched radii look off even when nobody can say why |
@@ -104,6 +105,7 @@ Apple's HIG.
 | **Try the fill alone before adding a border;** a border is for separation or state, not decoration | redundant borders are where "boxed" starts |
 | **No decorative gradients, glows or glassmorphism** unless the product's identity asks for them | they date fast and fight the content |
 | **A filled button keeps its color on hover:** one step of its own color, never a swap to gray | a color swap reads as a different button |
+| **Buttons and inputs are flat:** no shadow, glow or gradient on controls; elevation belongs to surfaces | shadowed buttons are a dated, generated look |
 | **Dark theme: depth from a lighter surface, not from shadows** | shadows disappear on dark backgrounds |
 | **Check both themes:** a screen that works in light is not proven in dark; the previewer shows both side by side | the second theme is where forgotten raw colors show up |
 | **Quiet is not faint:** muted text still passes contrast against its real background | low-contrast "elegant" gray fails real users (axe checks it in the gate) |
@@ -140,7 +142,8 @@ It lives in `apps/web/src/styles.css` (tokens) and the Spartan components in `li
 | **Geist** as the one family (self-hosted with `@fontsource-variable`), titles with slight negative tracking and `text-wrap: balance` | system-ui plus Inter is the generic pairing; tight titles read as designed |
 | **Depth in light mode = hairline + soft warm shadow** (`shadow-surface`); dark mode = lighter surface plus a hairline | borders alone look like a wireframe; black shadows look pasted on |
 | **One surface per group with dividers** (a list is one card with `divide-y`), not a card per row | a card per row is the "boxed" failure |
-| **Primary hover darkens its own color** (`color-mix` with the foreground), with a faint top highlight | opacity hovers look washed out |
+| **Controls are flat:** buttons, inputs and toggles have no shadow, gradient or inner highlight; only surfaces (cards, popovers, dialogs) get `shadow-surface` | a shadowed button looks dated and fights the surface it sits on |
+| **Primary hover darkens its own color** (`color-mix` with the foreground) | opacity hovers look washed out |
 | **Lucide icons through `@ng-icons`**, one stroke and size per context | one set, never hand-drawn |
 
 **To brand a product:** change `--primary`, `--primary-foreground` and `--ring` (light and dark) to the product's
