@@ -55,7 +55,7 @@ Apple's HIG.
 |---|---|
 | **Plain, short, specific.** Cut filler (*simply*, *just*, *please*, *successfully*, *in order to*); front-load the word the user scans for | every extra word is read on every visit |
 | **No "Oops", no "Uh-oh", no exclamation marks, no emoji, no jokes in errors**; no "Welcome to…", "Let's…", "Unlock", "Seamless", "Effortless", "Powerful" | cheerful filler and marketing verbs are the clearest tells of generated copy |
-| **One word per concept,** used everywhere: if the thing is a *task*, it is never an *item*, *todo* or *entry*; the button verb, the in-progress state and the result share a verb (*Add task* → *Adding…* → *Added today*) | synonyms make users wonder whether they are different things |
+| **One word per concept,** used everywhere: if the thing is a *task*, it is never an *item*, *todo* or *entry*; the button verb, the in-progress state and the result share a verb (*Add task* → *Adding…*) | synonyms make users wonder whether they are different things |
 | **Titles name the thing** (*Tasks*, *Billing*), not the user (*My tasks*) or the app (*Task Manager*) | the screen is already theirs |
 | **Buttons are verb + object** (*Add task*, *Delete invoice*), never *OK*, *Submit*, *Yes*; a destructive button names what is destroyed | the label is the last thing read before acting |
 | **Labels are short nouns without colons;** the placeholder is a hint or example (*What needs doing?*), never the label and never a copy of the button | placeholders vanish on typing; repeating the button adds nothing |
@@ -140,8 +140,8 @@ It lives in `apps/web/src/styles.css` (tokens) and the Spartan components in `li
 | **Warm, slightly tinted neutrals** (OKLCH, hue around 80, chroma under 0.01), never zero-chroma gray | pure `#fff` / neutral gray is the default every generated app ships with; a faint tint reads as chosen |
 | **One deep accent** (`--primary`, a pine green), lighter and softer in dark mode | a muted, deep accent looks deliberate; saturated blue or purple looks like a default |
 | **Geist** as the one family (self-hosted with `@fontsource-variable`), titles with slight negative tracking and `text-wrap: balance` | system-ui plus Inter is the generic pairing; tight titles read as designed |
-| **Depth in light mode = hairline + soft warm shadow** (`shadow-surface`); dark mode = lighter surface plus a hairline | borders alone look like a wireframe; black shadows look pasted on |
-| **One surface per group with dividers** (a list is one card with `divide-y`), not a card per row | a card per row is the "boxed" failure |
+| **Flat and open:** content sits on the page background, no cards around lists or forms; a list is rows with hairline dividers (`divide-y border-y`), metadata right-aligned in muted text | white cards with shadows on a tinted page are the look of every template |
+| **Shadows only for things that float** (popovers, menus, dialogs: `shadow-surface`); a border only where something must be set apart (an error) | elevation on static content is decoration |
 | **Controls are flat:** buttons, inputs and toggles have no shadow, gradient or inner highlight; only surfaces (cards, popovers, dialogs) get `shadow-surface` | a shadowed button looks dated and fights the surface it sits on |
 | **Primary hover darkens its own color** (`color-mix` with the foreground) | opacity hovers look washed out |
 | **Lucide icons through `@ng-icons`**, one stroke and size per context | one set, never hand-drawn |

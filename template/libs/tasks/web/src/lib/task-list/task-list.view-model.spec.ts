@@ -32,12 +32,12 @@ describe('task list view-model', () => {
 
   it('dates tasks relative to today, with the year only when it differs', () => {
     expect(buildTaskListViewModel(readyState, now).items.map((item) => item.createdAtLabel)).toEqual([
-      'Added today',
-      'Added yesterday',
-      'Added Mar 1',
+      'Today',
+      'Yesterday',
+      'Mar 1',
     ]);
     expect(buildTaskListViewModel(readyState, new Date('2027-01-10T12:00:00Z')).items[0]?.createdAtLabel).toBe(
-      'Added Mar 3, 2026',
+      'Mar 3, 2026',
     );
   });
 });

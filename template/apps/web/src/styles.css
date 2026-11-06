@@ -24,7 +24,7 @@
 :root {
   color-scheme: light;
 
-  --radius: 0.75rem;
+  --radius: 0.625rem;
 
   --background: oklch(0.982 0.004 85);
   --foreground: oklch(0.22 0.01 70);

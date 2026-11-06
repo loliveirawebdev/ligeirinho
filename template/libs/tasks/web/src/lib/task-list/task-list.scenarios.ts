@@ -3,7 +3,7 @@ import { TaskListView } from './task-list.view';
 import { SAMPLE_TASKS } from './task-list.sample-tasks';
 import { buildTaskListViewModel, type TaskListState } from './task-list.view-model';
 
-// A fixed day, so the dates read 'today', 'yesterday' and 'Mar 1' in every preview.
+// A fixed day, so the dates read 'Today', 'Yesterday' and 'Mar 1' in every preview.
 const now = new Date('2026-03-03T15:00:00Z');
 const readyState: TaskListState = { status: 'ready', tasks: SAMPLE_TASKS, hasMorePages: true, isCreatingTask: false };
 

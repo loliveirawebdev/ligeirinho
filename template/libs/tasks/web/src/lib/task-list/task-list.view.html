@@ -1,15 +1,12 @@
-<main class="@container mx-auto w-full max-w-xl px-5 pt-10 pb-16 sm:pt-16">
-  <header class="mb-6">
-    <h1 class="text-3xl font-semibold">Tasks</h1>
+<main class="@container mx-auto w-full max-w-xl px-5 pt-12 pb-16 sm:pt-20">
+  <header class="mb-6 flex items-baseline justify-between gap-4">
+    <h1 class="text-2xl font-semibold">Tasks</h1>
     @if (model().openTaskCountLabel) {
-      <p class="text-muted-foreground mt-1 text-sm tabular-nums">{{ model().openTaskCountLabel }}</p>
+      <p class="text-muted-foreground text-sm tabular-nums">{{ model().openTaskCountLabel }}</p>
     }
   </header>
 
-  <form
-    class="bg-card shadow-surface focus-within:ring-ring/40 flex items-center gap-2 rounded-xl p-1.5 transition-shadow focus-within:ring-3"
-    (submit)="submitNewTask($event)"
-  >
+  <form class="flex gap-2" (submit)="submitNewTask($event)">
     <label hlmLabel for="new-task-title" class="sr-only">New task</label>
     <input
       hlmInput
@@ -18,21 +15,21 @@
       autocomplete="off"
       maxlength="200"
       placeholder="What needs doing?"
-      class="flex-1 border-0 bg-transparent px-3 shadow-none focus-visible:ring-0 dark:bg-transparent"
+      class="flex-1"
       [value]="newTaskTitle()"
       (input)="updateNewTaskTitle($event)"
     />
-    <button hlmBtn type="submit" class="rounded-lg" [disabled]="model().isCreatingTask">
+    <button hlmBtn type="submit" [disabled]="model().isCreatingTask">
       {{ model().isCreatingTask ? 'Adding…' : 'Add task' }}
     </button>
   </form>
 
   @if (model().isLoading) {
-    <p role="status" class="text-muted-foreground mt-8 text-center text-sm">Loading tasks…</p>
+    <p role="status" class="text-muted-foreground mt-10 text-center text-sm">Loading tasks…</p>
   }
 
   @if (model().showError) {
-    <section role="alert" class="bg-card shadow-surface mt-6 flex flex-col items-start gap-3 rounded-xl p-5">
+    <section role="alert" class="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-lg border p-4">
       <div>
         <p class="font-medium">Couldn’t load your tasks</p>
         <p class="text-muted-foreground mt-1 text-sm">Check your connection, then try again.</p>
@@ -42,20 +39,20 @@
   }
 
   @if (model().showEmptyState) {
-    <div class="mt-6 rounded-xl border border-dashed px-6 py-12 text-center">
+    <div class="mt-6 py-16 text-center">
       <p class="font-medium">No tasks yet</p>
       <p class="text-muted-foreground mt-1 text-sm">Tasks you add will show up here.</p>
     </div>
   }
 
   @if (model().items.length > 0) {
-    <ul class="bg-card shadow-surface divide-border mt-6 divide-y overflow-hidden rounded-xl" aria-label="Tasks">
+    <ul class="divide-border mt-6 divide-y border-y" aria-label="Tasks">
       @for (item of model().items; track item.id) {
-        <li class="flex items-start gap-1 py-1.5 pr-4 pl-1.5">
+        <li class="flex items-start py-1">
           @if (item.completed) {
-            <span class="flex size-11 shrink-0 items-center justify-center">
+            <span class="-ml-3 flex size-11 shrink-0 items-center justify-center">
               <span class="bg-primary text-primary-foreground flex size-5 items-center justify-center rounded-full">
-                <ng-icon name="lucideCheck" size="14" strokeWidth="3" aria-hidden="true" />
+                <ng-icon name="lucideCheck" size="12" strokeWidth="3" aria-hidden="true" />
               </span>
             </span>
           } @else {
@@ -64,7 +61,7 @@
               variant="ghost"
               size="icon"
               type="button"
-              class="group/check shrink-0 rounded-full hover:bg-transparent dark:hover:bg-transparent"
+              class="group/check -ml-3 shrink-0 rounded-full hover:bg-transparent dark:hover:bg-transparent"
               [attr.aria-label]="item.completeLabel"
               (click)="completeTask.emit(item.id)"
             >
@@ -81,22 +78,20 @@
               </span>
             </button>
           }
-          <div class="flex min-w-0 flex-1 flex-col gap-0.5 py-2.5">
-            <span
-              class="leading-snug break-words"
-              [class.text-muted-foreground]="item.completed"
-              [class.line-through]="item.completed"
-              [class.decoration-muted-foreground/40]="item.completed"
-            >
-              {{ item.title }}
-            </span>
-            <span class="text-muted-foreground text-xs tabular-nums">
-              {{ item.createdAtLabel }}
-              @if (item.completed) {
-                <span class="sr-only">· Done</span>
-              }
-            </span>
-          </div>
+          <span
+            class="min-w-0 flex-1 py-2.5 pl-1 leading-6 break-words"
+            [class.text-muted-foreground]="item.completed"
+            [class.line-through]="item.completed"
+            [class.decoration-muted-foreground/40]="item.completed"
+          >
+            {{ item.title }}
+          </span>
+          <span class="text-muted-foreground shrink-0 py-2.5 pl-4 text-xs leading-6 tabular-nums">
+            {{ item.createdAtLabel }}
+            @if (item.completed) {
+              <span class="sr-only">· Done</span>
+            }
+          </span>
         </li>
       }
     </ul>
@@ -104,7 +99,9 @@
 
   @if (model().canLoadMore) {
     <div class="mt-4 flex justify-center">
-      <button hlmBtn variant="ghost" type="button" class="text-muted-foreground" (click)="loadMore.emit()">Show more</button>
+      <button hlmBtn variant="ghost" type="button" class="text-muted-foreground" (click)="loadMore.emit()">
+        Show more
+      </button>
     </div>
   }
 </main>

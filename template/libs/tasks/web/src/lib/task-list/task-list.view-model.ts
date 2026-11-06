@@ -58,15 +58,15 @@ function toTaskListItem(task: TaskSummary, now: Date): TaskListItem {
     id: task.id,
     title: task.title,
     completed: task.completed,
-    createdAtLabel: `Added ${relativeDay(new Date(task.createdAt), now)}`,
+    createdAtLabel: relativeDay(new Date(task.createdAt), now),
     completeLabel: `Complete “${task.title}”`,
   };
 }
 
 function relativeDay(date: Date, now: Date): string {
   const days = Math.round((startOfDay(now) - startOfDay(date)) / 86_400_000);
-  if (days === 0) return 'today';
-  if (days === 1) return 'yesterday';
+  if (days === 0) return 'Today';
+  if (days === 1) return 'Yesterday';
   return date.getFullYear() === now.getFullYear() ? sameYearFormat.format(date) : otherYearFormat.format(date);
 }
 
