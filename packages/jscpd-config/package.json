@@ -1,6 +1,6 @@
 {
   "name": "@ligeirinho/jscpd-config",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared jscpd config and a CLI that fails on any copy-paste and on any jscpd ignore without a reason.",
   "license": "MIT",
   "repository": {

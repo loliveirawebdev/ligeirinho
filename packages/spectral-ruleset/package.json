@@ -1,6 +1,6 @@
 {
   "name": "@ligeirinho/spectral-ruleset",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Spectral ruleset that enforces the ligeirinho REST API and scale rules on an OpenAPI document.",
   "license": "MIT",
   "repository": {

@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v5
         with:
@@ -39,6 +39,7 @@ jobs:
       - name: Browsers for the previewer and e2e-kit tests
         run: pnpm --filter @ligeirinho/e2e-kit exec playwright install --with-deps chromium
 
+      # One package at a time: the e2e-kit tests rebuild the previewer, which the previewer tests read.
       - run: pnpm test
 
       - run: scripts/pack-local.sh release-assets
