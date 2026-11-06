@@ -1,0 +1,57 @@
+{
+  "name": "@ligeirinho/previewer",
+  "version": "0.1.0",
+  "description": "Dev-only /__preview route that renders the app's real Angular views with example view-models (scenarios).",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/types/ligeirinho-previewer.d.ts",
+      "default": "./dist/fesm2022/ligeirinho-previewer.mjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "typings": "./dist/types/ligeirinho-previewer.d.ts",
+  "module": "./dist/fesm2022/ligeirinho-previewer.mjs",
+  "bin": {
+    "ligeirinho-preview-registry": "./dist-cli/main.js"
+  },
+  "files": [
+    "dist",
+    "dist-cli",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "pnpm run build:lib && pnpm run build:cli",
+    "build:lib": "ng-packagr -p lib/ng-package.json -c lib/tsconfig.lib.json",
+    "build:cli": "node -e \"fs.rmSync('dist-cli', { recursive: true, force: true })\" && tsc -p tsconfig.cli.json",
+    "typecheck": "tsc -p tsconfig.spec.json",
+    "demo:build": "ng build",
+    "test": "pnpm run build && pnpm run typecheck && vitest run && pnpm run demo:build && playwright test"
+  },
+  "peerDependencies": {
+    "@angular/common": "^22.2.4",
+    "@angular/core": "^22.2.4",
+    "@angular/platform-browser": "^22.2.4",
+    "@angular/router": "^22.2.4"
+  },
+  "dependencies": {
+    "tslib": "2.9.1"
+  },
+  "devDependencies": {
+    "@angular/build": "22.2.4",
+    "@angular/cli": "22.2.4",
+    "@angular/common": "22.2.4",
+    "@angular/compiler": "22.2.4",
+    "@angular/compiler-cli": "22.2.4",
+    "@angular/core": "22.2.4",
+    "@angular/platform-browser": "22.2.4",
+    "@angular/router": "22.2.4",
+    "@playwright/test": "1.65.0",
+    "@types/node": "24.19.2",
+    "ng-packagr": "22.2.6",
+    "rxjs": "7.8.2",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0"
+  }
+}

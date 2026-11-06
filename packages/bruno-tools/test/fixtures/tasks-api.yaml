@@ -1,0 +1,100 @@
+openapi: 3.1.0
+info:
+  title: Tasks API
+  version: 1.0.0
+security:
+  - bearer: []
+paths:
+  /health:
+    get:
+      operationId: getHealth
+      security: []
+      responses:
+        '200':
+          description: OK
+  /tasks:
+    get:
+      operationId: listTasks
+      responses:
+        '200':
+          description: OK
+    post:
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTask'
+      responses:
+        '201':
+          description: Created
+  /tasks/{taskId}:
+    get:
+      operationId: getTask
+      responses:
+        '200':
+          description: OK
+    patch:
+      operationId: updateTask
+      requestBody:
+        $ref: '#/components/requestBodies/UpdateTask'
+      responses:
+        '200':
+          description: OK
+  /tasks/{taskId}/comments:
+    post:
+      responses:
+        '201':
+          description: Created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text:
+                  type: string
+components:
+  securitySchemes:
+    bearer:
+      type: http
+      scheme: bearer
+  requestBodies:
+    UpdateTask:
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/TaskStatus'
+              - type: object
+                properties:
+                  note:
+                    type: string
+  schemas:
+    CreateTask:
+      type: object
+      required: [title, priority, estimate, done]
+      properties:
+        title:
+          type: string
+        priority:
+          $ref: '#/components/schemas/Priority'
+        estimate:
+          type: [integer, 'null']
+        done:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+    Priority:
+      type: string
+      enum: [low, medium, high]
+    TaskStatus:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string

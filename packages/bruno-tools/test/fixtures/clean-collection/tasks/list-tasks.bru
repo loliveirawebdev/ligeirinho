@@ -1,0 +1,21 @@
+meta {
+  name: List tasks
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/tasks?page=1&pageSize=20
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  pageSize: 20
+  ~status: open
+}
+
+auth:bearer {
+  token: {{token}}
+}

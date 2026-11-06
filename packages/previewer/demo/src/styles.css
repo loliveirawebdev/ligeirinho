@@ -1,0 +1,32 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: light;
+  --demo-background: #ffffff;
+  --demo-text: #1f1f1f;
+  --demo-muted: #52525b;
+  --demo-accent: #1d4ed8;
+  --demo-accent-text: #ffffff;
+  --demo-border: #d4d4d8;
+  font-family: system-ui, sans-serif;
+  background: var(--demo-background);
+  color: var(--demo-text);
+}
+
+:root.dark {
+  color-scheme: dark;
+  --demo-background: #18181b;
+  --demo-text: #f4f4f5;
+  --demo-muted: #c4c4cc;
+  --demo-accent: #93c5fd;
+  --demo-accent-text: #0b1220;
+  --demo-border: #3f3f46;
+}
+
+body {
+  margin: 0;
+}
