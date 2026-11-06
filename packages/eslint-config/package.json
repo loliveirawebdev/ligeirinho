@@ -2,6 +2,13 @@
   "name": "@ligeirinho/eslint-config",
   "version": "0.1.0",
   "description": "ESLint flat config that enforces the ligeirinho rules (code, architecture, MVVM, e2e, testing).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loliveirawebdev/ligeirinho.git",
+    "directory": "packages/eslint-config"
+  },
+  "homepage": "https://github.com/loliveirawebdev/ligeirinho/tree/main/packages/eslint-config#readme",
   "type": "module",
   "exports": {
     ".": {

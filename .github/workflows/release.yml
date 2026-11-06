@@ -1,0 +1,49 @@
+# Publishes ligeirinho's packages as GitHub Release assets (no registry, no token needed to install).
+# Push a tag `v<version>` matching every packages/*/package.json version; projects then depend on
+#   https://github.com/loliveirawebdev/ligeirinho/releases/download/v<version>/ligeirinho-<package>.tgz
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: The tag matches every package version
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          for manifest in packages/*/package.json; do
+            package_version="$(node -p "require('./$manifest').version")"
+            if [ "$package_version" != "$tag_version" ]; then
+              echo "::error file=$manifest::version $package_version, tag $GITHUB_REF_NAME"
+              exit 1
+            fi
+          done
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Browsers for the previewer and e2e-kit tests
+        run: pnpm --filter @ligeirinho/e2e-kit exec playwright install --with-deps chromium
+
+      - run: pnpm test
+
+      - run: scripts/pack-local.sh release-assets
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" release-assets/*.tgz --title "$GITHUB_REF_NAME" --generate-notes --verify-tag

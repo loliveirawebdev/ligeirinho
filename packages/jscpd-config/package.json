@@ -2,6 +2,13 @@
   "name": "@ligeirinho/jscpd-config",
   "version": "0.1.0",
   "description": "Shared jscpd config and a CLI that fails on any copy-paste and on any jscpd ignore without a reason.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loliveirawebdev/ligeirinho.git",
+    "directory": "packages/jscpd-config"
+  },
+  "homepage": "https://github.com/loliveirawebdev/ligeirinho/tree/main/packages/jscpd-config#readme",
   "type": "module",
   "exports": {
     ".": {

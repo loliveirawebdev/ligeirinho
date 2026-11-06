@@ -2,6 +2,13 @@
   "name": "@ligeirinho/e2e-kit",
   "version": "0.1.0",
   "description": "Playwright config and responsive/accessibility checks over every previewer scenario.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loliveirawebdev/ligeirinho.git",
+    "directory": "packages/e2e-kit"
+  },
+  "homepage": "https://github.com/loliveirawebdev/ligeirinho/tree/main/packages/e2e-kit#readme",
   "type": "module",
   "exports": {
     ".": {

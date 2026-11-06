@@ -2,6 +2,13 @@
   "name": "@ligeirinho/previewer",
   "version": "0.1.0",
   "description": "Dev-only /__preview route that renders the app's real Angular views with example view-models (scenarios).",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/loliveirawebdev/ligeirinho.git",
+    "directory": "packages/previewer"
+  },
+  "homepage": "https://github.com/loliveirawebdev/ligeirinho/tree/main/packages/previewer#readme",
   "type": "module",
   "sideEffects": false,
   "exports": {
