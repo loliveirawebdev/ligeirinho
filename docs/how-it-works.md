@@ -30,4 +30,5 @@
 
 - **Existing project:** ask "adopt ligeirinho here" (the `init` skill, adoption mode): `.ligeirinho.yml` with
   `adoption.enabled: true`, plugin settings, area and feature docs, a lean instructions file.
-- **New project:** the `template/` doesn't exist yet (next step).
+- **New project:** ask "start a new project with ligeirinho" (the `init` skill runs `scripts/init.sh`): a copy of
+  [`template/`](../template/) with everything set up, passing `make check`. See [template.md](template.md).

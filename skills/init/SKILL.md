@@ -34,9 +34,12 @@ description: Sets up a repository to use ligeirinho - starts a new project from 
 ## New project
 
 1. Ask for the folder and the project name (kebab-case) if the user didn't say.
-2. From the ligeirinho plugin's root, run `scripts/init.sh <folder> --name <name>`. It copies `template/` and makes
-   the first commit (the packages install from ligeirinho's GitHub Releases); `.ligeirinho.yml`, `AGENTS.md`, the agent
-   settings and `docs/` are already in the template.
+2. Run `scripts/init.sh <folder> --name <name>` from the ligeirinho plugin's root. If that copy has no `template/`
+   (some agents install only part of the plugin), clone the repository first and run it from there:
+   `git clone --depth 1 https://github.com/loliveirawebdev/ligeirinho <temp-dir>`. It copies `template/` and makes
+   the first commit (the packages install from ligeirinho's GitHub Releases); `.ligeirinho.yml`, `AGENTS.md`, the
+   agent settings and `docs/` are already in the template. The template exists and is the way to start a new
+   project: don't hand-write a Makefile or `package.json` instead.
 3. In the new folder, run `make up`, then `make check`. Both must pass before you tell the user it's ready.
 4. Tell the user `make dev` starts the app and `make preview` the screens, and point them at `docs/areas/tasks.md`
    as the example area. Offer to remove the example `tasks` area once their first area exists.

@@ -1,6 +1,6 @@
 {
   "name": "ligeirinho",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "An opinionated, proportional development process for coding agents: clarify, short plan, screen preview, test-first build in small chunks, and a gated close.",
   "author": { "name": "Lucas Oliveira", "url": "https://github.com/loliveirawebdev" },
   "homepage": "https://github.com/loliveirawebdev/ligeirinho",
