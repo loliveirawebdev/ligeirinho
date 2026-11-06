@@ -15,7 +15,13 @@ that ships.
    `rules/testing.md`).
 2. Write the view (`*.view.ts` + `.html`): only `input()`/`output()`, only design system components (Spartan and
    the project's own), mobile first, no fixed widths (see `rules/mvvm.md` and `rules/responsive.md`).
-3. Register the scenarios in the previewer, grouped by the feature's flow.
+3. Register the scenarios in the previewer: the project's `/__preview` route is
+   [`@ligeirinho/previewer`](https://github.com/loliveirawebdev/ligeirinho/tree/main/packages/previewer). Export
+   them with `defineScenarios({ flow, title, component, scenarios })` (`flow` is the feature's flow), then
+   regenerate the registry: `pnpm exec ligeirinho-preview-registry --root libs --out
+   apps/web/src/app/preview.registry.ts`. Never write a previewer of your own: if the project doesn't have the
+   package, install it from ligeirinho's GitHub Releases and wire `previewRoutes(scenarioRegistry)` as its README
+   shows, or tell the user the project wasn't created from the template.
 4. Start the previewer (`commands.preview` in `.ligeirinho.yml`) and open `/__preview` in a browser your agent can
    drive, with the feature's group: side by side at 390, 768 and 1280, light and dark.
 5. Check it yourself before showing it: horizontal scrolling, cut-off text, small touch targets, empty and error

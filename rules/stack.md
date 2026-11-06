@@ -14,6 +14,15 @@
 **Why fixed:** a single stack lets the rules, the template and the packages apply to every project. Changing a
 piece is a ligeirinho decision, not a project decision.
 
+## Start from the template, use the packages
+
+| Rule | Why |
+|---|---|
+| A new project starts from ligeirinho's `template/` (`scripts/init.sh`), never from a hand-assembled setup | the template is the stack above, pinned and passing `make check`; a hand-made setup drifts at once (other versions, no Docker, no gate) |
+| The tools the rules need come from ligeirinho's packages (`@ligeirinho/previewer`, `eslint-config`, `spectral-ruleset`, `jscpd-config`, `bruno-tools`, `e2e-kit`), installed from its GitHub Releases | one implementation, fixed once for everyone; a project's own copy of a previewer or lint rule is the duplication `architecture.md` forbids |
+
+**Enforced by:** the `init` and `preview` skills; review at the close.
+
 ## Docker
 
 | Rule | Why |
