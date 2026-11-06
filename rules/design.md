@@ -177,7 +177,7 @@ template change.
 | **Every control is 44 px tall** (inputs, buttons, icon buttons share `h-11` / `size-11`); a 16 px checkbox sits in a 44 px hit area | the gate checks 44 px touch targets at every width |
 | **Primary hover darkens its own color** (`color-mix` with black) | opacity hovers look washed out |
 | **Destructive actions confirm in a dialog**, never inline on the screen: the Spartan alert dialog (`pnpm exec nx g @spartan-ng/cli:ui alert-dialog`, brought to the look). Title is the question (*Discard this opportunity?*), the description says what happens, the confirm button repeats the verb and the object (*Discard opportunity*); *Cancel* is ghost. The button that opens it ends in *…* | an inline confirm shifts the layout and is easy to click through; a dialog stops the user and names the consequence |
-| **List rows carry a leading icon** (Lucide, 18 px, muted) that tells their kind at a glance, like a Notion page icon; the same kind always gets the same icon | a column of text-only rows has nothing to scan by |
+| **Clickable rows get `cursor-pointer`** and the row hover; no extra icon to say they open something | the pointer and the hover are enough of a cue; an icon on every row is noise |
 | **Icons are Lucide through `@ng-icons`**, 16 px inline, stroke 2 (3 for the small check) | one set, never hand-drawn |
 
 ## The review
