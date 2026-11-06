@@ -1,0 +1,3 @@
+# A project's .spectral.yaml extends '@ligeirinho/spectral-ruleset'; this one points at the built package.
+extends:
+  - ../../dist/index.js
