@@ -45,7 +45,11 @@ from `component`), or pass the names: `defineScenarios<TaskListViewModel, 'empty
 | `/__preview/render/:entryId/:scenarioName?theme=light\|dark` | one scenario, full page, no previewer chrome; toggles the `dark` class on `<html>`; logs outputs as `[preview] <outputName>` |
 
 The grid publishes `window.__ligeirinhoPreview = { entries: [{ id, flow, title, scenarios }], basePath }`, which
-`@ligeirinho/e2e-kit` reads to check every scenario.
+`@ligeirinho/e2e-kit` reads to check every scenario. The render page sets
+`data-ligeirinho-preview="rendered|not-found"` on `<html>` once it has rendered, so e2e-kit knows when to check.
+
+The render page sits inside your root component, so keep the root to a bare `<router-outlet />` (app chrome in a
+layout route) if the scenarios should render without it.
 
 ## Registry generator
 

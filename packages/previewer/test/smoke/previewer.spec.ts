@@ -75,6 +75,7 @@ test.describe('render page', () => {
     await expect(page.getByRole('listitem')).toHaveCount(3);
     await expect(page.getByRole('heading', { name: 'Preview' })).toHaveCount(0);
     await expect(page.locator('html')).not.toHaveClass(/dark/);
+    await expect(page.locator('html')).toHaveAttribute('data-ligeirinho-preview', 'rendered');
   });
 
   test('applies the dark theme to the document element', async ({ page }) => {
@@ -100,6 +101,7 @@ test.describe('render page', () => {
     await page.goto('/__preview/render/nothing-here/full');
 
     await expect(page.getByRole('alert')).toHaveText('No preview entry with id "nothing-here".');
+    await expect(page.locator('html')).toHaveAttribute('data-ligeirinho-preview', 'not-found');
   });
 
   test('explains an unknown scenario and lists the available ones', async ({ page }) => {

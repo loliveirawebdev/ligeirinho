@@ -18,11 +18,16 @@ import { PREVIEW_CONFIG, toPreviewTheme } from './preview-options';
 import type { AnyScenarioEntry } from './scenario-entry';
 import { type PreviewNotFound, type ResolvedScenario, isPreviewNotFound, resolveScenario } from './scenario-registry';
 
+const RENDER_MARK_ATTRIBUTE = 'data-ligeirinho-preview';
+
 type RenderState =
   | { readonly kind: 'found'; readonly scenario: ResolvedScenario }
   | { readonly kind: 'not-found'; readonly error: PreviewNotFound };
 
-/** Renders one scenario full-page, without previewer chrome, for the grid iframes and e2e checks. */
+/**
+ * Renders one scenario full-page, without previewer chrome, for the grid iframes and e2e checks.
+ * Once rendered it sets `data-ligeirinho-preview="rendered|not-found"` on `<html>`; e2e-kit waits for it.
+ */
 @Component({
   selector: 'ligeirinho-preview-render',
   imports: [NgComponentOutlet],
@@ -64,7 +69,8 @@ export class PreviewRenderPage {
   constructor() {
     effect(() => this.applyTheme());
     afterRenderEffect(() => this.logOutputsOf(this.outlet()?.componentInstance));
-    this.destroyRef.onDestroy(() => this.document.documentElement.classList.remove('dark'));
+    afterRenderEffect(() => this.markRenderState(this.outlet()?.componentInstance));
+    this.destroyRef.onDestroy(() => this.clearDocumentMarks());
   }
 
   private foundScenario(): ResolvedScenario | null {
@@ -85,6 +91,19 @@ export class PreviewRenderPage {
 
   private applyTheme(): void {
     this.document.documentElement.classList.toggle('dark', this.theme() === 'dark');
+  }
+
+  private markRenderState(instance: object | null | undefined): void {
+    const renderMark = this.renderState().kind === 'found' ? 'rendered' : 'not-found';
+    if (renderMark === 'rendered' && (instance === null || instance === undefined)) {
+      return;
+    }
+    this.document.documentElement.setAttribute(RENDER_MARK_ATTRIBUTE, renderMark);
+  }
+
+  private clearDocumentMarks(): void {
+    this.document.documentElement.classList.remove('dark');
+    this.document.documentElement.removeAttribute(RENDER_MARK_ATTRIBUTE);
   }
 
   private logOutputsOf(instance: object | null | undefined): void {
