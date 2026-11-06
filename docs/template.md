@@ -14,9 +14,8 @@ feature has an example to follow in every layer.
 |---|---|
 | `libs/tasks/{domain,application,infrastructure,api,web}` | the `tasks` area, one lib per layer, tagged `area:tasks` and `layer:*` |
 | `libs/shared/{kernel,database,http,auth}` | typed errors and ids, Prisma client, Problem Details, the deny-by-default access guard |
-| `libs/ui/spartan/*` | Spartan components (vendored, sized up for touch) |
 | `apps/api` | NestJS composition root; `--export-openapi` writes the contract |
-| `apps/web` | Angular (zoneless, signals); `/__preview` in dev |
+| `apps/web` | Angular (zoneless, signals) with Angular Material (M3 theme in `src/theme.scss`); `/__preview` in dev |
 | `apps/e2e` | Playwright journeys and responsive checks over every preview scenario |
 | `prisma/` | schema and migrations |
 | `bruno/` | one request per route, kept in sync with the contract |
@@ -26,7 +25,7 @@ feature has an example to follow in every layer.
 ## Versions
 
 Nx 24, Angular 22.2, NestJS 11, Prisma 7 (`prisma-client` generator, `@prisma/adapter-pg`), TypeScript 6.0,
-Vitest 5, Playwright 1.65, Spartan 1.9 with Tailwind 4, Postgres 18, ESLint 10. Exact versions are in
+Vitest 5, Playwright 1.65, Angular Material 22 (Material 3) with Tailwind 4 for layout, Postgres 18, ESLint 10. Exact versions are in
 `template/package.json` and `template/pnpm-lock.yaml`.
 
 ## The gate (`make check`)

@@ -46,7 +46,9 @@ With no scenarios the test passes with a `no-scenarios` annotation. Optional: `h
 - Clickables inside an `overflow-x: auto|scroll` container (carousels, scrollable tables) may sit off screen; they
   are only checked for clipping.
 - 44 px exemptions (WCAG 2.5.5 exceptions): an `<a>` with `display: inline` whose nearest block has other text of
-  its own (a link inside a sentence), and inputs whose `<label>` is at least 44 × 44.
+  its own (a link inside a sentence), inputs whose `<label>` is at least 44 × 44, and elements whose Angular
+  Material hit area is at least 44 × 44 (the 48 px `*-touch-target` inside a button or next to a checkbox, and the
+  box of a text field around its `<input>`).
 
 ## Individual checks
 

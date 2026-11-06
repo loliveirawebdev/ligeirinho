@@ -24,8 +24,9 @@ example view-model. Scenarios are the fixtures for the tests and the previewer (
 
 ## Raw elements only in the design system
 
-Outside the component library (Spartan + the project's own components), raw `<button>`, `<input>`, `<select>`,
-`<textarea>`, `<table>` and `<dialog>` are forbidden in templates.
+Outside the component library (Angular Material + the project's own components), raw `<button>`, `<input>`, `<select>`,
+`<textarea>`, `<table>` and `<dialog>` are forbidden in templates, unless they carry the Material directive that makes them a component (`<button matButton>`,
+`<input matInput>`, `<table mat-table>`).
 
 **Why:** accessibility, states (focus, disabled, loading) and responsiveness solved once.
 

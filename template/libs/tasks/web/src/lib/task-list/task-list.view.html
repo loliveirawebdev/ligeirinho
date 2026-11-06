@@ -1,92 +1,76 @@
-<main class="@container mx-auto w-full max-w-2xl px-5 pt-12 pb-16 sm:pt-20">
+<main class="mx-auto w-full max-w-2xl px-4 pt-8 pb-16 sm:px-6 sm:pt-12">
   <header class="mb-6">
-    <h1 class="text-3xl font-bold">Tasks</h1>
+    <h1 class="text-headline-medium">Tasks</h1>
     @if (model().openTaskCountLabel) {
-      <p class="text-muted-foreground mt-1 text-sm tabular-nums">{{ model().openTaskCountLabel }}</p>
+      <p class="text-body-medium text-on-surface-variant mt-1 tabular-nums">{{ model().openTaskCountLabel }}</p>
     }
   </header>
 
-  <form class="flex gap-2" (submit)="submitNewTask($event)">
-    <label hlmLabel for="new-task-title" class="sr-only">New task</label>
-    <input
-      hlmInput
-      id="new-task-title"
-      name="title"
-      autocomplete="off"
-      maxlength="200"
-      placeholder="What needs doing?"
-      class="flex-1"
-      [value]="newTaskTitle()"
-      (input)="updateNewTaskTitle($event)"
-    />
-    <button hlmBtn type="submit" [disabled]="model().isCreatingTask">
+  <form class="flex items-start gap-3" (submit)="submitNewTask($event)">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1">
+      <mat-label>New task</mat-label>
+      <input
+        matInput
+        name="title"
+        autocomplete="off"
+        maxlength="200"
+        placeholder="What needs doing?"
+        [value]="newTaskTitle()"
+        (input)="updateNewTaskTitle($event)"
+      />
+    </mat-form-field>
+    <button matButton="filled" type="submit" class="[--mat-button-filled-container-height:56px]" [disabled]="model().isCreatingTask">
       {{ model().isCreatingTask ? 'Adding…' : 'Add task' }}
     </button>
   </form>
 
   @if (model().isLoading) {
-    <p role="status" class="text-muted-foreground mt-10 text-sm">Loading tasks…</p>
+    <div class="mt-8">
+      <mat-progress-bar mode="indeterminate" aria-hidden="true" />
+      <p role="status" class="text-body-medium text-on-surface-variant mt-3">Loading tasks…</p>
+    </div>
   }
 
   @if (model().showError) {
-    <section role="alert" class="bg-secondary mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-md p-4">
+    <section
+      role="alert"
+      class="bg-error-container text-on-error-container mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-md p-4"
+    >
       <div>
-        <p class="font-medium">Couldn’t load your tasks</p>
-        <p class="text-muted-foreground mt-1 text-sm">Check your connection, then try again.</p>
+        <p class="text-title-small">Couldn’t load your tasks</p>
+        <p class="text-body-medium mt-1">Check your connection, then try again.</p>
       </div>
-      <button hlmBtn variant="outline" type="button" (click)="retry.emit()">Try again</button>
+      <button matButton="outlined" type="button" (click)="retry.emit()">Try again</button>
     </section>
   }
 
   @if (model().showEmptyState) {
-    <div class="mt-8">
-      <p class="font-medium">No tasks yet</p>
-      <p class="text-muted-foreground mt-1 text-sm">Tasks you add will show up here.</p>
+    <div class="mt-10 text-center">
+      <mat-icon class="text-on-surface-variant" aria-hidden="true">task_alt</mat-icon>
+      <p class="text-title-medium mt-2">No tasks yet</p>
+      <p class="text-body-medium text-on-surface-variant mt-1">Tasks you add will show up here.</p>
     </div>
   }
 
   @if (model().items.length > 0) {
     <ul class="mt-6" aria-label="Tasks">
       @for (item of model().items; track item.id) {
-        <li class="hover:bg-hover -mx-2 flex items-start rounded-md px-2 transition-colors">
-          @if (item.completed) {
-            <span class="-ml-3.5 flex size-11 shrink-0 items-center justify-center">
-              <span class="bg-primary text-primary-foreground flex size-4 items-center justify-center rounded-[3px]">
-                <ng-icon name="lucideCheck" size="12" strokeWidth="3" aria-hidden="true" />
-              </span>
-            </span>
-          } @else {
-            <button
-              hlmBtn
-              variant="ghost"
-              size="icon"
-              type="button"
-              class="group/check -ml-3.5 shrink-0 hover:bg-transparent"
-              [attr.aria-label]="item.completeLabel"
-              (click)="completeTask.emit(item.id)"
-            >
-              <span
-                class="border-muted-foreground/60 text-primary group-hover/check:border-primary flex size-4 items-center justify-center rounded-[3px] border-[1.5px] transition-colors"
-              >
-                <ng-icon
-                  name="lucideCheck"
-                  size="12"
-                  strokeWidth="3"
-                  class="opacity-0 transition-opacity group-hover/check:opacity-100"
-                  aria-hidden="true"
-                />
-              </span>
-            </button>
-          }
+        <li class="border-outline-variant flex items-center gap-2 border-b py-1 last:border-b-0">
+          <mat-checkbox
+            class="shrink-0"
+            [checked]="item.completed"
+            [disabled]="item.completed"
+            [aria-label]="item.completeLabel"
+            (change)="completeTask.emit(item.id)"
+          />
           <span
-            class="min-w-0 flex-1 py-2.5 leading-6 break-words"
-            [class.text-muted-foreground]="item.completed"
+            class="text-body-large min-w-0 flex-1 py-2 break-words"
+            [class.text-on-surface-variant]="item.completed"
             [class.line-through]="item.completed"
-            [class.decoration-muted-foreground/50]="item.completed"
           >
             {{ item.title }}
           </span>
-          <span class="text-muted-foreground shrink-0 py-2.5 pl-4 text-xs leading-6 tabular-nums">
+          <span class="text-body-small text-on-surface-variant shrink-0 pr-2 tabular-nums">
             {{ item.createdAtLabel }}
             @if (item.completed) {
               <span class="sr-only">· Done</span>
@@ -99,7 +83,7 @@
 
   @if (model().canLoadMore) {
     <div class="mt-2">
-      <button hlmBtn variant="ghost" type="button" class="-ml-4" (click)="loadMore.emit()">Show more</button>
+      <button matButton type="button" (click)="loadMore.emit()">Show more</button>
     </div>
   }
 </main>

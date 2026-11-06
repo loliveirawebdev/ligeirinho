@@ -12,7 +12,9 @@ import {
 import {
   axeViolationPage,
   clippedButtonPage,
+  decoyTouchTargetPage,
   goodPage,
+  materialHitAreaPage,
   offscreenButtonPage,
   standaloneSmallLinkPage,
   tinyButtonPage,
@@ -72,6 +74,18 @@ test.describe('clickables in view', () => {
 test.describe('touch target size', () => {
   test('catches a 24 px button', async ({ page }) => {
     await page.setContent(tinyButtonPage);
+
+    expect(await findSmallTouchTargets(page)).toEqual([{ element: '<button> "Close"', width: 24, height: 24 }]);
+  });
+
+  test('counts Angular Material touch targets and text field boxes as the target', async ({ page }) => {
+    await page.setContent(materialHitAreaPage);
+
+    expect(await findSmallTouchTargets(page)).toEqual([]);
+  });
+
+  test('ignores a touch target that belongs to another element', async ({ page }) => {
+    await page.setContent(decoyTouchTargetPage);
 
     expect(await findSmallTouchTargets(page)).toEqual([{ element: '<button> "Close"', width: 24, height: 24 }]);
   });

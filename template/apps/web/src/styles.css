@@ -1,137 +1,104 @@
+/*
+ * Tailwind is for layout (flex, grid, gap, padding, max-width, breakpoints). Colors and type come from the
+ * Material 3 system tokens set in theme.scss, exposed here as utilities. Never write a raw color.
+ */
 @layer theme, base, components, utilities;
 @import 'tailwindcss/theme.css' layer(theme);
-@import 'tailwindcss/preflight.css' layer(base);
 @import 'tailwindcss/utilities.css';
 
-@import '@spartan-ng/brain/hlm-tailwind-preset.css';
-
-/*
- * The look (rules/design.md, "The look"): a Notion-like base shared by every app built from this template.
- *
- * Two blocks:
- * - THEME: the only part an app changes (its accent and, if it has one, its font).
- * - BASE: the shared look. Don't edit it per app; change it here, in the template, for everyone.
- *
- * Components only use the tokens (bg-background, text-muted-foreground, bg-primary, bg-field, bg-hover...),
- * never raw colors.
- */
-
-/* ---------- THEME: change this per app ---------- */
-
-:root {
-  --primary: #2075d0;
-  --primary-foreground: #ffffff;
-  --ring: #2075d0;
-  --font-app: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-}
-
-:root.dark {
-  --primary: #2075d0;
-  --primary-foreground: #ffffff;
-  --ring: #2075d0;
-}
-
-/* ---------- BASE: the shared look ---------- */
-
 @theme inline {
-  --font-sans: var(--font-app);
-  --color-field: var(--field);
-  --color-hover: var(--hover);
+  --font-sans: var(--mat-sys-body-large-font);
+
+  --color-primary: var(--mat-sys-primary);
+  --color-on-primary: var(--mat-sys-on-primary);
+  --color-primary-container: var(--mat-sys-primary-container);
+  --color-on-primary-container: var(--mat-sys-on-primary-container);
+  --color-secondary-container: var(--mat-sys-secondary-container);
+  --color-on-secondary-container: var(--mat-sys-on-secondary-container);
+  --color-error: var(--mat-sys-error);
+  --color-error-container: var(--mat-sys-error-container);
+  --color-on-error-container: var(--mat-sys-on-error-container);
+  --color-surface: var(--mat-sys-surface);
+  --color-surface-container-low: var(--mat-sys-surface-container-low);
+  --color-surface-container: var(--mat-sys-surface-container);
+  --color-surface-container-high: var(--mat-sys-surface-container-high);
+  --color-on-surface: var(--mat-sys-on-surface);
+  --color-on-surface-variant: var(--mat-sys-on-surface-variant);
+  --color-outline: var(--mat-sys-outline);
+  --color-outline-variant: var(--mat-sys-outline-variant);
+
+  --radius-sm: var(--mat-sys-corner-small);
+  --radius-md: var(--mat-sys-corner-medium);
+  --radius-lg: var(--mat-sys-corner-large);
+  --radius-xl: var(--mat-sys-corner-extra-large);
 }
 
-:root {
-  color-scheme: light;
-
-  --radius: 0.5rem;
-
-  /* Warm neutrals: text is a brown-tinted near-black, never pure #000 on #fff. */
-  --background: #ffffff;
-  --foreground: #37352f;
-  --card: #ffffff;
-  --card-foreground: #37352f;
-  --popover: #ffffff;
-  --popover-foreground: #37352f;
-  --secondary: #f1f1ef;
-  --secondary-foreground: #37352f;
-  --muted: #f7f7f5;
-  --muted-foreground: #6b6a66;
-  --accent: #f1f1ef;
-  --accent-foreground: #37352f;
-  --destructive: #c5221f;
-  --border: rgb(55 53 47 / 0.09);
-  --input: rgb(55 53 47 / 0.16);
-
-  /* Fields are a faint warm gray with a hairline ring; rows and ghost buttons get --hover. */
-  --field: rgb(242 241 238 / 0.6);
-  --hover: rgb(55 53 47 / 0.06);
-
-  --chart-1: #2075d0;
-  --chart-2: #d9730d;
-  --chart-3: #0f7b6c;
-  --chart-4: #9065b0;
-  --chart-5: #e03e3e;
-
-  --sidebar: #f7f7f5;
-  --sidebar-foreground: #5f5e5b;
-  --sidebar-primary: var(--primary);
-  --sidebar-primary-foreground: var(--primary-foreground);
-  --sidebar-accent: rgb(55 53 47 / 0.06);
-  --sidebar-accent-foreground: #37352f;
-  --sidebar-border: rgb(55 53 47 / 0.09);
-  --sidebar-ring: var(--ring);
-
-  /* Only for things that float (popovers, menus, dialogs). */
-  --surface-shadow:
-    0 0 0 1px rgb(15 15 15 / 0.05), 0 3px 6px rgb(15 15 15 / 0.1), 0 9px 24px rgb(15 15 15 / 0.2);
+/* The Material 3 type scale: text-display-small ... text-label-small. */
+@utility text-display-small {
+  font: var(--mat-sys-display-small);
+  letter-spacing: var(--mat-sys-display-small-tracking);
 }
-
-:root.dark {
-  color-scheme: dark;
-
-  --background: #191919;
-  --foreground: rgb(255 255 255 / 0.81);
-  --card: #202020;
-  --card-foreground: rgb(255 255 255 / 0.81);
-  --popover: #252525;
-  --popover-foreground: rgb(255 255 255 / 0.81);
-  --secondary: #2f2f2f;
-  --secondary-foreground: rgb(255 255 255 / 0.81);
-  --muted: #202020;
-  --muted-foreground: rgb(255 255 255 / 0.52);
-  --accent: #2f2f2f;
-  --accent-foreground: rgb(255 255 255 / 0.81);
-  --destructive: #e66767;
-  --border: rgb(255 255 255 / 0.094);
-  --input: rgb(255 255 255 / 0.13);
-
-  --field: rgb(255 255 255 / 0.055);
-  --hover: rgb(255 255 255 / 0.055);
-
-  --chart-1: #529cca;
-  --chart-2: #ffa344;
-  --chart-3: #4dab9a;
-  --chart-4: #9a6dd7;
-  --chart-5: #ff7369;
-
-  --sidebar: #202020;
-  --sidebar-foreground: rgb(255 255 255 / 0.6);
-  --sidebar-accent: rgb(255 255 255 / 0.055);
-  --sidebar-accent-foreground: rgb(255 255 255 / 0.81);
-  --sidebar-border: rgb(255 255 255 / 0.094);
-
-  --surface-shadow: 0 0 0 1px rgb(255 255 255 / 0.094), 0 3px 6px rgb(0 0 0 / 0.3), 0 9px 24px rgb(0 0 0 / 0.4);
+@utility text-headline-large {
+  font: var(--mat-sys-headline-large);
+  letter-spacing: var(--mat-sys-headline-large-tracking);
 }
-
-@utility shadow-surface {
-  box-shadow: var(--surface-shadow);
+@utility text-headline-medium {
+  font: var(--mat-sys-headline-medium);
+  letter-spacing: var(--mat-sys-headline-medium-tracking);
+}
+@utility text-headline-small {
+  font: var(--mat-sys-headline-small);
+  letter-spacing: var(--mat-sys-headline-small-tracking);
+}
+@utility text-title-large {
+  font: var(--mat-sys-title-large);
+  letter-spacing: var(--mat-sys-title-large-tracking);
+}
+@utility text-title-medium {
+  font: var(--mat-sys-title-medium);
+  letter-spacing: var(--mat-sys-title-medium-tracking);
+}
+@utility text-title-small {
+  font: var(--mat-sys-title-small);
+  letter-spacing: var(--mat-sys-title-small-tracking);
+}
+@utility text-body-large {
+  font: var(--mat-sys-body-large);
+  letter-spacing: var(--mat-sys-body-large-tracking);
+}
+@utility text-body-medium {
+  font: var(--mat-sys-body-medium);
+  letter-spacing: var(--mat-sys-body-medium-tracking);
+}
+@utility text-body-small {
+  font: var(--mat-sys-body-small);
+  letter-spacing: var(--mat-sys-body-small-tracking);
+}
+@utility text-label-large {
+  font: var(--mat-sys-label-large);
+  letter-spacing: var(--mat-sys-label-large-tracking);
+}
+@utility text-label-medium {
+  font: var(--mat-sys-label-medium);
+  letter-spacing: var(--mat-sys-label-medium-tracking);
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
   }
-  body {
-    @apply bg-background text-foreground font-sans antialiased;
+  h1,
+  h2,
+  h3,
+  p,
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+  ul {
+    list-style: none;
   }
   h1,
   h2,

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCheck } from '@ng-icons/lucide';
-import { HlmButtonImports } from '@app/ui/button';
-import { HlmInputImports } from '@app/ui/input';
-import { HlmLabelImports } from '@app/ui/label';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import type { TaskListViewModel } from './task-list.view-model';
 
 @Component({
   selector: 'app-task-list-view',
-  imports: [HlmButtonImports, HlmInputImports, HlmLabelImports, NgIcon],
-  viewProviders: [provideIcons({ lucideCheck })],
+  imports: [MatButtonModule, MatCheckboxModule, MatFormFieldModule, MatIconModule, MatInputModule, MatProgressBarModule],
   templateUrl: './task-list.view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

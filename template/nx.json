@@ -48,10 +48,7 @@
       "plugin": "@nx/eslint/plugin",
       "options": {
         "targetName": "lint"
-      },
-      "exclude": [
-        "libs/ui/spartan/**"
-      ]
+      }
     },
     {
       "plugin": "@nx/docker",

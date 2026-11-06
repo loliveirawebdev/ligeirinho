@@ -25,6 +25,11 @@
           }
         ],
         "styles": [
+          "@fontsource/roboto/400.css",
+          "@fontsource/roboto/500.css",
+          "@fontsource/roboto/700.css",
+          "material-symbols/outlined.css",
+          "apps/web/src/theme.scss",
           "apps/web/src/styles.css"
         ]
       },

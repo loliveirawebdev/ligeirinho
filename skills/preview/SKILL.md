@@ -13,7 +13,7 @@ that ships.
 1. For each screen in the plan, write the view-model **first** (`*.view-model.ts`, type + pure function) and the
    scenarios (`*.scenarios.ts`), one example view-model per scenario. Scenarios are the test fixtures (see
    `rules/testing.md`).
-2. Write the view (`*.view.ts` + `.html`): only `input()`/`output()`, only design system components (Spartan and
+2. Write the view (`*.view.ts` + `.html`): only `input()`/`output()`, only design system components (Angular Material and
    the project's own), mobile first, no fixed widths, colors and spacing only from the theme's tokens (see
    `rules/mvvm.md`, `rules/responsive.md` and `rules/design.md`).
 3. Register the scenarios in the previewer: the project's `/__preview` route is

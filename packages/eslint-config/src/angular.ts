@@ -16,12 +16,13 @@ export interface AngularOptions extends AdoptionOption, VendoredPathsOption {
   readonly rawElements?: readonly string[];
   /**
    * A raw element carrying an attribute (or input binding) that matches one of these is a design system directive
-   * and is allowed anywhere. Defaults to `[/^hlm/i]` (Spartan helm: `<button hlmBtn>`, `<input hlmInput>`).
+   * and is allowed anywhere. Defaults to `[/^mat/i]` (Angular Material: `<button matButton>`, `<input matInput>`,
+   * `<table mat-table>`).
    */
   readonly designSystemAttributes?: readonly RegExp[];
 }
 
-const defaultDesignSystemAttributes: readonly RegExp[] = [/^hlm/i];
+const defaultDesignSystemAttributes: readonly RegExp[] = [/^mat/i];
 
 /** Rule options are JSON, so each RegExp travels as its source and flags. */
 function toAttributePatterns(attributes: readonly RegExp[]): AttributePattern[] {

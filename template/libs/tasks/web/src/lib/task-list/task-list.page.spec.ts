@@ -72,8 +72,8 @@ describe('task list page', () => {
 
   it('marks a task as done', async () => {
     await renderPage();
-    await userEvent.click(await screen.findByRole('button', { name: 'Complete “Review the plan with the team”' }));
-    expect(screen.queryByRole('button', { name: 'Complete “Review the plan with the team”' })).toBeNull();
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Complete “Review the plan with the team”' }));
+    expect(await screen.findByRole('checkbox', { name: 'Complete “Review the plan with the team”', checked: true })).toBeTruthy();
   });
 
   it('recovers after a failed load', async () => {

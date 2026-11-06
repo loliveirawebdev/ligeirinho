@@ -17,7 +17,9 @@ const SUBPIXEL_TOLERANCE = 0.5;
  * Exemptions (heuristics for the WCAG 2.5.5 exceptions):
  * - inline text links: an `<a>` with `display: inline` whose nearest block ancestor has other text of its own
  *   outside the link (the link is part of a sentence, e.g. inside a paragraph);
- * - inputs whose associated `<label>` is at least 44 × 44 (the label is part of the target).
+ * - inputs whose associated `<label>` is at least 44 × 44 (the label is part of the target);
+ * - elements whose component hit area is at least 44 × 44 (Angular Material's 48 px touch targets and text field
+ *   boxes, see `InspectedClickable.hitAreaWidth`).
  */
 export async function findSmallTouchTargets(page: Page): Promise<SmallTouchTarget[]> {
   const clickables = await inspectClickables(page);
@@ -29,7 +31,10 @@ export async function findSmallTouchTargets(page: Page): Promise<SmallTouchTarge
 }
 
 function isSmallTarget(clickable: InspectedClickable): boolean {
-  if (clickable.inlineTextLink || isAtLeastMinimum(clickable.labelWidth, clickable.labelHeight)) {
+  const hasLargeEnoughArea =
+    isAtLeastMinimum(clickable.labelWidth, clickable.labelHeight) ||
+    isAtLeastMinimum(clickable.hitAreaWidth, clickable.hitAreaHeight);
+  if (clickable.inlineTextLink || hasLargeEnoughArea) {
     return false;
   }
   return !isAtLeastMinimum(clickable.width, clickable.height);

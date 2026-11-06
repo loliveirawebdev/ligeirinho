@@ -8,8 +8,8 @@ export interface AttributePattern {
   readonly flags?: string;
 }
 
-/** Spartan helm directives sit on native elements: `<button hlmBtn>`, `<input hlmInput>`. */
-export const defaultDesignSystemAttributes: readonly AttributePattern[] = [{ pattern: '^hlm', flags: 'i' }];
+/** Angular Material directives sit on native elements: `<button matButton>`, `<input matInput>`, `<table mat-table>`. */
+export const defaultDesignSystemAttributes: readonly AttributePattern[] = [{ pattern: '^mat', flags: 'i' }];
 
 interface TemplatePosition {
   readonly line: number;
@@ -95,7 +95,7 @@ export const noRawElements: Rule.RuleModule = {
     ],
     messages: {
       rawElement:
-        'Raw <{{element}}> is only allowed inside the design system or with a design system directive (`<button hlmBtn>`). ' +
+        'Raw <{{element}}> is only allowed inside the design system or with a design system directive (`<button matButton>`). ' +
         'The design system solves accessibility, states and responsiveness once. ' +
         'See rules/mvvm.md "Raw elements only in the design system".',
     },

@@ -28,7 +28,7 @@ export const layerConstraints: readonly DependencyConstraint[] = [
   },
   { sourceTag: 'type:app', onlyDependOnLibsWithTags: ['*'] },
   { sourceTag: 'type:e2e', onlyDependOnLibsWithTags: ['*'] },
-  // Design-system components (Spartan) only build on each other.
+  // The project's own design-system components only build on each other.
   { sourceTag: 'type:ui', onlyDependOnLibsWithTags: ['type:ui'] },
 ];
 

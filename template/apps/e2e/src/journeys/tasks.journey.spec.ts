@@ -12,7 +12,7 @@ test.describe('tasks journey', () => {
     await expect(page.getByRole('listitem').filter({ hasText: 'Ship the template' })).toBeVisible();
     await expect(page.getByText('1 open task')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Complete “Ship the template”' }).click();
+    await page.getByRole('checkbox', { name: 'Complete “Ship the template”' }).check();
     await expect(page.getByText('All done')).toBeVisible();
 
     await page.reload();

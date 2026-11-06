@@ -51,6 +51,27 @@ export const tinyButtonPage = page(
   '<button type="button" aria-label="Close" style="min-width: 0; min-height: 0; width: 24px; height: 24px; padding: 0">×</button>',
 );
 
+/** The DOM shapes Angular Material uses around small native elements (buttons, checkboxes, text fields). */
+export const materialHitAreaPage = page(
+  'Material hit areas',
+  `<button type="button" class="mdc-button" style="position: relative; height: 40px; padding: 0 12px">
+     Show more<span class="mat-mdc-button-touch-target" style="position: absolute; inset: -4px 0; height: 48px"></span>
+   </button>
+   <div class="mdc-checkbox" style="position: relative; width: 40px; height: 40px">
+     <input type="checkbox" aria-label="Complete" style="width: 40px; height: 40px; margin: 0" />
+     <div class="mat-mdc-checkbox-touch-target" style="position: absolute; inset: -4px; width: 48px; height: 48px"></div>
+   </div>
+   <div class="mat-mdc-text-field-wrapper" style="height: 56px; padding: 16px">
+     <input type="text" aria-label="New task" style="height: 24px; width: 200px" />
+   </div>`,
+);
+
+export const decoyTouchTargetPage = page(
+  'Touch target that is not the element’s',
+  `<div><span class="mat-mdc-button-touch-target" style="display: block; width: 48px; height: 48px"></span></div>
+   <button type="button" aria-label="Close" style="min-width: 0; min-height: 0; width: 24px; height: 24px; padding: 0">×</button>`,
+);
+
 export const standaloneSmallLinkPage = page('Standalone link', '<a href="/help" style="font-size: 12px">Help</a>');
 
 export const axeViolationPage = page(

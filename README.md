@@ -50,7 +50,7 @@ scripts/init.sh ../my-app
 cd ../my-app && make up && make check
 ```
 
-You get a working app (a small task list) with everything already set up: Nx, NestJS, Angular with Spartan,
+You get a working app (a small task list) with everything already set up: Nx, NestJS, Angular with Angular Material (Material 3),
 Prisma and Postgres, Vitest, Playwright, the lint and API checks, a Bruno collection, and the plugin enabled for
 each agent. Everything runs in Docker. Details in [template.md](docs/template.md).
 

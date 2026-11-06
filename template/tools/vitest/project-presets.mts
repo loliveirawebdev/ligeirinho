@@ -66,6 +66,8 @@ export function nestProject(options: ProjectPresetOptions) {
 export function angularProject(options: ProjectPresetOptions) {
   return defineConfig(({ mode }) => {
     const config = sharedTestConfig(options, mode, [angular({ tsconfig: join(options.projectRoot, 'tsconfig.spec.json') })]);
-    return { ...config, test: { ...config.test, environment: 'jsdom', setupFiles: ['src/test-setup.ts'] } };
+    // Angular Material components render slowly in jsdom while the gate builds in parallel: 5 s is too tight.
+    const test = { ...config.test, environment: 'jsdom', setupFiles: ['src/test-setup.ts'], testTimeout: 15_000 };
+    return { ...config, test };
   });
 }

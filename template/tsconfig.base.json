@@ -50,21 +50,6 @@
       ],
       "@app/shared-auth/testing": [
         "./libs/shared/auth/src/testing/index.ts"
-      ],
-      "@app/ui/button": [
-        "./libs/ui/spartan/button/src/index.ts"
-      ],
-      "@app/ui/utils": [
-        "./libs/ui/spartan/utils/src/index.ts"
-      ],
-      "@app/ui/input": [
-        "./libs/ui/spartan/input/src/index.ts"
-      ],
-      "@app/ui/label": [
-        "./libs/ui/spartan/label/src/index.ts"
-      ],
-      "@app/ui/card": [
-        "./libs/ui/spartan/card/src/index.ts"
       ]
     },
     "strict": true,

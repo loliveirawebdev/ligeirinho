@@ -7,7 +7,7 @@
 | Front end | **Angular** | signals; `input()`/`output()`; view-model with `computed()` |
 | Database | **Postgres + Prisma** | Prisma only in infrastructure, behind the ports |
 | Tests | **Vitest** on front and back end | |
-| Design system | **Spartan** (shadcn for Angular) | |
+| Design system | **Angular Material** (Material 3) | the look is Google's M3; apps change only the theme ([design.md](design.md)) |
 | Responsive and e2e | **Playwright** | |
 | Environment | **Everything in Docker** | the host only needs Docker and `make` |
 

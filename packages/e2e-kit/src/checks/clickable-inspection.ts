@@ -21,6 +21,13 @@ export interface InspectedClickable {
   /** Size of the largest associated `<label>`, which extends the target of inputs; 0 when there is none. */
   readonly labelWidth: number;
   readonly labelHeight: number;
+  /**
+   * Size of the component's own hit area around a smaller native element; 0 when there is none. Angular Material
+   * draws a 48 px touch target next to (checkbox, radio) or inside (buttons) the element, and a click anywhere on a
+   * text field's box focuses its `<input>`.
+   */
+  readonly hitAreaWidth: number;
+  readonly hitAreaHeight: number;
 }
 
 /** Inspects every visible clickable in one browser round trip. */
@@ -108,11 +115,26 @@ function inspectClickablesInBrowser(clickableSelector: string): InspectedClickab
     };
   }
 
+  function hitArea(element: Element): { readonly width: number; readonly height: number } {
+    const touchTargetSelector = ':scope > [class*="-touch-target"]';
+    const areas = [
+      element.querySelector(touchTargetSelector),
+      element.parentElement?.querySelector(touchTargetSelector) ?? null,
+      element.closest('.mat-mdc-text-field-wrapper'),
+    ].filter((area) => area !== null);
+    const rects = areas.map((area) => area.getBoundingClientRect());
+    return {
+      width: Math.max(0, ...rects.map((rect) => rect.width)),
+      height: Math.max(0, ...rects.map((rect) => rect.height)),
+    };
+  }
+
   function inspect(element: Element): InspectedClickable {
     const rect = element.getBoundingClientRect();
     const ancestors = ancestorsOf(element);
     const clippingAncestor = ancestors.find((ancestor) => clips(ancestor, rect));
     const label = largestLabel(element);
+    const area = hitArea(element);
     return {
       description: describe(element),
       left: rect.left,
@@ -125,6 +147,8 @@ function inspectClickablesInBrowser(clickableSelector: string): InspectedClickab
       inlineTextLink: isInlineTextLink(element),
       labelWidth: label.width,
       labelHeight: label.height,
+      hitAreaWidth: area.width,
+      hitAreaHeight: area.height,
     };
   }
 
