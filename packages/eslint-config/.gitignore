@@ -1,0 +1,3 @@
+# Fixture files the tests write and remove while linting.
+test/fixtures/apps/
+test/fixtures/libs/
