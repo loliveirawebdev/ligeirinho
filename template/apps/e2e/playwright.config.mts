@@ -6,6 +6,8 @@ const apiPort = 3300;
 
 export default defineLigeirinhoConfig({
   testDir: './src',
+  // Each responsive test loads every scenario from the dev server; more browsers than this starve the toolbox.
+  workers: 2,
   baseURL: process.env['E2E_BASE_URL'] ?? `http://localhost:${webPort}`,
   webServer: [
     {
@@ -23,7 +25,8 @@ export default defineLigeirinhoConfig({
       },
     },
     {
-      command: `pnpm exec nx run web:serve --port=${webPort} --proxy-config=apps/e2e/proxy.e2e.json`,
+      // Its own configuration, so Nx runs it next to a `make preview` already serving web:serve:development.
+      command: `pnpm exec nx run web:serve:e2e --port=${webPort}`,
       cwd: '../..',
       url: `http://localhost:${webPort}`,
       reuseExistingServer: false,
