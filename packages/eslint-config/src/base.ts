@@ -20,7 +20,7 @@ export const deniedIdentifiers: readonly string[] = [
 const namingConvention: RuleEntry = [
   'error',
   { selector: 'default', format: ['camelCase'] },
-  { selector: 'variable', format: ['camelCase', 'UPPER_CASE'] },
+  { selector: 'variable', format: ['camelCase', 'UPPER_CASE'], leadingUnderscore: 'allow' },
   { selector: 'parameter', format: ['camelCase'], leadingUnderscore: 'allow' },
   { selector: 'import', format: ['camelCase', 'PascalCase'] },
   { selector: 'typeLike', format: ['PascalCase'] },
