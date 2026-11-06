@@ -1,0 +1,6 @@
+{
+  "extraKnownMarketplaces": {
+    "ligeirinho": { "source": { "source": "github", "repo": "loliveirawebdev/ligeirinho" } }
+  },
+  "enabledPlugins": { "ligeirinho@ligeirinho": true }
+}

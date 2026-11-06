@@ -1,0 +1,10 @@
+{
+  "name": "tasks-web",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/tasks/web/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["area:tasks", "layer:presentation"],
+  "// targets": "to see all targets run: nx show project tasks-web --web",
+  "targets": {}
+}

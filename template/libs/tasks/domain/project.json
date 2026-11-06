@@ -1,0 +1,9 @@
+{
+  "name": "tasks-domain",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/tasks/domain/src",
+  "projectType": "library",
+  "tags": ["area:tasks", "layer:domain"],
+  "// targets": "to see all targets run: nx show project tasks-domain --web",
+  "targets": {}
+}

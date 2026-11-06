@@ -1,0 +1,83 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "bundler",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2022",
+    "module": "esnext",
+    "lib": [
+      "es2023",
+      "dom",
+      "dom.iterable"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "paths": {
+      "@app/tasks-domain": [
+        "./libs/tasks/domain/src/index.ts"
+      ],
+      "@app/tasks-application": [
+        "./libs/tasks/application/src/index.ts"
+      ],
+      "@app/tasks-infrastructure": [
+        "./libs/tasks/infrastructure/src/index.ts"
+      ],
+      "@app/shared-kernel": [
+        "./libs/shared/kernel/src/index.ts"
+      ],
+      "@app/tasks-api": [
+        "./libs/tasks/api/src/index.ts"
+      ],
+      "@app/shared-auth": [
+        "./libs/shared/auth/src/index.ts"
+      ],
+      "@app/tasks-web": [
+        "./libs/tasks/web/src/index.ts"
+      ],
+      "@app/tasks-application/testing": [
+        "./libs/tasks/application/src/testing/index.ts"
+      ],
+      "@app/shared-database": [
+        "./libs/shared/database/src/index.ts"
+      ],
+      "@app/shared-http": [
+        "./libs/shared/http/src/index.ts"
+      ],
+      "@app/shared-auth/testing": [
+        "./libs/shared/auth/src/testing/index.ts"
+      ],
+      "@app/ui/button": [
+        "./libs/ui/spartan/button/src/index.ts"
+      ],
+      "@app/ui/utils": [
+        "./libs/ui/spartan/utils/src/index.ts"
+      ],
+      "@app/ui/input": [
+        "./libs/ui/spartan/input/src/index.ts"
+      ],
+      "@app/ui/label": [
+        "./libs/ui/spartan/label/src/index.ts"
+      ],
+      "@app/ui/card": [
+        "./libs/ui/spartan/card/src/index.ts"
+      ]
+    },
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
+}

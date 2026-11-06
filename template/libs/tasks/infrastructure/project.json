@@ -1,0 +1,14 @@
+{
+  "name": "tasks-infrastructure",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/tasks/infrastructure/src",
+  "projectType": "library",
+  "tags": [
+    "area:tasks",
+    "layer:infrastructure"
+  ],
+  "// targets": "to see all targets run: nx show project tasks-infrastructure --web",
+  "targets": {
+    "test-integration": {}
+  }
+}

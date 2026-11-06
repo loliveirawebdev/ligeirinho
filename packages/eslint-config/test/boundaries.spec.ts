@@ -31,9 +31,11 @@ describe('boundaries: rules/architecture.md', () => {
         onlyDependOnLibsWithTags: ['layer:domain', 'layer:application', 'layer:presentation', 'type:ui'],
       },
       { sourceTag: 'type:app', onlyDependOnLibsWithTags: ['*'] },
-      { sourceTag: 'area:tasks', onlyDependOnLibsWithTags: ['area:tasks', 'area:shared'] },
-      { sourceTag: 'area:registrations', onlyDependOnLibsWithTags: ['area:registrations', 'area:shared'] },
-      { sourceTag: 'area:shared', onlyDependOnLibsWithTags: ['area:shared'] },
+      { sourceTag: 'type:e2e', onlyDependOnLibsWithTags: ['*'] },
+      { sourceTag: 'type:ui', onlyDependOnLibsWithTags: ['type:ui'] },
+      { sourceTag: 'area:tasks', onlyDependOnLibsWithTags: ['area:tasks', 'area:shared', 'type:ui'] },
+      { sourceTag: 'area:registrations', onlyDependOnLibsWithTags: ['area:registrations', 'area:shared', 'type:ui'] },
+      { sourceTag: 'area:shared', onlyDependOnLibsWithTags: ['area:shared', 'type:ui'] },
     ]);
   });
 

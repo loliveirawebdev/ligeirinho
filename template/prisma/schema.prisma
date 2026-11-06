@@ -1,0 +1,26 @@
+// One schema for the whole application. Each area owns its models (marked by a comment block)
+// and nothing outside an area's infrastructure layer touches them.
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../libs/shared/database/src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ── area: tasks ──────────────────────────────────────────────────────────────
+
+model Task {
+  id          String    @id @db.Uuid
+  ownerId     String    @map("owner_id") @db.Uuid
+  title       String    @db.VarChar(200)
+  completedAt DateTime? @map("completed_at") @db.Timestamptz(3)
+  createdAt   DateTime  @map("created_at") @db.Timestamptz(3)
+
+  // Serves listOwnedTasks: filter by owner, newest first, id as tie-breaker for the cursor.
+  @@index([ownerId, createdAt(sort: Desc), id(sort: Desc)])
+  @@map("tasks")
+}

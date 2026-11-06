@@ -1,6 +1,6 @@
 ---
 name: init
-description: Sets up a repository to use ligeirinho - creates .ligeirinho.yml, enables the plugin for Claude Code, Codex and Antigravity, trims the agent instructions file and creates docs/areas and docs/features. Use when the user asks to adopt ligeirinho in a project (new or existing).
+description: Sets up a repository to use ligeirinho - starts a new project from the template (scripts/init.sh), or in an existing one creates .ligeirinho.yml, enables the plugin for Claude Code, Codex and Antigravity, trims the agent instructions file and creates docs/areas and docs/features. Use when the user asks to adopt ligeirinho in a project (new or existing).
 ---
 
 # Init
@@ -33,5 +33,10 @@ description: Sets up a repository to use ligeirinho - creates .ligeirinho.yml, e
 
 ## New project
 
-The `template/` (Nx + Nest + Angular + Prisma + Vitest + Spartan, Docker, Makefile) doesn't exist yet. For now, do
-steps 2 to 7 with `adoption.enabled: false` and tell the user the template is ligeirinho's next step.
+1. Ask for the folder and the project name (kebab-case) if the user didn't say.
+2. From the ligeirinho plugin's root, run `scripts/init.sh <folder> --name <name>`. It copies `template/`, packs
+   the packages into `vendor/ligeirinho/` and makes the first commit; `.ligeirinho.yml`, `AGENTS.md`, the agent
+   settings and `docs/` are already in the template.
+3. In the new folder, run `make up`, then `make check`. Both must pass before you tell the user it's ready.
+4. Tell the user `make dev` starts the app and `make preview` the screens, and point them at `docs/areas/tasks.md`
+   as the example area. Offer to remove the example `tasks` area once their first area exists.

@@ -27,14 +27,18 @@ export const layerConstraints: readonly DependencyConstraint[] = [
     onlyDependOnLibsWithTags: ['layer:domain', 'layer:application', 'layer:presentation', 'type:ui'],
   },
   { sourceTag: 'type:app', onlyDependOnLibsWithTags: ['*'] },
+  { sourceTag: 'type:e2e', onlyDependOnLibsWithTags: ['*'] },
+  // Design-system components (Spartan) only build on each other.
+  { sourceTag: 'type:ui', onlyDependOnLibsWithTags: ['type:ui'] },
 ];
 
 /** rules/architecture.md "One module per business area": an area only sees itself and the shared area. */
 export function areaConstraints(areas: readonly string[]): DependencyConstraint[] {
-  const sharedConstraint = { sourceTag: 'area:shared', onlyDependOnLibsWithTags: ['area:shared'] };
+  // `type:ui` (the design system) belongs to no area, so every area can use it.
+  const sharedConstraint = { sourceTag: 'area:shared', onlyDependOnLibsWithTags: ['area:shared', 'type:ui'] };
   const constraints = areas.map((area) => ({
     sourceTag: `area:${area}`,
-    onlyDependOnLibsWithTags: [`area:${area}`, 'area:shared'],
+    onlyDependOnLibsWithTags: [`area:${area}`, 'area:shared', 'type:ui'],
   }));
   return [...constraints, sharedConstraint];
 }
@@ -46,6 +50,8 @@ export function boundaries(options: BoundariesOptions): FlatConfig[] {
   const configs: FlatConfig[] = [
     {
       files: options.files ?? defaultFiles,
+      // Tool configs (vitest.config.mts, playwright.config.mts) import shared presets by relative path.
+      ignores: ['**/*.config.*'],
       plugins: { '@nx': nxPlugin },
       rules: {
         '@nx/enforce-module-boundaries': [

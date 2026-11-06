@@ -42,7 +42,18 @@ Some are enforced on the spot by hooks:
 
 ## Using it in a project
 
-Ask the agent inside the project: **"adopt ligeirinho here"**.
+**New project:** from a clone of this repository (needs Docker, make and pnpm on the host for this one step):
+
+```sh
+scripts/init.sh ../my-app
+cd ../my-app && make up && make check
+```
+
+You get a working app (a small task list) with everything already set up: Nx, NestJS, Angular with Spartan,
+Prisma and Postgres, Vitest, Playwright, the lint and API checks, a Bruno collection, and the plugin enabled for
+each agent. Everything runs in Docker. Details in [template.md](docs/template.md).
+
+**Existing project:** ask the agent inside it: **"adopt ligeirinho here"**.
 
 Or do it by hand: create a `.ligeirinho.yml` at the root saying which commands run the tests and the checks
 ([format](docs/config.md)), and enable the plugin for your agent ([how, per agent](docs/agents.md)). Projects
@@ -55,11 +66,14 @@ without that file aren't affected by the plugin.
 | [`FLOW.md`](FLOW.md) | the flow the agent follows, loaded at the start of every session |
 | [`rules/`](rules/) | the rules, one file per topic |
 | [`skills/`](skills/) | the instructions for each stage (questions, plan, screens, build, close) |
-| [`scripts/`](scripts/) and the hook configs | the automatic guards, shared by every agent |
-| [`docs/`](docs/) | [supported agents](docs/agents.md), [how it works inside](docs/how-it-works.md) and the [`.ligeirinho.yml` format](docs/config.md) |
+| [`scripts/`](scripts/) and the hook configs | the automatic guards, shared by every agent, plus `init.sh` |
+| [`template/`](template/) | the starting point for new projects |
+| [`packages/`](packages/) | the tools the rules need: screen previewer, lint, API and copy-paste checks, Bruno and e2e helpers |
+| [`docs/`](docs/) | [supported agents](docs/agents.md), [how it works inside](docs/how-it-works.md), the [`.ligeirinho.yml` format](docs/config.md) and [the template](docs/template.md) |
 
 ## Status
 
-The rules and the plugin are ready for review. The hooks were tested with each agent's payload format, but only
-outside the real agents so far. Still missing: the template for new projects (Nx + NestJS + Angular + Prisma in
-Docker), the shared packages (screen previewer, lint configs, API checks) and a pilot project.
+The rules, the plugin, the template and the packages are ready for review. A project created with `init.sh` passes
+`make check` (lint, types, unit, integration and e2e tests, responsive checks, API contract) in Docker. The hooks
+were tested with each agent's payload format, but only outside the real agents so far. The packages aren't on a
+registry yet: `init.sh` packs them into the new project. Still missing: a pilot project.

@@ -1,0 +1,7 @@
+{
+  "componentsPath": "libs/ui/spartan",
+  "buildable": false,
+  "generateAs": "library",
+  "importAlias": "@app/ui",
+  "style": "vega"
+}

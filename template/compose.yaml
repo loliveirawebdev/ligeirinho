@@ -1,0 +1,58 @@
+# Development stack. `make up` starts it; the toolbox stays up so hooks and tests run with
+# `docker compose exec` (almost instant) instead of starting a container each time (rules/stack.md).
+
+x-postgres: &postgres
+  image: postgres:18.1-alpine
+  environment:
+    POSTGRES_USER: migrator
+    POSTGRES_PASSWORD: migrator
+    POSTGRES_DB: app
+  healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U migrator -d app"]
+    interval: 2s
+    timeout: 3s
+    retries: 30
+
+services:
+  toolbox:
+    build:
+      context: .
+      dockerfile: docker/toolbox.Dockerfile
+    command: sleep infinity
+    init: true
+    env_file: .env
+    ports:
+      - "${API_PORT:-3000}:3000"
+      - "${WEB_PORT:-4200}:4200"
+    volumes:
+      - .:/workspace
+      - node_modules:/workspace/node_modules
+      - pnpm_store:/pnpm-store
+      - nx_cache:/nx-cache
+    depends_on:
+      db:
+        condition: service_healthy
+      db-test:
+        condition: service_healthy
+
+  db:
+    <<: *postgres
+    volumes:
+      - ./docker/postgres:/docker-entrypoint-initdb.d:ro
+      - db_data:/var/lib/postgresql
+
+  # Separate database for integration tests and e2e, kept in memory and reset by the gate.
+  db-test:
+    <<: *postgres
+    volumes:
+      - ./docker/postgres:/docker-entrypoint-initdb.d:ro
+    tmpfs:
+      - /var/lib/postgresql
+
+volumes:
+  node_modules:
+  pnpm_store:
+  db_data:
+  # Shared across worktrees of the same repository, so parallel sessions reuse each other's task results.
+  nx_cache:
+    name: ${NX_CACHE_VOLUME:-app-nx-cache}

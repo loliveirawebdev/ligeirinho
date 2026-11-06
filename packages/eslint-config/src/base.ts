@@ -20,7 +20,9 @@ export const deniedIdentifiers: readonly string[] = [
 const namingConvention: RuleEntry = [
   'error',
   { selector: 'default', format: ['camelCase'] },
-  { selector: 'variable', format: ['camelCase', 'UPPER_CASE'], leadingUnderscore: 'allow' },
+  // PascalCase variables and functions are decorator factories (`RequirePermission`, `CurrentUser`).
+  { selector: 'variable', format: ['camelCase', 'UPPER_CASE', 'PascalCase'], leadingUnderscore: 'allow' },
+  { selector: 'function', format: ['camelCase', 'PascalCase'] },
   { selector: 'parameter', format: ['camelCase'], leadingUnderscore: 'allow' },
   { selector: 'import', format: ['camelCase', 'PascalCase'] },
   { selector: 'typeLike', format: ['PascalCase'] },
@@ -31,7 +33,8 @@ const namingConvention: RuleEntry = [
   },
   { selector: 'enumMember', format: ['PascalCase', 'UPPER_CASE'] },
   // AST visitors (`Program`, `Element`) and external shapes (`Authorization`) are PascalCase keys.
-  { selector: ['objectLiteralProperty', 'objectLiteralMethod'], format: ['camelCase', 'PascalCase'] },
+  // UPPER_CASE keys are environment variables (`{ DATABASE_URL: ... }`).
+  { selector: ['objectLiteralProperty', 'objectLiteralMethod'], format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
   { selector: 'classProperty', modifiers: ['static', 'readonly'], format: ['camelCase', 'UPPER_CASE'] },
   { selector: ['objectLiteralProperty', 'typeProperty'], modifiers: ['requiresQuotes'], format: null },
 ];
@@ -43,6 +46,7 @@ const codeRules: RulesRecord = {
   '@typescript-eslint/only-throw-error': 'error',
   '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
   '@typescript-eslint/no-extraneous-class': ['error', { allowWithDecorator: true }],
+  '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
   '@typescript-eslint/naming-convention': namingConvention,
   'no-empty': 'error',
   'no-warning-comments': ['error', { terms: ['todo', 'fixme', 'xxx'], location: 'anywhere' }],

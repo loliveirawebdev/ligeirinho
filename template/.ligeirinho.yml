@@ -1,0 +1,19 @@
+version: 1
+
+commands:
+  test: make test
+  gate: make check
+  full_gate: make gate
+  preview: make preview
+  e2e: make e2e
+
+docs:
+  areas: docs/areas
+  features: docs/features
+
+preview:
+  url: http://localhost:4200/__preview
+  widths: 390,768,1280
+
+adoption:
+  enabled: false
