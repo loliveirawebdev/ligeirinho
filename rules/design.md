@@ -107,6 +107,25 @@ Generated UI fails in five ways. Name the one you see before fixing anything:
 | **Empty space is allowed** when it is hierarchy; it is not when it is a void (a list that stops halfway down a pane with nothing below, a gap between a label and its value) | whitespace groups; voids look unfinished |
 | **Enlarge or clarify content before adding more elements** | more anatomy is rarely the fix |
 
+## The template's look
+
+The template ships a look that already passes these rules; build on it instead of resetting to Spartan's defaults.
+It lives in `apps/web/src/styles.css` (tokens) and the Spartan components in `libs/ui/spartan`.
+
+| Decision | Why |
+|---|---|
+| **Warm, slightly tinted neutrals** (OKLCH, hue around 80, chroma under 0.01), never zero-chroma gray | pure `#fff` / neutral gray is the default every generated app ships with; a faint tint reads as chosen |
+| **One deep accent** (`--primary`, a pine green), lighter and softer in dark mode | a muted, deep accent looks deliberate; saturated blue or purple looks like a default |
+| **Geist** as the one family (self-hosted with `@fontsource-variable`), titles with slight negative tracking and `text-wrap: balance` | system-ui plus Inter is the generic pairing; tight titles read as designed |
+| **Depth in light mode = hairline + soft warm shadow** (`shadow-surface`); dark mode = lighter surface plus a hairline | borders alone look like a wireframe; black shadows look pasted on |
+| **One surface per group with dividers** (a list is one card with `divide-y`), not a card per row | a card per row is the "boxed" failure |
+| **Primary hover darkens its own color** (`color-mix` with the foreground), with a faint top highlight | opacity hovers look washed out |
+| **Lucide icons through `@ng-icons`**, one stroke and size per context | one set, never hand-drawn |
+
+**To brand a product:** change `--primary`, `--primary-foreground` and `--ring` (light and dark) to the product's
+color, keeping the lightness and chroma in the same range, and swap the font if the product has one. Leave the
+neutrals tinted. Don't add a second accent until a real need shows up.
+
 ## The review
 
 Before showing a screen to the user (the `preview` stage), look at every scenario at 390, 768 and 1280, light and

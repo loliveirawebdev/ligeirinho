@@ -1,61 +1,108 @@
-<main class="mx-auto flex w-full max-w-2xl flex-col gap-4 p-4 @container">
-  <header class="flex flex-wrap items-baseline justify-between gap-2">
-    <h1 class="text-2xl font-semibold">Tasks</h1>
-    <p class="text-muted-foreground text-sm">{{ model().openTaskCountLabel }}</p>
+<main class="@container mx-auto w-full max-w-xl px-5 pt-10 pb-16 sm:pt-16">
+  <header class="mb-6">
+    <h1 class="text-3xl font-semibold">Tasks</h1>
+    <p class="text-muted-foreground mt-1 text-sm tabular-nums">{{ model().openTaskCountLabel }}</p>
   </header>
 
-  <form class="flex flex-col gap-2 @md:flex-row @md:items-end" (submit)="submitNewTask($event)">
-    <div class="flex flex-1 flex-col gap-1">
-      <label hlmLabel for="new-task-title">New task</label>
-      <input
-        hlmInput
-        id="new-task-title"
-        name="title"
-        autocomplete="off"
-        maxlength="200"
-        [value]="newTaskTitle()"
-        (input)="updateNewTaskTitle($event)"
-      />
-    </div>
-    <button hlmBtn type="submit" [disabled]="model().isCreatingTask">
+  <form
+    class="bg-card shadow-surface focus-within:ring-ring/40 flex items-center gap-2 rounded-xl p-1.5 transition-shadow focus-within:ring-3"
+    (submit)="submitNewTask($event)"
+  >
+    <label hlmLabel for="new-task-title" class="sr-only">New task</label>
+    <input
+      hlmInput
+      id="new-task-title"
+      name="title"
+      autocomplete="off"
+      maxlength="200"
+      placeholder="Add a task…"
+      class="flex-1 border-0 bg-transparent px-3 shadow-none focus-visible:ring-0 dark:bg-transparent"
+      [value]="newTaskTitle()"
+      (input)="updateNewTaskTitle($event)"
+    />
+    <button hlmBtn type="submit" class="rounded-lg" [disabled]="model().isCreatingTask">
       {{ model().isCreatingTask ? 'Adding…' : 'Add task' }}
     </button>
   </form>
 
   @if (model().isLoading) {
-    <p role="status">Loading tasks…</p>
+    <p role="status" class="text-muted-foreground mt-8 text-center text-sm">Loading tasks…</p>
   }
 
   @if (model().showError) {
-    <section hlmCard role="alert" class="p-4">
-      <p>We couldn't load your tasks.</p>
+    <section role="alert" class="bg-card shadow-surface mt-6 flex flex-col items-start gap-3 rounded-xl p-5">
+      <div>
+        <p class="font-medium">We couldn't load your tasks.</p>
+        <p class="text-muted-foreground mt-1 text-sm">Check your connection and try again.</p>
+      </div>
       <button hlmBtn variant="outline" type="button" (click)="retry.emit()">Try again</button>
     </section>
   }
 
   @if (model().showEmptyState) {
-    <p class="text-muted-foreground">No tasks yet. Add the first one above.</p>
+    <div class="mt-6 rounded-xl border border-dashed px-6 py-12 text-center">
+      <p class="font-medium">No tasks yet</p>
+      <p class="text-muted-foreground mt-1 text-sm">Add the first one above.</p>
+    </div>
   }
 
-  <ul class="flex flex-col gap-2" aria-label="Tasks">
-    @for (item of model().items; track item.id) {
-      <li hlmCard class="flex flex-row flex-wrap items-center justify-between gap-2 p-4">
-        <div class="flex min-w-0 flex-col">
-          <span class="break-words" [class.line-through]="item.completed">{{ item.title }}</span>
-          <span class="text-muted-foreground text-xs">{{ item.createdAtLabel }}</span>
-        </div>
-        @if (item.completed) {
-          <span class="text-sm">Done</span>
-        } @else {
-          <button hlmBtn variant="outline" type="button" [attr.aria-label]="item.completeLabel" (click)="completeTask.emit(item.id)">
-            Complete
-          </button>
-        }
-      </li>
-    }
-  </ul>
+  @if (model().items.length > 0) {
+    <ul class="bg-card shadow-surface divide-border mt-6 divide-y overflow-hidden rounded-xl" aria-label="Tasks">
+      @for (item of model().items; track item.id) {
+        <li class="flex items-start gap-1 py-1.5 pr-4 pl-1.5">
+          @if (item.completed) {
+            <span class="flex size-11 shrink-0 items-center justify-center">
+              <span class="bg-primary text-primary-foreground flex size-5 items-center justify-center rounded-full">
+                <ng-icon name="lucideCheck" size="14" strokeWidth="3" aria-hidden="true" />
+              </span>
+            </span>
+          } @else {
+            <button
+              hlmBtn
+              variant="ghost"
+              size="icon"
+              type="button"
+              class="group/check shrink-0 rounded-full hover:bg-transparent dark:hover:bg-transparent"
+              [attr.aria-label]="item.completeLabel"
+              (click)="completeTask.emit(item.id)"
+            >
+              <span
+                class="border-input text-primary group-hover/check:border-primary flex size-5 items-center justify-center rounded-full border-[1.5px] transition-colors"
+              >
+                <ng-icon
+                  name="lucideCheck"
+                  size="12"
+                  strokeWidth="3"
+                  class="opacity-0 transition-opacity group-hover/check:opacity-100"
+                  aria-hidden="true"
+                />
+              </span>
+            </button>
+          }
+          <div class="flex min-w-0 flex-1 flex-col gap-0.5 py-2.5">
+            <span
+              class="leading-snug break-words"
+              [class.text-muted-foreground]="item.completed"
+              [class.line-through]="item.completed"
+              [class.decoration-muted-foreground/40]="item.completed"
+            >
+              {{ item.title }}
+            </span>
+            <span class="text-muted-foreground text-xs tabular-nums">
+              {{ item.createdAtLabel }}
+              @if (item.completed) {
+                <span class="sr-only">· Done</span>
+              }
+            </span>
+          </div>
+        </li>
+      }
+    </ul>
+  }
 
   @if (model().canLoadMore) {
-    <button hlmBtn variant="ghost" type="button" (click)="loadMore.emit()">Load more</button>
+    <div class="mt-4 flex justify-center">
+      <button hlmBtn variant="ghost" type="button" class="text-muted-foreground" (click)="loadMore.emit()">Load more</button>
+    </div>
   }
 </main>

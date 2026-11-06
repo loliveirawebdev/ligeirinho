@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { lucideCheck } from '@ng-icons/lucide';
 import { HlmButtonImports } from '@app/ui/button';
-import { HlmCardImports } from '@app/ui/card';
 import { HlmInputImports } from '@app/ui/input';
 import { HlmLabelImports } from '@app/ui/label';
 import type { TaskListViewModel } from './task-list.view-model';
 
 @Component({
   selector: 'app-task-list-view',
-  imports: [HlmButtonImports, HlmCardImports, HlmInputImports, HlmLabelImports],
+  imports: [HlmButtonImports, HlmInputImports, HlmLabelImports, NgIcon],
+  viewProviders: [provideIcons({ lucideCheck })],
   templateUrl: './task-list.view.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
