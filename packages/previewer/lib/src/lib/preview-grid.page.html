@@ -1,0 +1,70 @@
+<header class="toolbar">
+  <h1>Preview</h1>
+  <nav aria-label="Flows">
+    <a routerLink="." [queryParams]="{ flow: null }" [attr.aria-current]="selectedFlow() === null ? 'page' : null">All</a>
+    @for (flow of flows; track flow) {
+      <a routerLink="." [queryParams]="{ flow }" [attr.aria-current]="selectedFlow() === flow ? 'page' : null">{{ flow }}</a>
+    }
+  </nav>
+  <label>
+    <input type="checkbox" [checked]="resizable()" (change)="setResizable($event)" />
+    Resizable
+  </label>
+  @if (resizable()) {
+    <label>
+      Theme
+      <select (change)="setResizableTheme($event)">
+        @for (theme of themes; track theme) {
+          <option [value]="theme" [selected]="theme === resizableTheme()">{{ theme }}</option>
+        }
+      </select>
+    </label>
+  }
+  <label>
+    Height
+    <input type="number" min="200" step="50" [value]="frameHeight()" (input)="setFrameHeight($event)" />
+    px
+  </label>
+</header>
+
+<main>
+  @for (flowView of flowViews(); track flowView.flow) {
+    <section class="flow">
+      <h2>{{ flowView.flow }}</h2>
+      @for (entry of flowView.entries; track entry.id) {
+        <article class="entry">
+          <h3>{{ entry.title }} <code>{{ entry.id }}</code></h3>
+          @for (scenario of entry.scenarios; track scenario.name) {
+            <section class="scenario" [attr.aria-label]="entry.title + ', ' + scenario.name">
+              <h4>{{ scenario.name }}</h4>
+              @if (resizable()) {
+                <ligeirinho-preview-resizable-frame
+                  [source]="scenario.resizableSource"
+                  [frameTitle]="entry.title + ', ' + scenario.name"
+                  [height]="frameHeight()"
+                />
+              } @else {
+                <div class="frames">
+                  @for (frame of scenario.frames; track frame.width + frame.theme) {
+                    <figure>
+                      <figcaption>{{ frame.width }} px · {{ frame.theme }}</figcaption>
+                      <iframe
+                        loading="lazy"
+                        [src]="frame.source"
+                        [title]="frame.title"
+                        [style.width.px]="frame.width"
+                        [style.height.px]="frameHeight()"
+                      ></iframe>
+                    </figure>
+                  }
+                </div>
+              }
+            </section>
+          }
+        </article>
+      }
+    </section>
+  } @empty {
+    <p>No scenarios registered. Add a <code>*.scenarios.ts</code> file and regenerate the registry.</p>
+  }
+</main>
