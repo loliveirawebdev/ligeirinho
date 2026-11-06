@@ -14,7 +14,8 @@ that ships.
    scenarios (`*.scenarios.ts`), one example view-model per scenario. Scenarios are the test fixtures (see
    `rules/testing.md`).
 2. Write the view (`*.view.ts` + `.html`): only `input()`/`output()`, only design system components (Spartan and
-   the project's own), mobile first, no fixed widths (see `rules/mvvm.md` and `rules/responsive.md`).
+   the project's own), mobile first, no fixed widths, colors and spacing only from the theme's tokens (see
+   `rules/mvvm.md`, `rules/responsive.md` and `rules/design.md`).
 3. Register the scenarios in the previewer: the project's `/__preview` route is
    [`@ligeirinho/previewer`](https://github.com/loliveirawebdev/ligeirinho/tree/main/packages/previewer). Export
    them with `defineScenarios({ flow, title, component, scenarios })` (`flow` is the feature's flow), then
@@ -24,8 +25,10 @@ that ships.
    shows, or tell the user the project wasn't created from the template.
 4. Start the previewer (`commands.preview` in `.ligeirinho.yml`) and open `/__preview` in a browser your agent can
    drive, with the feature's group: side by side at 390, 768 and 1280, light and dark.
-5. Check it yourself before showing it: horizontal scrolling, cut-off text, small touch targets, empty and error
-   states with a useful message.
+5. Review it yourself before showing it, with `rules/design.md` ("The review"): name which of the five failures it
+   has and fix that first, then go through hierarchy, content, type, spacing, color, icons and density, in every
+   scenario, at every width, in light and dark. Also: no horizontal scrolling, no cut-off text, no small touch
+   targets. When you show it, say in one line what the screen's focal element is.
 6. Show it to the user and ask for approval. Adjust until they approve.
 
 Don't wire the page to the back end yet: that's part of the build. The approved view and view-model go into the

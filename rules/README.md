@@ -24,11 +24,12 @@ it can become a lint rule.
 5. [security.md](security.md) — zero trust, OWASP, auditing
 6. [scale.md](scale.md) — pagination, indexes, N+1, idempotency, queues
 7. [responsive.md](responsive.md) — mobile first, layout rules, gate checks
-8. [rest-api.md](rest-api.md) — REST contract and the Spectral rules
-9. [e2e.md](e2e.md) — critical journeys with Playwright
-10. [bruno.md](bruno.md) — API collection and drift check
-11. [docs.md](docs.md) — area doc, feature note, lean agent instructions file
-12. [stack.md](stack.md) — fixed stack and Docker
+8. [design.md](design.md) — hierarchy, content, type, spacing, color, icons; the screen review
+9. [rest-api.md](rest-api.md) — REST contract and the Spectral rules
+10. [e2e.md](e2e.md) — critical journeys with Playwright
+11. [bruno.md](bruno.md) — API collection and drift check
+12. [docs.md](docs.md) — area doc, feature note, lean agent instructions file
+13. [stack.md](stack.md) — fixed stack and Docker
 
 ## Projects in adoption
 

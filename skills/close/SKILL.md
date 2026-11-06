@@ -16,6 +16,7 @@ without the note.
      components and rules outside the diff;
    - every item in the plan's test list exists;
    - every new route has its authorization tests; every new critical journey has e2e;
+   - every new or changed screen passes the review in `rules/design.md` in its final state, not just at preview;
    - no rule was left out of the area doc.
    Fix what you find (with a test, if it's behavior) and commit.
 2. **Area doc** (`docs/areas/<area>.md`): if the feature changed a rule, **edit it in place**, with the why. Delete

@@ -31,7 +31,8 @@ push.
 ## The rules
 
 The agent follows [ligeirinho's rules](rules/README.md) without you asking: layered architecture, clear names,
-strict typing, tests before code, "deny everything until allowed" security, screens that work on phones, and so on.
+strict typing, tests before code, "deny everything until allowed" security, screens that work on phones and look
+designed (not generated), and so on.
 Each rule explains why it exists and what makes sure it's followed (lint, a test or a review).
 
 Some are enforced on the spot by hooks:
@@ -77,3 +78,8 @@ The rules, the plugin, the template and the packages are ready for review. A pro
 `make check` (lint, types, unit, integration and e2e tests, responsive checks, API contract) in Docker. The hooks
 were tested with each agent's payload format, but only outside the real agents so far. The packages are published as
 [GitHub Release](https://github.com/loliveirawebdev/ligeirinho/releases) tarballs. Still missing: a pilot project.
+
+## Credits
+
+The design rules ([rules/design.md](rules/design.md)) adapt, for real app screens, the craft rules in Benji Taylor's
+[stageshow](https://github.com/benjitaylor/skills/tree/main/stageshow) skill (MIT).
