@@ -4,106 +4,122 @@
 @import 'tailwindcss/utilities.css';
 
 @import '@spartan-ng/brain/hlm-tailwind-preset.css';
-@import '@fontsource-variable/geist';
-@import '@fontsource-variable/geist-mono';
 
 /*
- * The app's look (rules/design.md). Every color is a token: components use bg-background, text-muted-foreground,
- * bg-primary..., never raw values. To brand a product, change --primary (and --ring) first; keep the neutrals tinted.
+ * The look (rules/design.md, "The look"): a Notion-like base shared by every app built from this template.
  *
- * - Neutrals are warm and slightly tinted (hue 80), never zero-chroma gray: pure gray is what reads as generic.
- * - One accent (--primary, a deep pine) for the primary action, selection and focus.
- * - Depth: light theme uses a hairline plus a soft warm shadow (shadow-surface); dark theme uses lighter surfaces.
+ * Two blocks:
+ * - THEME: the only part an app changes (its accent and, if it has one, its font).
+ * - BASE: the shared look. Don't edit it per app; change it here, in the template, for everyone.
+ *
+ * Components only use the tokens (bg-background, text-muted-foreground, bg-primary, bg-field, bg-hover...),
+ * never raw colors.
  */
 
-@theme {
-  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+/* ---------- THEME: change this per app ---------- */
+
+:root {
+  --primary: #2075d0;
+  --primary-foreground: #ffffff;
+  --ring: #2075d0;
+  --font-app: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+
+:root.dark {
+  --primary: #2075d0;
+  --primary-foreground: #ffffff;
+  --ring: #2075d0;
+}
+
+/* ---------- BASE: the shared look ---------- */
+
+@theme inline {
+  --font-sans: var(--font-app);
+  --color-field: var(--field);
+  --color-hover: var(--hover);
 }
 
 :root {
   color-scheme: light;
 
-  --radius: 0.625rem;
+  --radius: 0.5rem;
 
-  --background: oklch(0.982 0.004 85);
-  --foreground: oklch(0.22 0.01 70);
-  --card: oklch(0.998 0.002 85);
-  --card-foreground: oklch(0.22 0.01 70);
-  --popover: oklch(0.998 0.002 85);
-  --popover-foreground: oklch(0.22 0.01 70);
-  --primary: oklch(0.46 0.085 170);
-  --primary-foreground: oklch(0.985 0.006 170);
-  --secondary: oklch(0.955 0.006 80);
-  --secondary-foreground: oklch(0.26 0.01 70);
-  --muted: oklch(0.955 0.006 80);
-  --muted-foreground: oklch(0.5 0.012 70);
-  --accent: oklch(0.955 0.006 80);
-  --accent-foreground: oklch(0.26 0.01 70);
-  --destructive: oklch(0.54 0.19 28);
-  --border: oklch(0.905 0.007 80);
-  --input: oklch(0.88 0.008 80);
-  --ring: oklch(0.6 0.09 170);
+  /* Warm neutrals: text is a brown-tinted near-black, never pure #000 on #fff. */
+  --background: #ffffff;
+  --foreground: #37352f;
+  --card: #ffffff;
+  --card-foreground: #37352f;
+  --popover: #ffffff;
+  --popover-foreground: #37352f;
+  --secondary: #f1f1ef;
+  --secondary-foreground: #37352f;
+  --muted: #f7f7f5;
+  --muted-foreground: #6b6a66;
+  --accent: #f1f1ef;
+  --accent-foreground: #37352f;
+  --destructive: #e03e3e;
+  --border: rgb(55 53 47 / 0.09);
+  --input: rgb(55 53 47 / 0.16);
 
-  --chart-1: oklch(0.46 0.085 170);
-  --chart-2: oklch(0.62 0.11 60);
-  --chart-3: oklch(0.55 0.08 250);
-  --chart-4: oklch(0.7 0.09 120);
-  --chart-5: oklch(0.6 0.12 30);
+  /* Fields are a faint warm gray with a hairline ring; rows and ghost buttons get --hover. */
+  --field: rgb(242 241 238 / 0.6);
+  --hover: rgb(55 53 47 / 0.06);
 
-  --sidebar: oklch(0.97 0.005 85);
-  --sidebar-foreground: oklch(0.22 0.01 70);
-  --sidebar-primary: oklch(0.46 0.085 170);
-  --sidebar-primary-foreground: oklch(0.985 0.006 170);
-  --sidebar-accent: oklch(0.94 0.007 80);
-  --sidebar-accent-foreground: oklch(0.22 0.01 70);
-  --sidebar-border: oklch(0.905 0.007 80);
-  --sidebar-ring: oklch(0.6 0.09 170);
+  --chart-1: #2075d0;
+  --chart-2: #d9730d;
+  --chart-3: #0f7b6c;
+  --chart-4: #9065b0;
+  --chart-5: #e03e3e;
 
-  /* A hairline and two soft layers, tinted warm like the neutrals (pure black shadows look pasted on). */
+  --sidebar: #f7f7f5;
+  --sidebar-foreground: #5f5e5b;
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: rgb(55 53 47 / 0.06);
+  --sidebar-accent-foreground: #37352f;
+  --sidebar-border: rgb(55 53 47 / 0.09);
+  --sidebar-ring: var(--ring);
+
+  /* Only for things that float (popovers, menus, dialogs). */
   --surface-shadow:
-    0 0 0 1px oklch(0.4 0.02 70 / 0.08), 0 1px 2px oklch(0.4 0.03 70 / 0.05), 0 4px 16px -4px oklch(0.4 0.03 70 / 0.08);
+    0 0 0 1px rgb(15 15 15 / 0.05), 0 3px 6px rgb(15 15 15 / 0.1), 0 9px 24px rgb(15 15 15 / 0.2);
 }
 
 :root.dark {
   color-scheme: dark;
 
-  --background: oklch(0.165 0.005 70);
-  --foreground: oklch(0.94 0.005 85);
-  --card: oklch(0.2 0.006 70);
-  --card-foreground: oklch(0.94 0.005 85);
-  --popover: oklch(0.22 0.006 70);
-  --popover-foreground: oklch(0.94 0.005 85);
-  --primary: oklch(0.78 0.09 170);
-  --primary-foreground: oklch(0.2 0.03 170);
-  --secondary: oklch(0.26 0.006 70);
-  --secondary-foreground: oklch(0.94 0.005 85);
-  --muted: oklch(0.26 0.006 70);
-  --muted-foreground: oklch(0.7 0.01 80);
-  --accent: oklch(0.26 0.006 70);
-  --accent-foreground: oklch(0.94 0.005 85);
-  --destructive: oklch(0.7 0.16 25);
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.66 0.08 170);
+  --background: #191919;
+  --foreground: rgb(255 255 255 / 0.81);
+  --card: #202020;
+  --card-foreground: rgb(255 255 255 / 0.81);
+  --popover: #252525;
+  --popover-foreground: rgb(255 255 255 / 0.81);
+  --secondary: #2f2f2f;
+  --secondary-foreground: rgb(255 255 255 / 0.81);
+  --muted: #202020;
+  --muted-foreground: rgb(255 255 255 / 0.52);
+  --accent: #2f2f2f;
+  --accent-foreground: rgb(255 255 255 / 0.81);
+  --destructive: #e66767;
+  --border: rgb(255 255 255 / 0.094);
+  --input: rgb(255 255 255 / 0.13);
 
-  --chart-1: oklch(0.78 0.09 170);
-  --chart-2: oklch(0.78 0.1 60);
-  --chart-3: oklch(0.72 0.08 250);
-  --chart-4: oklch(0.8 0.09 120);
-  --chart-5: oklch(0.72 0.12 30);
+  --field: rgb(255 255 255 / 0.055);
+  --hover: rgb(255 255 255 / 0.055);
 
-  --sidebar: oklch(0.19 0.006 70);
-  --sidebar-foreground: oklch(0.94 0.005 85);
-  --sidebar-primary: oklch(0.78 0.09 170);
-  --sidebar-primary-foreground: oklch(0.2 0.03 170);
-  --sidebar-accent: oklch(0.26 0.006 70);
-  --sidebar-accent-foreground: oklch(0.94 0.005 85);
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.66 0.08 170);
+  --chart-1: #529cca;
+  --chart-2: #ffa344;
+  --chart-3: #4dab9a;
+  --chart-4: #9a6dd7;
+  --chart-5: #ff7369;
 
-  /* On dark, depth comes from the lighter surface; the shadow is only the hairline. */
-  --surface-shadow: 0 0 0 1px oklch(1 0 0 / 0.07);
+  --sidebar: #202020;
+  --sidebar-foreground: rgb(255 255 255 / 0.6);
+  --sidebar-accent: rgb(255 255 255 / 0.055);
+  --sidebar-accent-foreground: rgb(255 255 255 / 0.81);
+  --sidebar-border: rgb(255 255 255 / 0.094);
+
+  --surface-shadow: 0 0 0 1px rgb(255 255 255 / 0.094), 0 3px 6px rgb(0 0 0 / 0.3), 0 9px 24px rgb(0 0 0 / 0.4);
 }
 
 @utility shadow-surface {
@@ -116,13 +132,11 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    text-rendering: optimizeLegibility;
   }
   h1,
   h2,
   h3 {
     text-wrap: balance;
-    letter-spacing: -0.02em;
   }
   p {
     text-wrap: pretty;

@@ -1,8 +1,8 @@
-<main class="@container mx-auto w-full max-w-xl px-5 pt-12 pb-16 sm:pt-20">
-  <header class="mb-6 flex items-baseline justify-between gap-4">
-    <h1 class="text-2xl font-semibold">Tasks</h1>
+<main class="@container mx-auto w-full max-w-2xl px-5 pt-12 pb-16 sm:pt-20">
+  <header class="mb-6">
+    <h1 class="text-3xl font-bold">Tasks</h1>
     @if (model().openTaskCountLabel) {
-      <p class="text-muted-foreground text-sm tabular-nums">{{ model().openTaskCountLabel }}</p>
+      <p class="text-muted-foreground mt-1 text-sm tabular-nums">{{ model().openTaskCountLabel }}</p>
     }
   </header>
 
@@ -25,11 +25,11 @@
   </form>
 
   @if (model().isLoading) {
-    <p role="status" class="text-muted-foreground mt-10 text-center text-sm">Loading tasks…</p>
+    <p role="status" class="text-muted-foreground mt-10 text-sm">Loading tasks…</p>
   }
 
   @if (model().showError) {
-    <section role="alert" class="mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-lg border p-4">
+    <section role="alert" class="bg-secondary mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-md p-4">
       <div>
         <p class="font-medium">Couldn’t load your tasks</p>
         <p class="text-muted-foreground mt-1 text-sm">Check your connection, then try again.</p>
@@ -39,19 +39,19 @@
   }
 
   @if (model().showEmptyState) {
-    <div class="mt-6 py-16 text-center">
+    <div class="mt-8">
       <p class="font-medium">No tasks yet</p>
       <p class="text-muted-foreground mt-1 text-sm">Tasks you add will show up here.</p>
     </div>
   }
 
   @if (model().items.length > 0) {
-    <ul class="divide-border mt-6 divide-y border-y" aria-label="Tasks">
+    <ul class="mt-6" aria-label="Tasks">
       @for (item of model().items; track item.id) {
-        <li class="flex items-start py-1">
+        <li class="hover:bg-hover -mx-2 flex items-start rounded-md px-2 transition-colors">
           @if (item.completed) {
-            <span class="-ml-3 flex size-11 shrink-0 items-center justify-center">
-              <span class="bg-primary text-primary-foreground flex size-5 items-center justify-center rounded-full">
+            <span class="-ml-3.5 flex size-11 shrink-0 items-center justify-center">
+              <span class="bg-primary text-primary-foreground flex size-4 items-center justify-center rounded-[3px]">
                 <ng-icon name="lucideCheck" size="12" strokeWidth="3" aria-hidden="true" />
               </span>
             </span>
@@ -61,12 +61,12 @@
               variant="ghost"
               size="icon"
               type="button"
-              class="group/check -ml-3 shrink-0 rounded-full hover:bg-transparent dark:hover:bg-transparent"
+              class="group/check -ml-3.5 shrink-0 hover:bg-transparent"
               [attr.aria-label]="item.completeLabel"
               (click)="completeTask.emit(item.id)"
             >
               <span
-                class="border-input text-primary group-hover/check:border-primary flex size-5 items-center justify-center rounded-full border-[1.5px] transition-colors"
+                class="border-muted-foreground/60 text-primary group-hover/check:border-primary flex size-4 items-center justify-center rounded-[3px] border-[1.5px] transition-colors"
               >
                 <ng-icon
                   name="lucideCheck"
@@ -79,10 +79,10 @@
             </button>
           }
           <span
-            class="min-w-0 flex-1 py-2.5 pl-1 leading-6 break-words"
+            class="min-w-0 flex-1 py-2.5 leading-6 break-words"
             [class.text-muted-foreground]="item.completed"
             [class.line-through]="item.completed"
-            [class.decoration-muted-foreground/40]="item.completed"
+            [class.decoration-muted-foreground/50]="item.completed"
           >
             {{ item.title }}
           </span>
@@ -98,10 +98,8 @@
   }
 
   @if (model().canLoadMore) {
-    <div class="mt-4 flex justify-center">
-      <button hlmBtn variant="ghost" type="button" class="text-muted-foreground" (click)="loadMore.emit()">
-        Show more
-      </button>
+    <div class="mt-2">
+      <button hlmBtn variant="ghost" type="button" class="-ml-4" (click)="loadMore.emit()">Show more</button>
     </div>
   }
 </main>

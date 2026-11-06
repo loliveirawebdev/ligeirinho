@@ -130,25 +130,53 @@ Apple's HIG.
 | **Empty space is allowed** when it is hierarchy; it is not when it is a void (a list that stops halfway down a pane with nothing below, a gap between a label and its value) | whitespace groups; voids look unfinished |
 | **Enlarge or clarify content before adding more elements** | more anatomy is rarely the fix |
 
-## The template's look
+## The look: Notion-like
 
-The template ships a look that already passes these rules; build on it instead of resetting to Spartan's defaults.
-It lives in `apps/web/src/styles.css` (tokens) and the Spartan components in `libs/ui/spartan`.
+Every app built from the template shares one look, modeled on Notion's: a calm document-like page, warm grays, almost
+no chrome, one blue for the primary action. **An app changes only its theme** (below); everything else is shared and
+changes in the template, for everyone. It lives in `apps/web/src/styles.css` (tokens, in a THEME and a BASE block)
+and the Spartan components in `libs/ui/spartan`.
 
-| Decision | Why |
+### Theme: the only part an app changes
+
+| Token | What it is |
 |---|---|
-| **Warm, slightly tinted neutrals** (OKLCH, hue around 80, chroma under 0.01), never zero-chroma gray | pure `#fff` / neutral gray is the default every generated app ships with; a faint tint reads as chosen |
-| **One deep accent** (`--primary`, a pine green), lighter and softer in dark mode | a muted, deep accent looks deliberate; saturated blue or purple looks like a default |
-| **Geist** as the one family (self-hosted with `@fontsource-variable`), titles with slight negative tracking and `text-wrap: balance` | system-ui plus Inter is the generic pairing; tight titles read as designed |
-| **Flat and open:** content sits on the page background, no cards around lists or forms; a list is rows with hairline dividers (`divide-y border-y`), metadata right-aligned in muted text | white cards with shadows on a tinted page are the look of every template |
-| **Shadows only for things that float** (popovers, menus, dialogs: `shadow-surface`); a border only where something must be set apart (an error) | elevation on static content is decoration |
-| **Controls are flat:** buttons, inputs and toggles have no shadow, gradient or inner highlight; only surfaces (cards, popovers, dialogs) get `shadow-surface` | a shadowed button looks dated and fights the surface it sits on |
-| **Primary hover darkens its own color** (`color-mix` with the foreground) | opacity hovers look washed out |
-| **Lucide icons through `@ng-icons`**, one stroke and size per context | one set, never hand-drawn |
+| `--primary`, `--primary-foreground` | the accent: primary button, checked boxes, links. White text on it must pass 4.5:1 |
+| `--ring` | the focus ring, usually the same as `--primary` |
+| `--font-app` | the font stack; the default is the system UI stack (like Notion). An app with a brand font self-hosts it and sets it here |
 
-**To brand a product:** change `--primary`, `--primary-foreground` and `--ring` (light and dark) to the product's
-color, keeping the lightness and chroma in the same range, and swap the font if the product has one. Leave the
-neutrals tinted. Don't add a second accent until a real need shows up.
+Set both the `:root` and `:root.dark` values in the THEME block. Don't touch the BASE block per app, don't add
+tokens per app, and don't restyle components per app: if an app needs something the look doesn't give, it is a
+template change.
+
+### Page and type
+
+| Rule | Why |
+|---|---|
+| **Page = white** (`#fff`) in light, **`#191919`** in dark; text is warm near-black **`#37352f`** (light) and white at 81 % (dark), never pure black or pure white | the warm gray text on white is what makes it read as Notion rather than a generic app |
+| **Muted text is warm gray** (`text-muted-foreground`) for metadata, counts and hints | one quiet level is enough |
+| **Page title large and bold** (`text-3xl font-bold`), a muted subtitle 4 px under it; section titles `text-lg font-semibold` | the title is the anchor of a document-like page |
+| **Content in one readable column** (`max-w-2xl`, centered) for lists and forms; wider only for tables | Notion pages are a column of text, not a dashboard grid |
+
+### Surfaces
+
+| Rule | Why |
+|---|---|
+| **No cards, no dividers, no shadows on page content.** A list is plain rows; a group is a heading and space | Notion's calm comes from the absence of boxes |
+| **Rows highlight on hover** (`hover:bg-hover`, `rounded-md`, `-mx-2 px-2` so the text stays aligned with the column) | the hover shows what is clickable without drawing borders |
+| **A callout** (`bg-secondary rounded-md p-4`) is the only "box": errors, notices, summaries | one kind of box, used rarely |
+| **Shadows only for what floats** (menus, popovers, dialogs: `shadow-surface`) | elevation means "on top", nothing else |
+
+### Controls
+
+| Rule | Why |
+|---|---|
+| **Buttons:** `default` = solid `--primary`, the one primary action per screen; `outline` = hairline border, transparent; `ghost` = muted text, gray on hover; `secondary` = light gray fill. All flat, radius `rounded-md` | blue only where the user should act; everything else stays neutral |
+| **Inputs:** faint warm-gray fill (`bg-field`) with a hairline border; on focus, a `--ring` border and a soft ring. Labels are small (`text-sm`), above the field | Notion's fields read as part of the page, not as boxes |
+| **Checkboxes are square** (16 px, 3 px radius), gray border; checked = `--primary` fill with a white check | round checks read as a different product |
+| **Every control is 44 px tall** (inputs, buttons, icon buttons share `h-11` / `size-11`); a 16 px checkbox sits in a 44 px hit area | the gate checks 44 px touch targets at every width |
+| **Primary hover darkens its own color** (`color-mix` with black) | opacity hovers look washed out |
+| **Icons are Lucide through `@ng-icons`**, 16 px inline, stroke 2 (3 for the small check) | one set, never hand-drawn |
 
 ## The review
 
