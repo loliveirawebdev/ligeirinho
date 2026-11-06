@@ -1,0 +1,32 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "Tasks", "version": "1.0.0" },
+  "paths": {
+    "/admin/ticketTypes": {
+      "get": {
+        "parameters": [{ "name": "token", "in": "query", "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Ticket types",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "type": "object" } } } }
+          },
+          "404": { "description": "Not found", "content": { "application/json": { "schema": { "type": "object" } } } }
+        }
+      },
+      "post": {
+        "responses": { "201": { "description": "Created" } }
+      }
+    },
+    "/admin/ticketTypes/{ticketTypeId}": {
+      "parameters": [{ "name": "ticketTypeId", "in": "path", "required": true, "schema": { "type": "string" } }],
+      "get": { "responses": { "200": { "description": "A ticket type" } } }
+    },
+    "/registrations/{registrationId}/cancel": {
+      "parameters": [{ "name": "registrationId", "in": "path", "required": true, "schema": { "type": "string" } }],
+      "post": { "responses": { "200": { "description": "Cancelled" } } }
+    },
+    "/health": {
+      "get": { "responses": { "200": { "description": "Healthy" }, "503": { "description": "Unhealthy" } } }
+    }
+  }
+}

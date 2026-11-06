@@ -1,0 +1,45 @@
+{
+  "name": "@ligeirinho/eslint-config",
+  "version": "0.1.0",
+  "description": "ESLint flat config that enforces the ligeirinho rules (code, architecture, MVVM, e2e, testing).",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "!dist/**/*.map",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "peerDependencies": {
+    "eslint": "^10.0.0",
+    "typescript": ">=5.8.0 <6.1.0"
+  },
+  "dependencies": {
+    "@angular-eslint/eslint-plugin": "22.6.0",
+    "@angular-eslint/eslint-plugin-template": "22.6.0",
+    "@angular-eslint/template-parser": "22.6.0",
+    "@eslint/js": "10.0.1",
+    "@nx/eslint-plugin": "24.0.4",
+    "@typescript-eslint/utils": "8.72.1",
+    "angular-eslint": "22.6.0",
+    "eslint-plugin-check-file": "3.3.2",
+    "eslint-plugin-playwright": "2.12.2",
+    "typescript-eslint": "8.72.1"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "eslint": "10.14.0",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0"
+  }
+}

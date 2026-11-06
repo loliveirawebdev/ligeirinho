@@ -1,0 +1,44 @@
+{
+  "name": "@ligeirinho/spectral-ruleset",
+  "version": "0.1.0",
+  "description": "Spectral ruleset that enforces the ligeirinho REST API and scale rules on an OpenAPI document.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "!dist/**/*.map",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "tsc -p tsconfig.build.json && vitest run"
+  },
+  "peerDependencies": {
+    "@stoplight/spectral-cli": "^6.17.0"
+  },
+  "peerDependenciesMeta": {
+    "@stoplight/spectral-cli": {
+      "optional": true
+    }
+  },
+  "dependencies": {
+    "@stoplight/spectral-core": "1.24.0",
+    "@stoplight/spectral-formats": "1.9.0",
+    "@stoplight/spectral-functions": "1.11.0"
+  },
+  "devDependencies": {
+    "@stoplight/spectral-cli": "6.17.0",
+    "@stoplight/spectral-parsers": "1.0.5",
+    "@stoplight/spectral-ruleset-bundler": "1.8.0",
+    "@types/node": "24.19.2",
+    "typescript": "6.0.3",
+    "vitest": "5.1.0"
+  }
+}
