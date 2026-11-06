@@ -18,7 +18,8 @@ Exits 1 when:
 ## Config
 
 The shared config is [`jscpd.json`](jscpd.json) (also exported as `@ligeirinho/jscpd-config/jscpd.json`). It ignores
-`node_modules`, `dist`, `coverage`, `.nx`, `.angular`, `*.generated.ts`, `prisma/migrations` and lockfiles.
+`node_modules`, `dist`, `coverage`, `.nx`, `.angular`, generated code (`*.generated.ts`, `generated/`), `prisma/migrations`,
+lockfiles and JSON (Nx and tsconfig files repeat by design; the rule of two is about code).
 
 A `.jscpd.json` in the folder the command runs from is merged on top: its `ignore` entries are **added** to the
 shared ones, every other key overrides. Each added ignore should have a reason in the project's `.ligeirinho.yml`.

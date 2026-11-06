@@ -27,8 +27,10 @@ scope_arguments() {
 }
 
 # A change to infrastructure files can break anything, so it turns an affected run into a full one.
+# So does running on main itself: there is nothing to compare with (a new project, CI on main).
 infrastructure_changed() {
   [ "$mode" != "affected" ] && return 0
+  [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] && return 0
   git diff --name-only "$(base_commit)" -- package.json pnpm-lock.yaml nx.json tsconfig.base.json \
     eslint.config.mjs compose.yaml docker prisma tools | grep -q .
 }
@@ -36,6 +38,8 @@ infrastructure_changed() {
 reset_test_database() {
   step "Resetting the test database"
   MIGRATION_DATABASE_URL="$TEST_MIGRATION_DATABASE_URL" pnpm exec prisma migrate reset --force
+  # The reset drops the schema, and the application user's grants with it.
+  MIGRATION_DATABASE_URL="$TEST_MIGRATION_DATABASE_URL" pnpm exec prisma db execute --file docker/postgres/02-application-grants.sql
 }
 
 run_integration_tests() {

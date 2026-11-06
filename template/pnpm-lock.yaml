@@ -2668,7 +2668,7 @@ packages:
       typescript: '>=5.8.0 <6.1.0'
 
   '@ligeirinho/jscpd-config@file:vendor/ligeirinho/ligeirinho-jscpd-config.tgz':
-    resolution: {integrity: sha512-sjpF3XweUEGU9XrWJLGrTeyPV22oBb9U8VGhtKZICvCyHXChtKtsJSbVohQtHwyfonz5Rrl5xHVZ1opaYZ/1Ig==, tarball: file:vendor/ligeirinho/ligeirinho-jscpd-config.tgz}
+    resolution: {integrity: sha512-qeLkNo7EDOO7+jjy/q23l0k0UUeWiTWTBMDlIkhyp1ltVxlFc4mWu1QLll1cMNQBTo0HygGZ2vB+qqWkQAvhUw==, tarball: file:vendor/ligeirinho/ligeirinho-jscpd-config.tgz}
     version: 0.1.0
     hasBin: true
 
