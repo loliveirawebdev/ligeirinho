@@ -1,0 +1,15 @@
+{
+  "name": "ligeirinho-workspace",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "build": "pnpm -r --filter ./packages/** run build",
+    "test": "pnpm -r --filter ./packages/** run test",
+    "lint": "pnpm -r --filter ./packages/** run lint",
+    "pack:local": "scripts/pack-local.sh"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}
