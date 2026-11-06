@@ -19,7 +19,7 @@ it can become a lint rule.
 
 1. [architecture.md](architecture.md) — layers, modules, one owner per pattern
 2. [mvvm.md](mvvm.md) — pure view, view-model built by a pure function, thin page
-3. [code.md](code.md) — naming, types, errors, functions, comments
+3. [code.md](code.md) — naming, code in English, types, errors, functions, comments
 4. [testing.md](testing.md) — test first, fakes, fixtures = scenarios
 5. [security.md](security.md) — zero trust, OWASP, auditing
 6. [scale.md](scale.md) — pagination, indexes, N+1, idempotency, queues

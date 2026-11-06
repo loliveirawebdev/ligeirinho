@@ -14,6 +14,24 @@ mix-up bugs.
 **Enforced by:** lint (`id-denylist` with the list above, `@typescript-eslint/naming-convention`); checklist for
 names that aren't from the business language.
 
+## Code in English
+
+Identifiers, file and folder names, comments, test names, log messages, commit messages, docs and API paths and
+fields are in English, whatever language the team or the product speaks. Only text the user reads (labels,
+messages, emails) is in the product's language, and it lives in the view-model or the message catalog.
+
+The one exception is a national domain term with no faithful English equivalent: keep it in the original, without
+accents, as the business says it (`cpf`, `cnpj`, `pregao`, `edital`, `notaFiscal`). Translate everything around it
+(`findByCnpj`, `PregaoNotFound`, `isEditalPublished`). If a reasonable English word exists, use it: `bid`, not
+`lance`; `tender`, not `licitacao`.
+
+**Why:** one language makes names predictable to search and lets any developer or tool read the code; mixing
+`buscarUser` with `findCliente` is the worst of both. A forced translation of a legal term (`taxpayerRegistry` for
+CPF) is worse than the original, because nobody in the business recognizes it.
+
+**Enforced by:** checklist: a non-English identifier must be a national term listed in the area doc
+(`docs/areas/<area>.md`, glossary), with why it has no translation.
+
 ## Validation only at the edge
 
 External input (HTTP, queue, response from an external service, environment variable) is validated **once**, at

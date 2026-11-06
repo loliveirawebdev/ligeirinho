@@ -8,6 +8,10 @@ it in place**. Appending "from X on, this changed" below the old text is forbidd
 **Why:** whoever reads it (a person or an agent) needs to know how things are today, not rebuild the history.
 Rules scattered across specs make every session relearn the context.
 
+The area doc ends with a **Glossary**: the business terms and the name each has in the code. National terms kept
+untranslated (`cnpj`, `pregao`) are listed there with why they have no English equivalent (code.md, "Code in
+English").
+
 **Enforced by:** the close checklist: if the feature changed a rule, the area doc was edited **in the same
 commit** and nothing left in it says otherwise.
 
