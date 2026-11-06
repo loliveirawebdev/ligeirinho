@@ -11,5 +11,6 @@ export {
 export { ligeirinhoPlugin } from './ligeirinho-plugin.js';
 export { nest, type NestOptions } from './nest.js';
 export { playwright, type PlaywrightOptions } from './playwright.js';
-export { defaultRawElements } from './rules/no-raw-elements.js';
+export { defaultRawElements, type AttributePattern } from './rules/no-raw-elements.js';
+export { defaultVendoredPaths, type VendoredPathsOption } from './vendored-paths.js';
 export { genericNames } from './rules/no-generic-names.js';

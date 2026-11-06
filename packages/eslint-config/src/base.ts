@@ -4,9 +4,10 @@ import typescriptEslint from 'typescript-eslint';
 import { applyAdoption, type AdoptionOption } from './adoption.js';
 import { infrastructureFiles, testFiles, typescriptFiles } from './file-globs.js';
 import { ligeirinhoPlugin, ligeirinhoPluginPrefix } from './ligeirinho-plugin.js';
+import { ignoreVendoredPaths, type VendoredPathsOption } from './vendored-paths.js';
 import type { FlatConfig, RuleEntry, RulesRecord } from './flat-config.js';
 
-export interface BaseOptions extends AdoptionOption {
+export interface BaseOptions extends AdoptionOption, VendoredPathsOption {
   /** Folder of the root tsconfig, usually `import.meta.dirname` in `eslint.config.mjs`. */
   readonly tsconfigRootDir: string;
 }
@@ -57,7 +58,6 @@ function typescriptPresets(tsconfigRootDir: string): FlatConfig[] {
   const presets: FlatConfig[] = [
     javascript.configs.recommended,
     ...typescriptEslint.configs.strictTypeChecked,
-    ...typescriptEslint.configs.stylisticTypeChecked,
   ];
   const typedParserOptions: FlatConfig = {
     languageOptions: { parserOptions: { projectService: true, tsconfigRootDir } },
@@ -90,13 +90,18 @@ function errorAndTestConfigs(): FlatConfig[] {
   ];
 }
 
-/** rules/code.md, rules/architecture.md (names), rules/testing.md (fakes). */
+/**
+ * rules/code.md, rules/architecture.md (names), rules/testing.md (fakes). Vendored paths keep only the correctness
+ * presets (recommended + strict-type-checked).
+ */
 export function base(options: BaseOptions): FlatConfig[] {
-  const configs: FlatConfig[] = [
-    ...typescriptPresets(options.tsconfigRootDir),
-    { files: typescriptFiles, rules: codeRules },
-    fileNamingConfig(),
-    ...errorAndTestConfigs(),
-  ];
-  return applyAdoption(configs, options.adoption);
+  const stylisticPresets = typescriptEslint.configs.stylisticTypeChecked.map((preset) => ({
+    ...preset,
+    files: typescriptFiles,
+  }));
+  const ownedCodeConfigs = ignoreVendoredPaths(
+    [...stylisticPresets, { files: typescriptFiles, rules: codeRules }, fileNamingConfig(), ...errorAndTestConfigs()],
+    options.vendoredPaths,
+  );
+  return applyAdoption([...typescriptPresets(options.tsconfigRootDir), ...ownedCodeConfigs], options.adoption);
 }
