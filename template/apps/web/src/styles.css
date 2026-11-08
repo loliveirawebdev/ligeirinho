@@ -114,6 +114,13 @@
  * Input Group: input + action button forming a single unified block.
  * The input's right border and right corners are flat; the button touches seamlessly
  * with matching 56 px height, flat left corners, and balanced padding.
+ *
+ * The button's border ALWAYS tracks the input's outline in COLOR and THICKNESS:
+ * - Default: 1px var(--mat-sys-outline)
+ * - Hover: 1px var(--mat-sys-on-surface)
+ * - Focus: 2px var(--mat-sys-primary)
+ * - Disabled: 1px var(--mat-sys-outline) (or 2px primary when focused)
+ * Rendered on ::after so text and icons never shift on state changes.
  */
 @layer components {
   .input-group {
@@ -122,6 +129,11 @@
 
     & > mat-form-field {
       flex: 1;
+
+      & .mat-mdc-text-field-wrapper {
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+      }
 
       & .mdc-notched-outline__leading {
         border-top-left-radius: var(--radius-md) !important;
@@ -139,13 +151,12 @@
     & > [matButton],
     & > [mat-flat-button],
     & > [mat-stroked-button] {
+      position: relative !important;
       height: 56px !important;
       box-sizing: border-box !important;
       flex-shrink: 0 !important;
       border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
-      border-style: solid !important;
-      border-width: 1px 1px 1px 0 !important;
-      border-color: var(--mat-sys-primary) !important;
+      border: none !important;
       padding-left: 20px !important;
       padding-right: 24px !important;
       display: inline-flex !important;
@@ -157,8 +168,35 @@
         margin-right: 0 !important;
       }
 
-      &:disabled {
-        border-color: var(--mat-sys-outline) !important;
+      &::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        border-radius: inherit;
+        border-style: solid;
+        border-width: 1px 1px 1px 0;
+        border-color: var(--mat-sys-outline);
+        box-sizing: border-box;
+      }
+    }
+
+    &:hover:not(:focus-within) {
+      & > button::after,
+      & > [matButton]::after,
+      & > [mat-flat-button]::after,
+      & > [mat-stroked-button]::after {
+        border-color: var(--mat-sys-on-surface);
+      }
+    }
+
+    &:focus-within {
+      & > button::after,
+      & > [matButton]::after,
+      & > [mat-flat-button]::after,
+      & > [mat-stroked-button]::after {
+        border-width: 2px 2px 2px 0;
+        border-color: var(--mat-sys-primary);
       }
     }
   }

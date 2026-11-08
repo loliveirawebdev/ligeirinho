@@ -1,6 +1,6 @@
 {
   "name": "@ligeirinho/previewer",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Dev-only /__preview route that renders the app's real Angular views with example view-models (scenarios).",
   "license": "MIT",
   "repository": {
