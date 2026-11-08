@@ -109,3 +109,50 @@
     text-wrap: pretty;
   }
 }
+
+/*
+ * Input Group: input + action button forming a single unified block.
+ * The input's right border and right corners are flat; the button touches seamlessly
+ * with matching 56 px height, flat left corners, and balanced padding.
+ */
+@layer components {
+  .input-group {
+    display: flex;
+    align-items: center;
+
+    & > mat-form-field {
+      flex: 1;
+
+      & .mdc-notched-outline__leading {
+        border-top-left-radius: var(--radius-md) !important;
+        border-bottom-left-radius: var(--radius-md) !important;
+      }
+
+      & .mdc-notched-outline__trailing {
+        border-right: none !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+      }
+    }
+
+    & > button,
+    & > [matButton],
+    & > [mat-flat-button],
+    & > [mat-stroked-button] {
+      height: 56px !important;
+      flex-shrink: 0 !important;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
+      padding-left: 20px !important;
+      padding-right: 24px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+
+      & mat-icon {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+    }
+  }
+}
+

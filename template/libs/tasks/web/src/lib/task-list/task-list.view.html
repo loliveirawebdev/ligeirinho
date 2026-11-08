@@ -6,8 +6,8 @@
     }
   </header>
 
-  <form class="flex items-start gap-3" (submit)="submitNewTask($event)">
-    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="flex-1">
+  <form class="input-group" (submit)="submitNewTask($event)">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>New task</mat-label>
       <input
         matInput
@@ -19,8 +19,9 @@
         (input)="updateNewTaskTitle($event)"
       />
     </mat-form-field>
-    <button matButton="filled" type="submit" class="[--mat-button-filled-container-height:56px]" [disabled]="model().isCreatingTask">
-      {{ model().isCreatingTask ? 'Adding…' : 'Add task' }}
+    <button matButton="filled" type="submit" [disabled]="model().isCreatingTask">
+      <mat-icon aria-hidden="true">add</mat-icon>
+      <span>{{ model().isCreatingTask ? 'Adding…' : 'Add task' }}</span>
     </button>
   </form>
 
