@@ -77,6 +77,13 @@ test('declares one test per width and theme, and passes good scenarios', () => {
   ]);
 });
 
+test('names exact viewports by width and height', () => {
+  expect(testsOf('viewports.fake.ts').map((reportedTest) => [reportedTest.title, reportedTest.status])).toEqual([
+    ['responsive 390x844 dark', 'passed'],
+    ['responsive 844x390 dark', 'passed'],
+  ]);
+});
+
 test('passes with an annotation when the previewer lists no scenarios', () => {
   const [emptyRun] = testsOf('empty.fake.ts');
 
@@ -97,5 +104,6 @@ test('reports every problem of every scenario in one run, naming entry, scenario
   expect(errors).toContain('[signup-form/unlabeled 390px dark]');
   expect(errors).toMatch(/label \(critical\): .*\n\s+input/);
   expect(errors).toContain('color-contrast');
+  expect(errors).toContain('[menu/opened 390px dark] play failed: step "Open the menu" failed: no menu button');
   expect(errors).not.toContain('report-table/fine');
 });

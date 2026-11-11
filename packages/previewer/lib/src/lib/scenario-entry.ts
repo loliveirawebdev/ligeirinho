@@ -6,6 +6,23 @@ import type { InputSignal, Type } from '@angular/core';
  */
 export type ViewComponent<TViewModel> = Type<{ readonly model: InputSignal<TViewModel> }>;
 
+/** What a scenario's `play` function receives once the view is on screen. */
+export interface PlayContext {
+  /**
+   * The render page's `<body>`: the view plus anything it opens in an overlay (dialogs, menus, snack bars). Query
+   * it with `@testing-library/dom` (`within(canvas).getByRole(...)`) and drive it with `@testing-library/user-event`.
+   */
+  readonly canvas: HTMLElement;
+  /** Names a step for the previewer's Steps panel and for e2e failures; returns what `action` returns. */
+  step<TResult>(label: string, action: () => TResult | Promise<TResult>): Promise<TResult>;
+}
+
+/**
+ * Interaction that brings a scenario to the state worth looking at, beyond what the view-model alone shows: open
+ * a dialog, type in a field, expand a panel. Runs after the view renders, in the previewer and before e2e checks.
+ */
+export type PlayFunction = (context: PlayContext) => void | Promise<void>;
+
 export interface ScenarioDefinition<TViewModel, TScenarioName extends string> {
   /** Groups entries on the preview grid (usually the feature's flow). */
   readonly flow: string;
@@ -14,6 +31,8 @@ export interface ScenarioDefinition<TViewModel, TScenarioName extends string> {
   readonly component: ViewComponent<TViewModel>;
   /** One example view-model per scenario (empty, full, error, read-only...). */
   readonly scenarios: Readonly<Record<TScenarioName, NoInfer<TViewModel>>>;
+  /** Optional interaction per scenario, run after it renders (see `PlayFunction`). */
+  readonly play?: Readonly<Partial<Record<NoInfer<TScenarioName>, PlayFunction>>>;
 }
 
 export interface ScenarioEntry<TViewModel, TScenarioName extends string = string>
@@ -33,6 +52,7 @@ export interface AnyScenarioEntry {
   readonly title: string;
   readonly component: Type<object>;
   readonly scenarios: Readonly<Record<string, unknown>>;
+  readonly play?: Readonly<Partial<Record<string, PlayFunction>>>;
 }
 
 export type ScenarioRegistry = readonly AnyScenarioEntry[];

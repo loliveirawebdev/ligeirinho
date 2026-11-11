@@ -79,3 +79,9 @@ export const axeViolationPage = page(
   '<input type="text" /><p style="color: #c8c8c8">Low contrast text</p>',
   'input { min-height: 44px; min-width: 44px; }',
 );
+
+/** What the previewer's render page leaves when a scenario's `play` throws. */
+export const playFailedPage = goodPage.replace(
+  '<html lang="en">',
+  '<html lang="en" data-ligeirinho-preview="play-failed" data-ligeirinho-preview-error="step &quot;Open the menu&quot; failed: no menu button">',
+);

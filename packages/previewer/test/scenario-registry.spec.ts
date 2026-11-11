@@ -92,4 +92,13 @@ describe('manifest helpers', () => {
   it('builds the render path with the theme', () => {
     expect(buildRenderPath('/__preview', 'task-list', 'full', 'dark')).toBe('/__preview/render/task-list/full?theme=dark');
   });
+
+  it('turns play off when asked', () => {
+    expect(buildRenderPath('/__preview', 'task-list', 'full', 'light', { play: false })).toBe(
+      '/__preview/render/task-list/full?theme=light&play=0',
+    );
+    expect(buildRenderPath('/__preview', 'task-list', 'full', 'light', { play: true })).toBe(
+      '/__preview/render/task-list/full?theme=light',
+    );
+  });
 });

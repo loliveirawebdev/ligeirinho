@@ -1,0 +1,189 @@
+<div class="workbench" [class.sidebar-closed]="!sidebarOpen()" [class.panel-closed]="!panelOpen()">
+  <aside class="sidebar" aria-label="Scenarios">
+    <div class="sidebar-head">
+      <h1>Preview</h1>
+      <input
+        type="search"
+        class="search"
+        placeholder="Find a screen or scenario"
+        aria-label="Find a screen or scenario"
+        [value]="search()"
+        (input)="onSearch($event)"
+      />
+    </div>
+    <nav #scenarioList class="tree" (keydown.arrowdown)="moveSelection($event, 1)" (keydown.arrowup)="moveSelection($event, -1)">
+      @for (group of flowGroups(); track group.flow) {
+        <section class="flow">
+          <h2>{{ group.flow }}</h2>
+          @for (entry of group.entries; track entry.id) {
+            <h3>{{ entry.title }}</h3>
+            <ul>
+              @for (scenario of entry.scenarios; track scenario.name) {
+                <li>
+                  <a
+                    [routerLink]="[]"
+                    [queryParams]="scenarioQuery(entry.id, scenario.name)"
+                    [replaceUrl]="true"
+                    [attr.aria-current]="isSelected(entry.id, scenario.name) ? 'page' : null"
+                  >
+                    <span class="scenario-name">{{ scenario.name }}</span>
+                    @if (scenario.hasPlay) {
+                      <span class="play-mark" title="Has play steps">steps</span>
+                    }
+                  </a>
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      } @empty {
+        @if (hasScenarios) {
+          <p class="empty">Nothing matches “{{ search() }}”.</p>
+        } @else {
+          <p class="empty">No scenarios yet. Add a <code>*.scenarios.ts</code> file next to a view and regenerate the registry.</p>
+        }
+      }
+    </nav>
+  </aside>
+
+  <header class="toolbar">
+    <button
+      type="button"
+      class="icon-button"
+      [attr.aria-expanded]="sidebarOpen()"
+      aria-label="Scenario list"
+      title="Scenario list"
+      (click)="sidebarOpen.set(!sidebarOpen())"
+    >
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12M2 8h12M2 13h12" /></svg>
+    </button>
+
+    <label class="field">
+      <span class="sr-only">Device</span>
+      <select (change)="choosePreset($event)" aria-label="Device">
+        <option value="-1" [selected]="presetIndex() === -1">Responsive</option>
+        @for (viewport of viewports; track viewport.label; let index = $index) {
+          <option [value]="index" [selected]="index === presetIndex()">{{ viewport.label }} · {{ viewport.width }}×{{ viewport.height }}</option>
+        }
+      </select>
+    </label>
+
+    <div class="size">
+      <input
+        type="number"
+        aria-label="Width"
+        min="240"
+        max="3840"
+        [value]="frameSize().width"
+        (change)="typeSize($event, 'width')"
+      />
+      <span aria-hidden="true">×</span>
+      <input
+        type="number"
+        aria-label="Height"
+        min="240"
+        max="3840"
+        [value]="frameSize().height"
+        (change)="typeSize($event, 'height')"
+      />
+    </div>
+
+    <button type="button" class="icon-button" aria-label="Rotate" title="Rotate" (click)="rotate()">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8a5 5 0 0 1 9-3M13 2v3h-3M13 8a5 5 0 0 1-9 3M3 14v-3h3" /></svg>
+    </button>
+
+    <select aria-label="Zoom" (change)="chooseZoom($event)">
+      <option value="fit" [selected]="state().zoom === 'fit'">Fit</option>
+      @for (zoom of zoomLevels; track zoom) {
+        <option [value]="zoomValue(zoom)" [selected]="state().zoom === zoom">{{ zoom * 100 }}%</option>
+      }
+    </select>
+
+    @if (canSwitchTheme) {
+      <button
+        type="button"
+        class="toggle"
+        [attr.aria-pressed]="state().theme === 'dark'"
+        (click)="toggleTheme()"
+      >
+        Dark
+      </button>
+    }
+
+    <span class="spacer"></span>
+
+    <label class="check">
+      <input type="checkbox" [checked]="state().play" (change)="setPlay($event)" />
+      Run steps
+    </label>
+    <button type="button" (click)="replay()">{{ selectedHasPlay() && state().play ? 'Replay' : 'Reload' }}</button>
+    @if (renderPath()) {
+      <a class="open" [href]="renderPath()" target="_blank" rel="noopener">Open</a>
+    }
+    <button
+      type="button"
+      class="icon-button"
+      [attr.aria-expanded]="panelOpen()"
+      aria-label="Steps and events"
+      title="Steps and events"
+      (click)="panelOpen.set(!panelOpen())"
+    >
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3h12v10H2zM2 10h12" /></svg>
+    </button>
+  </header>
+
+  <main class="stage">
+    @if (selection(); as selected) {
+      <ligeirinho-preview-canvas
+        [source]="frameSource()"
+        [frameTitle]="frameTitle()"
+        [width]="frameSize().width"
+        [height]="frameSize().height"
+        [zoom]="state().zoom"
+        [breakpoints]="breakpoints"
+        (resized)="previewSize($event)"
+        (committed)="commitSize($event)"
+      />
+    } @else {
+      <p class="empty stage-empty">Pick a scenario on the left.</p>
+    }
+  </main>
+
+  @if (panelOpen()) {
+    <section class="panel" aria-label="Steps and events">
+      <div class="panel-column">
+        <h2>Steps</h2>
+        @if (!selectedHasPlay()) {
+          <p class="empty">This scenario has no play steps.</p>
+        } @else if (!state().play) {
+          <p class="empty">Steps are off: the scenario shows its first render.</p>
+        } @else {
+          <ol class="steps">
+            @for (step of steps(); track step.index) {
+              <li [attr.data-status]="step.status">
+                <span class="status" aria-hidden="true">{{ step.status === 'done' ? '✓' : step.status === 'failed' ? '✕' : '…' }}</span>
+                <span>{{ step.label }}</span>
+                <span class="sr-only">, {{ step.status }}</span>
+                @if (step.error; as error) {
+                  <span class="error">{{ error }}</span>
+                }
+              </li>
+            }
+          </ol>
+        }
+      </div>
+      <div class="panel-column">
+        <h2>Events</h2>
+        @if (events().length === 0) {
+          <p class="empty">Outputs the view emits show up here.</p>
+        } @else {
+          <ol class="events">
+            @for (eventView of events(); track eventView.id) {
+              <li><code>{{ eventView.name }}({{ eventView.value }})</code></li>
+            }
+          </ol>
+        }
+      </div>
+    </section>
+  }
+</div>

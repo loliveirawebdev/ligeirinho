@@ -19,8 +19,11 @@ function gridHtml(scenarioPages: FakeScenarioPages): string {
     <script>window.__ligeirinhoPreview = ${JSON.stringify(manifest)};</script></body></html>`;
 }
 
+/** Marks the page rendered, unless it already carries its own mark (a failed play, say). */
 function markRendered(html: string): string {
-  return html.replace('<html lang="en">', '<html lang="en" data-ligeirinho-preview="rendered">');
+  return html.includes('data-ligeirinho-preview=')
+    ? html
+    : html.replace('<html lang="en">', '<html lang="en" data-ligeirinho-preview="rendered">');
 }
 
 function findScenarioPage(scenarioPages: FakeScenarioPages, pathname: string): string | undefined {

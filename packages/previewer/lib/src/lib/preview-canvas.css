@@ -1,0 +1,242 @@
+:host {
+  --ruler: 20px;
+  display: grid;
+  grid-template-columns: var(--ruler) minmax(0, 1fr);
+  grid-template-rows: var(--ruler) minmax(0, 1fr);
+  min-height: 0;
+  min-width: 0;
+  background: var(--pv-canvas);
+}
+
+.corner {
+  display: grid;
+  place-items: center;
+  font-size: 9px;
+  color: var(--pv-muted);
+  background: var(--pv-ruler);
+  border-right: 1px solid var(--pv-border);
+  border-bottom: 1px solid var(--pv-border);
+  font-variant-numeric: tabular-nums;
+}
+
+.ruler {
+  position: relative;
+  overflow: hidden;
+  background: var(--pv-ruler);
+  user-select: none;
+}
+
+.ruler-top {
+  border-bottom: 1px solid var(--pv-border);
+}
+
+.ruler-left {
+  border-right: 1px solid var(--pv-border);
+}
+
+.ruler-track {
+  position: absolute;
+  inset: 0;
+}
+
+.tick {
+  position: absolute;
+  background: var(--pv-tick);
+}
+
+.ruler-top .tick {
+  bottom: 0;
+  width: 1px;
+  height: 5px;
+}
+
+.ruler-top .tick.labeled {
+  height: 9px;
+}
+
+.ruler-left .tick {
+  right: 0;
+  height: 1px;
+  width: 5px;
+}
+
+.ruler-left .tick.labeled {
+  width: 9px;
+}
+
+.tick-label {
+  position: absolute;
+  font-size: 9px;
+  line-height: 1;
+  color: var(--pv-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.ruler-top .tick-label {
+  left: 3px;
+  bottom: 6px;
+}
+
+.ruler-left .tick-label {
+  right: 6px;
+  top: 3px;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.size-mark {
+  position: absolute;
+  background: var(--pv-accent);
+}
+
+.ruler-top .size-mark {
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  margin-left: -1px;
+}
+
+.ruler-left .size-mark {
+  left: 0;
+  right: 0;
+  height: 2px;
+  margin-top: -1px;
+}
+
+.breakpoint {
+  position: absolute;
+  top: 2px;
+  transform: translateX(-50%);
+  height: 14px;
+  padding: 0 4px;
+  border: 1px solid var(--pv-border-strong);
+  border-radius: 3px;
+  background: var(--pv-surface);
+  color: var(--pv-muted);
+  font: 500 9px/12px system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.breakpoint.reached {
+  color: var(--pv-accent);
+  border-color: var(--pv-accent);
+}
+
+.breakpoint:hover,
+.breakpoint:focus-visible {
+  background: var(--pv-accent);
+  border-color: var(--pv-accent);
+  color: var(--pv-on-accent);
+  outline: none;
+}
+
+.viewport {
+  overflow: auto;
+  min-height: 0;
+}
+
+.stage {
+  box-sizing: content-box;
+}
+
+.frame-box {
+  position: relative;
+}
+
+.frame-clip {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px var(--pv-border-strong);
+}
+
+iframe {
+  display: block;
+  border: 0;
+  background: #fff;
+  transform-origin: 0 0;
+}
+
+:host(.dragging) iframe {
+  pointer-events: none;
+}
+
+:host(.dragging) {
+  user-select: none;
+}
+
+.handle {
+  position: absolute;
+  touch-action: none;
+}
+
+.handle:focus-visible {
+  outline: 2px solid var(--pv-accent);
+  outline-offset: 1px;
+}
+
+.handle-width {
+  top: 0;
+  right: -14px;
+  width: 14px;
+  height: 100%;
+  cursor: ew-resize;
+}
+
+.handle-height {
+  left: 0;
+  bottom: -14px;
+  height: 14px;
+  width: 100%;
+  cursor: ns-resize;
+}
+
+.handle-both {
+  right: -14px;
+  bottom: -14px;
+  width: 14px;
+  height: 14px;
+  cursor: nwse-resize;
+}
+
+.handle-width::after,
+.handle-height::after {
+  content: '';
+  position: absolute;
+  border-radius: 2px;
+  background: var(--pv-border-strong);
+}
+
+.handle-width::after {
+  top: 50%;
+  left: 5px;
+  width: 4px;
+  height: 32px;
+  margin-top: -16px;
+}
+
+.handle-height::after {
+  left: 50%;
+  top: 5px;
+  height: 4px;
+  width: 32px;
+  margin-left: -16px;
+}
+
+.handle:hover::after,
+.handle:focus-visible::after {
+  background: var(--pv-accent);
+}
+
+.size-badge {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 2px 6px;
+  border-radius: 3px 0 0 0;
+  background: var(--pv-accent);
+  color: var(--pv-on-accent);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}

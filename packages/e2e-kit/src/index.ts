@@ -1,5 +1,5 @@
 export { defineLigeirinhoConfig, type LigeirinhoConfigOptions } from './define-ligeirinho-config.js';
-export { responsiveChecks, type ResponsiveChecksOptions } from './responsive-checks.js';
+export { responsiveChecks, type ResponsiveChecksOptions, type ResponsiveViewport } from './responsive-checks.js';
 export {
   PreviewManifestMissing,
   buildRenderUrl,

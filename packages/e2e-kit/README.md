@@ -26,10 +26,13 @@ import { responsiveChecks } from '@ligeirinho/e2e-kit';
 responsiveChecks({ previewPath: '/__preview', widths: [390, 768, 1280], themes: ['light', 'dark'] });
 ```
 
-This declares one test per width and theme. Each test reads `window.__ligeirinhoPreview` from the previewer grid,
-opens `${basePath}/render/<entry>/<scenario>?theme=<theme>` for every scenario and checks, with soft assertions so
-one run reports everything (each message names entry, scenario, width and theme):
+This declares one test per width and theme. Each test reads `window.__ligeirinhoPreview` from the previewer
+workbench, opens `${basePath}/render/<entry>/<scenario>?theme=<theme>` for every scenario, one at a time, waits
+for its `play` steps (if any) and checks, with soft assertions so one run reports everything (each message names
+entry, scenario, width and theme):
 
+0. the play ran (`[menu/opened 390px dark] play failed: step "Open the menu" failed: …`); the checks below still
+   run on the state it left;
 1. no horizontal scroll (`scrollWidth <= clientWidth` on the document);
 2. every visible clickable (`a[href], button, [role=button], input, select, textarea, summary,
    [tabindex]:not([tabindex="-1"])`) is inside the viewport horizontally and not cut off by an
@@ -37,8 +40,10 @@ one run reports everything (each message names entry, scenario, width and theme)
 3. every visible clickable is at least 44 × 44 CSS px;
 4. zero axe-core violations for WCAG 2.1 A/AA (rule ids and targets are printed).
 
-With no scenarios the test passes with a `no-scenarios` annotation. Optional: `height` (viewport height, default
-900) and `test` (your own extended Playwright `test`, for fixtures or auth).
+With no scenarios the test passes with a `no-scenarios` annotation. Optional: `height` (viewport height for
+`widths`, default 900), `viewports` (exact sizes, e.g. `[{ width: 390, height: 844 }, { width: 844, height: 390 }]`
+for a phone in portrait and landscape; tests are named `responsive 390x844 light`; use it with or instead of
+`widths`) and `test` (your own extended Playwright `test`, for fixtures or auth).
 
 ### Heuristics
 

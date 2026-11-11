@@ -1,6 +1,6 @@
 import type { Page } from '@playwright/test';
 
-/** What `@ligeirinho/previewer` publishes on `window.__ligeirinhoPreview` from its grid page. */
+/** What `@ligeirinho/previewer` publishes on `window.__ligeirinhoPreview` from its workbench page. */
 export interface PreviewManifest {
   readonly entries: readonly PreviewEntrySummary[];
   readonly basePath: string;
@@ -29,7 +29,7 @@ const MANIFEST_TIMEOUT_MS = 15_000;
 
 /** @throws PreviewManifestMissing */
 export async function readPreviewManifest(page: Page, previewPath: string): Promise<PreviewManifest> {
-  // The grid is full of iframes; only the manifest matters, so don't wait for them to load.
+  // Only the manifest matters, so don't wait for the workbench's frame to load.
   await page.goto(previewPath, { waitUntil: 'commit' });
   const manifestHandle = await page
     .waitForFunction(() => Reflect.get(window, '__ligeirinhoPreview'), undefined, { timeout: MANIFEST_TIMEOUT_MS })

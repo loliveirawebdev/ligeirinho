@@ -1,4 +1,4 @@
-import type { AnyScenarioEntry, ScenarioRegistry } from './scenario-entry';
+import type { AnyScenarioEntry, PlayFunction, ScenarioRegistry } from './scenario-entry';
 
 export class PreviewEntryNotFound extends Error {
   override readonly name = 'PreviewEntryNotFound';
@@ -36,9 +36,10 @@ export interface ResolvedScenario {
   readonly entry: AnyScenarioEntry;
   readonly scenarioName: string;
   readonly model: unknown;
+  readonly play: PlayFunction | undefined;
 }
 
-/** The serializable description the grid page publishes on `window.__ligeirinhoPreview`. */
+/** The serializable description the workbench page publishes on `window.__ligeirinhoPreview`. */
 export interface PreviewEntrySummary {
   readonly id: string;
   readonly flow: string;
@@ -74,7 +75,7 @@ export function resolveScenario(
   if (!Object.hasOwn(entry.scenarios, scenarioName)) {
     throw new PreviewScenarioNotFound(entryId, scenarioName, Object.keys(entry.scenarios));
   }
-  return { entry, scenarioName, model: entry.scenarios[scenarioName] };
+  return { entry, scenarioName, model: entry.scenarios[scenarioName], play: entry.play?.[scenarioName] };
 }
 
 export function isPreviewNotFound(error: unknown): error is PreviewNotFound {
@@ -94,7 +95,19 @@ export function listFlows(registry: ScenarioRegistry): string[] {
   return [...new Set(registry.map((entry) => entry.flow))];
 }
 
-export function buildRenderPath(basePath: string, entryId: string, scenarioName: string, theme: string): string {
+export interface RenderPathOptions {
+  /** false renders the scenario without running its `play` function. Default true. */
+  readonly play?: boolean;
+}
+
+export function buildRenderPath(
+  basePath: string,
+  entryId: string,
+  scenarioName: string,
+  theme: string,
+  options: RenderPathOptions = {},
+): string {
   const encodedPath = [entryId, scenarioName].map(encodeURIComponent).join('/');
-  return `${basePath}/render/${encodedPath}?theme=${encodeURIComponent(theme)}`;
+  const playParameter = options.play === false ? '&play=0' : '';
+  return `${basePath}/render/${encodedPath}?theme=${encodeURIComponent(theme)}${playParameter}`;
 }

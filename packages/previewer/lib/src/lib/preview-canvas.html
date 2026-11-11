@@ -1,0 +1,100 @@
+<div class="corner" aria-hidden="true">{{ zoomLabel() }}</div>
+
+<div class="ruler ruler-top">
+  <div class="ruler-track" [style.transform]="'translateX(' + rulerShiftX() + 'px)'">
+    @for (tick of topTicks(); track tick.value) {
+      <span class="tick" [class.labeled]="tick.labeled" [style.left.px]="tick.offset" aria-hidden="true">
+        @if (tick.labeled) {
+          <span class="tick-label">{{ tick.value }}</span>
+        }
+      </span>
+    }
+    <span class="size-mark" [style.left.px]="scaledWidth()" aria-hidden="true"></span>
+    @for (breakpoint of breakpointMarks(); track breakpoint.label) {
+      <button
+        type="button"
+        class="breakpoint"
+        [class.reached]="breakpoint.reached"
+        [style.left.px]="breakpoint.offset"
+        [attr.aria-label]="'Set width to ' + breakpoint.label + ', ' + breakpoint.width + ' px'"
+        [title]="breakpoint.label + ' · ' + breakpoint.width + ' px'"
+        (click)="useBreakpoint(breakpoint)"
+      >
+        {{ breakpoint.label }}
+      </button>
+    }
+  </div>
+</div>
+
+<div class="ruler ruler-left">
+  <div class="ruler-track" [style.transform]="'translateY(' + rulerShiftY() + 'px)'">
+    @for (tick of leftTicks(); track tick.value) {
+      <span class="tick" [class.labeled]="tick.labeled" [style.top.px]="tick.offset" aria-hidden="true">
+        @if (tick.labeled) {
+          <span class="tick-label">{{ tick.value }}</span>
+        }
+      </span>
+    }
+    <span class="size-mark" [style.top.px]="scaledHeight()" aria-hidden="true"></span>
+  </div>
+</div>
+
+<div #viewport class="viewport" (scroll)="onScroll($event)">
+  <div
+    class="stage"
+    [style.padding.px]="stagePadding"
+    [style.width.px]="scaledWidth() + handleSize + stagePadding * 2"
+    [style.height.px]="scaledHeight() + handleSize + stagePadding * 2"
+  >
+    <div class="frame-box" [style.width.px]="scaledWidth()" [style.height.px]="scaledHeight()">
+      <div class="frame-clip">
+        <iframe
+          [src]="source()"
+          [title]="frameTitle()"
+          [style.width.px]="width()"
+          [style.height.px]="height()"
+          [style.transform]="'scale(' + scale() + ')'"
+        ></iframe>
+      </div>
+
+      <div
+        class="handle handle-width"
+        role="separator"
+        tabindex="0"
+        aria-orientation="vertical"
+        aria-label="Frame width"
+        [attr.aria-valuenow]="width()"
+        (pointerdown)="startDrag($event, 'width')"
+        (pointermove)="drag($event)"
+        (pointerup)="stopDrag()"
+        (pointercancel)="stopDrag()"
+        (keydown)="resizeWithKeyboard($event, 'width')"
+      ></div>
+      <div
+        class="handle handle-height"
+        role="separator"
+        tabindex="0"
+        aria-orientation="horizontal"
+        aria-label="Frame height"
+        [attr.aria-valuenow]="height()"
+        (pointerdown)="startDrag($event, 'height')"
+        (pointermove)="drag($event)"
+        (pointerup)="stopDrag()"
+        (pointercancel)="stopDrag()"
+        (keydown)="resizeWithKeyboard($event, 'height')"
+      ></div>
+      <div
+        class="handle handle-both"
+        aria-hidden="true"
+        (pointerdown)="startDrag($event, 'both')"
+        (pointermove)="drag($event)"
+        (pointerup)="stopDrag()"
+        (pointercancel)="stopDrag()"
+      ></div>
+
+      @if (dragStart() !== null) {
+        <p class="size-badge">{{ width() }} × {{ height() }}</p>
+      }
+    </div>
+  </div>
+</div>

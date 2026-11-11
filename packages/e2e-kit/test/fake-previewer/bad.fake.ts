@@ -1,5 +1,12 @@
 import { responsiveChecks } from '../../src/index.js';
-import { axeViolationPage, clippedButtonPage, goodPage, tinyButtonPage, widePage } from '../fixtures/pages.js';
+import {
+  axeViolationPage,
+  clippedButtonPage,
+  goodPage,
+  playFailedPage,
+  tinyButtonPage,
+  widePage,
+} from '../fixtures/pages.js';
 import { fakePreviewerTest } from './fake-previewer.js';
 
 responsiveChecks({
@@ -11,5 +18,6 @@ responsiveChecks({
     'delete-dialog': { clipped: clippedButtonPage },
     toolbar: { tiny: tinyButtonPage },
     'signup-form': { unlabeled: axeViolationPage },
+    menu: { opened: playFailedPage },
   }),
 });

@@ -77,4 +77,27 @@ defineScenarios({
   scenarios: { broken: { nickname: 'Ada' } },
 });
 
+// Play functions are keyed by scenario name and get the canvas and `step`.
+defineScenarios({
+  flow: 'Account',
+  title: 'With play',
+  component: ProfileView,
+  scenarios: { complete: { name: 'Ada' } },
+  play: {
+    complete: async ({ canvas, step }) => {
+      const heading: HTMLElement | null = await step('find the heading', () => canvas.querySelector('h1'));
+      heading?.click();
+    },
+  },
+});
+
+defineScenarios({
+  flow: 'Account',
+  title: 'Play for a missing scenario',
+  component: ProfileView,
+  scenarios: { complete: { name: 'Ada' } },
+  // @ts-expect-error there is no `minimal` scenario
+  play: { minimal: () => undefined },
+});
+
 export const usedValues = [explicitFull, inferredComplete, namedEmpty];
