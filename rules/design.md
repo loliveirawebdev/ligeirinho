@@ -7,6 +7,18 @@ Adapted for real app screens from the craft rules in Benji Taylor's
 [stageshow](https://github.com/benjitaylor/skills/tree/main/stageshow) skill (MIT), which are written for product
 illustrations.
 
+## Reuse first: the catalog
+
+Screens are composed from the project's catalog (`libs/ui`, its README lists every component and screen pattern):
+the app shell, page header, filter bar, data table, item list, detail list, input group, notice, empty and loading
+states. They wrap Angular Material and add what real screens kept getting wrong.
+
+| Rule | Why |
+|---|---|
+| **Read `libs/ui/README.md` before writing a view,** and start from the closest screen pattern (`src/examples`) | the agent that composes existing parts can't drift; the one that rebuilds them always does |
+| **Never rebuild what the catalog has** in a screen: no `mat-sidenav-container`, `mat-table`, error blocks or field-and-button groups by hand (the lint `@ligeirinho/use-catalog` names the component to use) | every rebuilt copy differs a little, and the little differences are the ugliness |
+| **If it almost fits, change the catalog,** for every screen; a new pattern goes into the catalog first, with scenarios, harness and tests (the `catalog` skill) | a one-off variant in a screen is the start of the next inconsistency |
+
 ## The one idea
 
 **A screen shows the user's task, simplified to what they need now, with one clear place for the eye to land.**
@@ -47,26 +59,9 @@ Generated UI fails in five ways. Name the one you see before fixing anything:
 
 ## Words
 
-The copy is part of the design: generic copy makes a well-drawn screen look generated. Write like a careful product
-writer talking to one person who is busy. Drawn from the content guides of Shopify Polaris, GOV.UK, Material and
-Apple's HIG.
-
-| Rule | Why |
-|---|---|
-| **Plain, short, specific.** Cut filler (*simply*, *just*, *please*, *successfully*, *in order to*); front-load the word the user scans for | every extra word is read on every visit |
-| **No "Oops", no "Uh-oh", no exclamation marks, no emoji, no jokes in errors**; no "Welcome to…", "Let's…", "Unlock", "Seamless", "Effortless", "Powerful" | cheerful filler and marketing verbs are the clearest tells of generated copy |
-| **One word per concept,** used everywhere: if the thing is a *task*, it is never an *item*, *todo* or *entry*; the button verb, the in-progress state and the result share a verb (*Add task* → *Adding…*) | synonyms make users wonder whether they are different things |
-| **Titles name the thing** (*Tasks*, *Billing*), not the user (*My tasks*) or the app (*Task Manager*) | the screen is already theirs |
-| **Buttons are verb + object** (*Add task*, *Delete invoice*), never *OK*, *Submit*, *Yes*; a destructive button names what is destroyed | the label is the last thing read before acting |
-| **Labels are short nouns without colons;** the placeholder is a hint or example (*What needs doing?*), never the label and never a copy of the button | placeholders vanish on typing; repeating the button adds nothing |
-| **Counts as digits, with real plurals, and zero in words:** *1 open task*, *2 open tasks*, *All done* or *Nothing open* rather than *0 open tasks*; don't show a count next to an empty state that already says it | *0 items* reads like a database, and saying it twice is noise |
-| **Dates relative while recent** (*today*, *yesterday*), then *Mar 3*, adding the year only when it isn't the current one | users think in days, not timestamps |
-| **Empty states say what will be here and how to start,** and differ by case: first use (*No tasks yet*), no results (*No tasks match "x"*), all done (*All done*) | one generic "No data" fits none of them |
-| **Errors: what happened, then what to do,** in human words, without blame, codes or *Error:* prefixes; never *Something went wrong* on its own | the user needs the next step, not an apology |
-| **Headlines and labels have no final period; body sentences do.** Sentence case everywhere | periods on labels look like prose; Title Case reads like a form from 2005 |
-| **Real typography:** curly apostrophes and quotes (’ “ ”), the ellipsis character (…), an en dash for ranges (9–5); *…* ends in-progress states (*Saving…*) and actions that open another step | straight quotes and three dots are what unedited text looks like |
-| **Icon-only and repeated buttons get a full accessible name** with their object: *Complete “Review the plan”*, not *Complete* ten times | a screen reader user hears the list out of context |
-| **Never build a sentence by concatenating fragments;** each full string lives in one place (the view-model) so it can be translated | word order changes between languages |
+The copy is part of the design: chatty or generic copy makes a well-drawn screen look generated. The register
+(formal, impersonal), the structures (button = verb + object, error = what happened + what to do), the glossary
+and the keys are in [copy.md](copy.md), for every language. No text is written in a template.
 
 ## Type
 
@@ -86,7 +81,7 @@ Apple's HIG.
 | **Spacing from the scale only** (Tailwind's 4 px steps, which match M3's 4 dp grid); no arbitrary values like `mt-[13px]` | a scale makes rhythm; arbitrary values make drift |
 | **Proximity groups:** things that belong together are closer to each other than to anything else; never spread items evenly to fill a space | even spacing erases the structure |
 | **Text keeps an inset of at least 12 px (16 px is the default)** from the edge of a card, panel or row; nothing touches a border | text touching an edge is the clearest "unfinished" signal |
-| **Inputs, selects and buttons in one row share one height** (56 px for an outlined field and the button beside it, see "The look") | mismatched control heights in a row are the first thing a designer spots |
+| **Inputs, selects and buttons in one row share one height** (48 px for a field and the button beside it at the compact scale, see "The look") | mismatched control heights in a row are the first thing a designer spots |
 | **A standalone button sits 8 to 12 px from the field or block it belongs to** (unless attached in an Input Group, see "Controls") | touching reads as a mistake; far away it belongs to nothing |
 | **No near-tangents:** two edges either line up exactly or are at least 8 px apart | edges 1 to 3 px apart look like an accident |
 | **Headroom for floating labels:** always space outline fields considering their **focused** state — the floating label rises ~8 px above the top border, so leave at least 12 px (e.g. `gap-3` / `mt-3`) from the heading or control above it; below the field, leave at least 8 px before suggestions | an outline field that looks fine when empty collides with its heading the moment the user focuses it |
@@ -95,6 +90,11 @@ Apple's HIG.
 | **A control hugs its content;** it doesn't stretch with its contents stuck at one end (full width on phones is a layout choice, not a default) | lopsided controls look broken |
 | **Dots, badges and focus rings stay inside the content edge** | marks that stick out read as glitches |
 | **Fix overflow by fitting the content** (wrap, truncate with a tooltip, shorten), not by widening the container | a wider box only moves the problem to the next width |
+| **An icon beside text lines up with the first line** (`items-start`), never with the middle of a block that can wrap (the lint catches `items-center` with an icon and a `p`/`div`) | a centered icon floats loose when the text wraps to three lines |
+| **Content in a container keeps the container's inset;** what goes edge to edge (a table, a divider, an image) does so on purpose, all the way, never half in | a block that bleeds out on one side looks like a mistake |
+| **A field's hint and error live in its subscript** (`mat-hint`, `mat-error`), never as a loose paragraph below or as text inside the field | loose text pushes the layout and detaches from the field |
+| **Actions inside a block align with its content inset** and sit at its end (`gap-2` between them) | buttons that ignore the padding look pasted on |
+| **The browser's default margins are gone** (lists, definition lists, headings, figures: base reset in `styles.css`); all spacing comes from the scale | default margins are where uneven gaps come from |
 
 ## Color
 
@@ -143,8 +143,17 @@ lives in `apps/web/src/theme.scss` (the Material theme, in a THEME and a BASE bl
 
 | Setting | What it is |
 |---|---|
-| `$app-palette` | the source color. A prebuilt palette (`mat.$azure-palette`, `$blue`, `$green`, `$violet`, `$rose`…) or one generated from a brand color with `ng generate @angular/material:theme-color`. Material derives every role (primary, containers, surfaces, outline) for light and dark from it, already passing contrast |
+| `$app-accent` | the app's one hue: a prebuilt palette (`mat.$azure-palette`, `$blue`, `$green`, `$violet`, `$rose`…) or one generated from a brand color with `ng generate @angular/material:theme-color`. Material derives primary (actions, links, focus) and a softer secondary (selection: chips, the current page, tonal buttons) from it, for light and dark, already passing contrast |
+| `$app-tint` | how much of the accent's hue the grays carry: `0` pure gray, `1` (default) a soft tint like Tailwind's slate next to blue, up to about `1.5` |
+| `$app-tertiary` | a second hue for the rare accent that must differ (charts, a highlight); the accent by default |
 | `$app-font` | the font family; Roboto by default (self-hosted through `@fontsource/roboto`). An app with a brand font self-hosts it and names it here |
+
+**How the colors talk** is fixed in BASE, the same for every app: every color comes from the accent's hue. Surfaces,
+borders and text are grays tinted with it (by `$app-tint`, on slate's curve: barely near white, most in the middle),
+selection (chips, the current page, tonal buttons, the avatar) is a soft version of it (`secondary-container`),
+actions are the accent itself (`primary`), and the meanings are fixed: error red (`error`, `error-container`) and
+success green (`success`, `success-container`). The app shell's frame (drawer and top bar) is `surface`; the page on
+it is `surface-container-lowest`.
 
 Don't touch the BASE block per app, don't override component tokens per app and don't restyle components with
 Tailwind: if an app needs something the look doesn't give, it is a template change.
@@ -155,7 +164,7 @@ Tailwind: if an app needs something the look doesn't give, it is a template chan
 |---|---|
 | **Use the Angular Material component for anything it has:** buttons (`matButton="filled" \| "tonal" \| "outlined" \| "text"`, `matIconButton`, `matFab`), `mat-form-field` + `matInput`, `mat-select`, `mat-checkbox`, `mat-slide-toggle`, `mat-radio-group`, `mat-chip-listbox` (filters), `mat-list`, `mat-table`, `mat-tabs`, `mat-menu`, `mat-dialog`, `mat-sidenav`, `mat-snack-bar`, `mat-progress-bar`, `mat-tooltip` | each one already has the M3 states, focus, touch target and accessibility; a hand-built version never matches |
 | **Tailwind is for layout only** (flex, grid, gap, padding, max-width, breakpoints). Colors and type come from the token utilities: `bg-surface`, `bg-surface-container`, `text-on-surface-variant`, `border-outline-variant`, `bg-error-container`…, and the type scale `text-headline-medium`, `text-title-medium`, `text-body-large`, `text-label-large`… | the tokens are what make light and dark and every app's palette work |
-| **Never restyle a Material component's internals** (`.mdc-*`, `.mat-mdc-*` selectors, `::ng-deep`). If a size must change, set its documented token (a `--mat-*` custom property, e.g. `[--mat-button-filled-container-height:56px]`) | internals change between versions; tokens are the supported API |
+| **Never restyle a Material component's internals** (`.mdc-*`, `.mat-mdc-*` selectors, `::ng-deep`). If a size must change, set its documented token (a `--mat-*` custom property, e.g. `[--mat-button-filled-container-height:48px]`) | internals change between versions; tokens are the supported API |
 
 ### Page and type
 
@@ -163,7 +172,7 @@ Tailwind: if an app needs something the look doesn't give, it is a template chan
 |---|---|
 | **Page = `surface`;** groups that need a backdrop sit on `surface-container-low` / `surface-container`, never on a shadow | M3 separates with tonal surfaces, not borders and shadows |
 | **The type scale only:** page title `text-headline-medium` (or `headline-small` on dense screens), section titles `text-title-large` / `title-medium`, body `text-body-large` / `body-medium`, metadata `text-body-small` in `text-on-surface-variant` | the scale is the hierarchy; arbitrary sizes break it |
-| **Content in one readable column** (`max-w-2xl`, centered) for lists and forms; wider only for tables and dashboards | long lines and stretched forms are hard to use |
+| **Pages use the full width of the content area** (the app shell adds only the side padding); a form or a block of prose inside it may cap its own width (`max-w-2xl`) | long lines and stretched forms are hard to use |
 
 ### Controls
 
@@ -171,23 +180,31 @@ Tailwind: if an app needs something the look doesn't give, it is a template chan
 |---|---|
 | **One filled button per screen or section** for the primary action; tonal for secondary emphasis, outlined or text for the rest | emphasis is a budget |
 | **Text fields are `appearance="outline"`** with a `mat-label` (never a placeholder-only field); `subscriptSizing="dynamic"` when no hint or error is shown, so rows don't carry empty space | the floating label stays visible while typing |
-| **A button next to a text field matches its 56 px height** (`[--mat-button-filled-container-height:56px]`, same token family for outlined/tonal) | mismatched control heights in a row are the first thing a designer spots |
-| **Input + direct action uses the attached Input Group** (`.input-group`): when a button triggers the immediate action of a text field (add item, connect, search, subscribe), attach them in one unified block — the input's right border and right corners are flat (`border-right: none`, `border-top/bottom-right-radius: 0`), the button shares its 56 px height with flat left corners (`rounded-l-none rounded-r-md`), `flex-shrink: 0`, balanced padding (20 px left, 24 px right) with an 8 px gap between icon and text, and a border rendered on `::after` that tracks the input outline synchronously (1 px outline default/disabled, 1 px on-surface on hover, 2 px primary on `:focus-within`) with zero layout shift | a square outlined field beside a freestanding pill button creates jarring geometric contrast; attaching them forms a single coherent, monolithic tool |
+| **A button next to a text field matches its 48 px height** (`[--mat-button-filled-container-height:48px]`, same token family for outlined/tonal; `ui-input-group` does it) | mismatched control heights in a row are the first thing a designer spots |
+| **Text with a fixed shape is masked** (tax ids, phone, postal code, dates, plates): `[uiMask]` on the `matInput`, a pattern from `MASKS` or the screen's own; the form keeps the characters typed, the field shows them formatted | a hint saying "numbers only" leaves the formatting to the user and the validation to luck |
+| **Input + direct action is `ui-input-group`:** when a button triggers the immediate action of a text field (add item, invite, subscribe), the field and the button are one attached block of one height. Never a text button inside the field (`matSuffix` holds only icon buttons such as clear or show password; the lint checks it) | a square field beside a loose pill button, or an action hidden inside the field, both read as unfinished |
 | **Field suggestions sit below the input:** when offering quick presets or suggestions (like Gmail's account creation suggestions), place compact pills (`text-label-small`) underneath the field with a label (*Sugestões:* / *Suggestions:*), leaving at least 8 px from the input border | preserves full-width input affordance and keeps shortcuts discoverable without crowding the row |
-| **Density 0** (the default): every control has a 48 px touch target. Don't lower density on screens used by touch | M3's touch target; the gate checks at least 44 px |
+| **The compact scale is the default** (theme.scss BASE): 14 px text, 36 px buttons, 48 px fields, 40 px drawer links. Controls keep Material's 48 px touch target; don't lower `density` itself, which removes it | M3's touch target; the gate checks at least 44 px |
 | **Filters are chips** (`mat-chip-listbox`), toggles are `mat-slide-toggle`, a choice among a few is a chip set or radio group, among many a `mat-select` | the component tells the user how it behaves |
-| **Lists:** `mat-list` / `mat-nav-list` for rows; a clickable row is a `mat-list-item` link or button (it gets the state layer and pointer); dividers only between rows that would otherwise blur together | the state layer is the hover/press cue |
+| **Cards:** `mat-card appearance="outlined"` (the default), `raised` only over a busy surface, never `filled` (a gray block that reads as disabled). Actions go in `mat-card-actions`, a footer under a divider with the buttons at the end (the theme draws it) | one card look across the app; a filled card blends into the surface and its tone means nothing |
+| **Expansion panels** are one outlined block (the theme draws it: no shadows, the open panel stays in line); for long optional detail, one subject a panel | panels that float apart on open look like separate cards |
+| **Lists:** records the user opens are `ui-item-list` or `ui-data-table` (`mat-action-list` underneath); `mat-nav-list` is only navigation, inside a `<nav>` (the app shell has it; the lint checks it); dividers only between rows that would otherwise blur together | a nav list of records announces navigation that isn't there and marks rows as "current" |
 | **Detail panels open in a `mat-sidenav`** (`position="end"`, `mode="over"`) or, on phones, a full-screen dialog | the side sheet keeps the list in context |
-| **Destructive actions confirm in a `MatDialog`**, never inline on the screen. Title is the question (*Discard this opportunity?*), the content says what happens, the actions are *Cancel* (text button) and a confirm button that repeats the verb and the object (*Discard opportunity*). The button that opens it ends in *…* | an inline confirm shifts the layout and is easy to click through; a dialog stops the user and names the consequence |
+| **Dialogs come in three kinds, from the catalog:** `ui-confirm-dialog` (`ConfirmDialogs.ask`) to confirm a destructive action, `ui-form-dialog` for a short form, `ui-dialog` for anything else. All of them put the actions in a footer under a divider, at the end, like cards | one look and one behavior for every dialog: the footer reads as the place to decide, the form ones save, fail and guard unsaved changes the same way |
+| **Destructive actions confirm in a dialog** (`ConfirmDialogs.ask`), never inline on the screen. Title is the question (*Discard this opportunity?*), the content says what happens, the actions are *Cancel* (text button) and a confirm button that repeats the verb and the object (*Discard opportunity*). The button that opens it ends in *…* | an inline confirm shifts the layout and is easy to click through; a dialog stops the user and names the consequence |
+| **Feedback by where it happened:** the result of what the user just did is a snack bar (*Saved*, with *Undo*); something that happened away from the screen (an export finished, a sync failed) is a corner notification (`Notifications.show`); a state of the page is a `ui-notice` | one channel for everything makes every message look equally urgent |
+| **Sign-in is a one-time code by default:** the email, then the code in `ui-otp-input` (screen pattern *Sign in*); a password only when the product asks for it | codes skip the forgotten-password flow and read as current |
 | **Results of an action are a `MatSnackBar`** (with *Undo* when the action can be undone), not a banner on the page | transient feedback shouldn't move the layout |
-| **Errors that block the screen** sit in an `bg-error-container text-on-error-container` block with the retry action inside it | the error container is M3's role for this |
-| **Icons are Material Symbols** (outlined, self-hosted) through `<mat-icon>name</mat-icon>`; 24 px default, 20 px inside dense rows | the set designed with the components; one set, never hand-drawn |
+| **Errors that block the screen** are a `ui-notice` with `tone="error"` and the retry action inside it | the error container is M3's role for this, built once |
+| **A failed submit shows right above the actions** (a dialog's footer, a form's buttons), never at the top of the form; the values stay | the eye is on the button just pressed; an error at the top is off screen on a long form and reads as a page state |
+| **Icons are Material Symbols** (outlined, self-hosted) through `<mat-icon>name</mat-icon>`; 24 px default, 20 px inside dense rows. The name must exist in the font (the lint checks it against `material-symbols`; the e2e checks catch an icon drawn as its name) | an unknown name shows the word *arrow_bak* on screen |
 | **Light by default; dark through the `dark` class on `<html>`** (the previewer sets it); every token flips by itself | `color-scheme` drives the `light-dark()` pairs of every token |
 
 ## The review
 
-Before showing a screen to the user (the `preview` stage), look at every scenario at 390, 768 and 1280, light and
-dark, the way the most exacting designer you know would: the one who screenshots the single wrong thing and sends
+Before showing a screen to the user (the `preview` stage), **look at screenshots of every scenario** at 390, 768 and
+1280, light and dark (the responsive e2e saves them in `apps/e2e/test-results/screens/<entry>/`, or take them in a
+browser you drive), the way the most exacting designer you know would: the one who screenshots the single wrong thing and sends
 it back with "what is this?". If you can picture that screenshot (a badge off its avatar, text touching a card edge,
 two icons of different weights, a gray hover on a blue button), that is the next fix.
 
@@ -196,4 +213,6 @@ two icons of different weights, a gray hover on a blue button), that is the next
 3. Say in one line what the focal element is. If you can't, the screen isn't done.
 
 **Enforced by:** checklist in the `preview` stage (before the user sees the screen) and again at the close; axe in
-the gate catches contrast and missing labels; the raw-elements lint keeps screens on the design system.
+the gate catches contrast and missing labels; the lint keeps screens on the catalog (`no-raw-elements`,
+`use-catalog`, `nav-list-in-nav`, `icon-aligns-with-text`, `no-suffix-button`, `known-icons`); `catalog.spec.ts`
+keeps every catalog component documented, previewable and testable.

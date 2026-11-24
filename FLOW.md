@@ -20,8 +20,11 @@ If you can't tell a small change from a feature, ask the user in one sentence.
 1. **`clarify`** — questions, one at a time, most important first, always with a recommendation and options. No
    limit. Stop when nothing is left that changes the product, a rule, the contract or the experience.
 2. **`plan`** — a short plan: domain rules, API contract, screens and view-models, risks and patterns
-   (researched, with sources), test list, parallel chunks. The user approves it.
-3. **`preview`** — new screens in the previewer with their scenarios, side by side. The user approves them.
+   (researched, with sources), the copy table of every screen, test list, parallel chunks. The user approves it,
+   words included.
+3. **`preview`** — new screens composed from the catalog (`libs/ui`), in the previewer with their scenarios,
+   reviewed from screenshots at every width and theme before the user sees them. The user approves them. A pattern
+   the catalog lacks goes through the **`catalog`** skill first.
 4. **`build`** — chunk by chunk: test first → code → green tests → checklist on the diff → commit. Independent
    chunks can go to parallel sessions (`parallel`).
 5. **`close`** — green gate, e2e for the journeys touched, diff review against the rules, feature note, area doc

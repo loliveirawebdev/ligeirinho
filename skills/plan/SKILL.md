@@ -10,7 +10,8 @@ Short. No documents nobody rereads. Only what someone needs to build and review 
 ## Before writing
 
 1. Read the rules the feature touches in the plugin's `rules/` (at least `architecture`, `security`, `scale` and,
-   if there's a screen, `mvvm` and `responsive`; if there's a route, `rest-api`).
+   if there's a screen, `mvvm`, `responsive`, `design` and `copy`; if there's a route, `rest-api`).
+   With a screen, also read the project's catalog (`libs/ui/README.md`) and its glossary (`docs/glossary.md`).
 2. **Search the web** for how the problem is usually solved: established patterns, official docs for the stack's
    libraries, OWASP (API Top 10, ASVS, Cheat Sheets). Keep the URLs.
 
@@ -27,7 +28,14 @@ New or changed domain rules, in business sentences. Areas touched.
 Errors in Problem Details format, with the `type` of each business error.
 
 ### Screens
-For each screen: view, view-model (fields), scenarios (empty, full, error, read-only…), page (what it fetches).
+For each screen: the screen pattern it follows and the catalog components it uses (`libs/ui/README.md`; a missing
+pattern is a chunk of its own, see the `catalog` skill), view, view-model (fields), scenarios (empty, full, error,
+read-only…), page (what it fetches).
+
+### Copy
+One table per screen, in `copy.source` (`.ligeirinho.yml`), following rules/copy.md: key, text, where it appears.
+Terms come from `docs/glossary.md`; a new term gets its glossary row here, with every locale of `copy.locales`.
+| Key | Text | Where |
 
 ### Risks and patterns
 Security, scale and zero trust: for each risk, the chosen pattern and the source (URL).
@@ -50,7 +58,8 @@ What you decided on your own and why (one line each).
 
 ## Approval
 
-Show the plan and ask the user to approve it. Adjust until they do. Then:
+Show the plan and ask the user to approve it, the copy tables included: the words are approved here, once, not
+renamed after the screen is built. Adjust until they do. Then:
 
 1. Save the approved plan in the feature note (**Decisions** and **Contract** sections).
 2. Run `scripts/state.sh NNN-name preview` (or `build`, if there are no screens).

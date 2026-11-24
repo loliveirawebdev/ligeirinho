@@ -22,6 +22,11 @@ preview:
   url: http://localhost:4200/__preview
   widths: 390,768,1280
 
+copy:
+  source: en                 # the locale texts are written in first and approved in
+  locales: en                # every locale the product ships, comma separated (en, es, pt-BR)
+  register: formal           # formal | neutral (rules/copy.md)
+
 adoption:
   enabled: false             # true in an existing project: rules old code doesn't meet yet become warnings
 ```
@@ -35,6 +40,8 @@ adoption:
 | `commands.e2e` | no | on demand |
 | `docs.areas`, `docs.features` | no (default `docs/areas`, `docs/features`) | skills, stop hook |
 | `preview.url`, `preview.widths` | no (defaults above) | preview skill, `e2e-kit` |
+| `copy.source`, `copy.locales` | no (default `en`) | `@ligeirinho/copy-text` lint (through `readCopyConfig`), plan and preview skills |
+| `copy.register` | no (default `formal`) | plan and preview skills (rules/copy.md) |
 | `adoption.enabled` | no (default `false`) | every rule |
 
 Working state (current feature, stage, green-gate stamp) lives in `.ligeirinho/`, outside git.

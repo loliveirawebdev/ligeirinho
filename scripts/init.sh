@@ -45,7 +45,7 @@ sed -i.bak "s/:-app-nx-cache}/:-$project_name-nx-cache}/" "$target_dir/compose.y
 if [ "$use_local_packages" = true ]; then
   echo "Packing ligeirinho's packages into vendor/ligeirinho"
   "$ligeirinho_root/scripts/pack-local.sh" "$target_dir/vendor/ligeirinho" >/dev/null
-  sed -i.bak -E 's#"https://github.com/loliveirawebdev/ligeirinho/releases/download/v[^/]+/(ligeirinho-[a-z-]+\.tgz)"#"file:vendor/ligeirinho/\1"#' "$target_dir/package.json"
+  sed -i.bak -E 's#"https://github.com/loliveirawebdev/ligeirinho/releases/download/v[^/]+/(ligeirinho-[a-z0-9-]+\.tgz)"#"file:vendor/ligeirinho/\1"#' "$target_dir/package.json"
   (cd "$target_dir" && pnpm install --lockfile-only >/dev/null)
 fi
 find "$target_dir" -maxdepth 2 -name '*.bak' -delete
