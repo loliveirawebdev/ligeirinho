@@ -1,4 +1,4 @@
-import { OverlayModule, type ConnectedPosition } from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -12,9 +12,11 @@ import {
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { FormValueControl } from '../form-value-control';
+import { DROPDOWN_POSITIONS } from '../dropdown-panel';
 
 /** Someone who can be mentioned. */
 export interface MentionPerson {
@@ -50,7 +52,7 @@ const MENTION_BEFORE_CARET = /(?:^|\s)@([^\s@]*)$/;
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MentionInput), multi: true }],
   host: { class: 'block' },
 })
-export class MentionInput implements ControlValueAccessor {
+export class MentionInput extends FormValueControl<string> {
   readonly people = input.required<readonly MentionPerson[]>();
   /** The field's label: *Comment*. */
   readonly label = input.required<string>();
@@ -62,7 +64,6 @@ export class MentionInput implements ControlValueAccessor {
   /** How many suggestions show at once. */
   readonly maxSuggestions = input(6);
   readonly value = model('');
-  readonly disabled = input(false);
 
   /** The ids of the people mentioned in the text, whenever they change. */
   readonly mentionsChange = output<readonly string[]>();
@@ -71,13 +72,8 @@ export class MentionInput implements ControlValueAccessor {
   /** What was typed after the `@`, while a mention is being written. */
   protected readonly query = signal<string | null>(null);
   protected readonly active = signal(0);
-  protected readonly positions: ConnectedPosition[] = [
-    { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
-    { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
-  ];
+  protected readonly positions = DROPDOWN_POSITIONS;
 
-  private readonly formDisabled = signal(false);
-  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   protected readonly suggestions = computed(() => {
     const query = this.query();
     if (query === null) {
@@ -94,24 +90,10 @@ export class MentionInput implements ControlValueAccessor {
   /** Where the `@` being written sits in the text. */
   private anchor = 0;
   private lastMentions = '';
-  private onChange: (value: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
 
-  writeValue(value: unknown): void {
+  override writeValue(value: unknown): void {
     this.value.set(typeof value === 'string' ? value : '');
     this.lastMentions = this.mentionedIds(this.value()).join();
-  }
-
-  registerOnChange(onChange: (value: string) => void): void {
-    this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => void): void {
-    this.onTouched = onTouched;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
   }
 
   protected optionId(index: number): string {

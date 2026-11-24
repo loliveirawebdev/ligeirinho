@@ -1,24 +1,13 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  InjectionToken,
-  Injector,
-  input,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, InjectionToken, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { defineScenarios } from '@ligeirinho/previewer';
 import type { ConfirmDialogText } from '../confirm-dialog/confirm-dialog';
 import { FormDialog, type FormDialogError } from './form-dialog';
+import { previewDialog } from '../preview-dialog';
 
 interface FormDialogPreviewModel {
   readonly open: string;
@@ -120,28 +109,7 @@ class FormDialogPreviewContent {
 class FormDialogPreview {
   readonly model = input.required<FormDialogPreviewModel>();
 
-  private readonly dialog = inject(MatDialog);
-  private readonly injector = inject(Injector);
-
-  constructor() {
-    effect(() => {
-      this.model();
-      untracked(() => {
-        this.dialog.closeAll();
-        this.open();
-      });
-    });
-    inject(DestroyRef).onDestroy(() => {
-      this.dialog.closeAll();
-    });
-  }
-
-  protected open(): void {
-    this.dialog.open(FormDialogPreviewContent, {
-      injector: Injector.create({ providers: [{ provide: PREVIEW_MODEL, useValue: this.model() }], parent: this.injector }),
-      width: '480px',
-    });
-  }
+  protected readonly open = previewDialog(this.model, FormDialogPreviewContent, PREVIEW_MODEL);
 }
 
 const invite: FormDialogPreviewModel = {

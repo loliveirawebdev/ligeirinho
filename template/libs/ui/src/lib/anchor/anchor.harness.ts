@@ -1,4 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing';
+import { clickByText, textOf } from '../harness-helpers';
 
 /** Reads and follows a `ui-anchor`'s links in tests, by their labels. */
 export class AnchorHarness extends ComponentHarness {
@@ -18,15 +19,10 @@ export class AnchorHarness extends ComponentHarness {
 
   /** The label of the section marked as being read, or an empty string. */
   async getCurrentLabel(): Promise<string> {
-    return (await (await this.currentLink())?.text()) ?? '';
+    return textOf(await this.currentLink());
   }
 
   async follow(label: string): Promise<void> {
-    for (const link of await this.links()) {
-      if ((await link.text()) === label) {
-        await link.click();
-        return;
-      }
-    }
+    await clickByText(await this.links(), label);
   }
 }

@@ -9,10 +9,12 @@
     <button uiDialogActions matButton="filled" type="submit" class="ui-form-dialog-submit" [attr.aria-disabled]="saving()">
       @if (saving()) {
         <span class="flex items-center gap-2" role="status">
+          <!-- inert: Material gives the spinner tabindex="-1", a focusable control nested in the button. -->
           <mat-progress-spinner
             mode="indeterminate"
             diameter="18"
             aria-hidden="true"
+            inert
             class="[--mat-progress-spinner-active-indicator-color:currentColor]"
           />
           {{ savingLabel() }}

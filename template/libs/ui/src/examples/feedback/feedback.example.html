@@ -1,11 +1,4 @@
 @let m = model();
-<ng-template #note let-note>
-  <div class="flex flex-col">
-    <code class="text-label-large">{{ note.name }}</code>
-    <span class="text-body-small text-on-surface-variant">{{ note.use }}</span>
-  </div>
-</ng-template>
-
 <main class="flex w-full flex-col gap-10 px-4 pt-6 pb-16 sm:px-6 lg:px-8">
   <h1 class="text-headline-medium">{{ m.title }}</h1>
 
@@ -13,15 +6,15 @@
     <h2 id="feedback-overlays" class="text-title-medium">{{ m.sections.overlays }}</h2>
     <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
       <div class="flex flex-col items-start gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.dialog }" />
+        <ui-example-note [note]="m.notes.dialog" />
         <button matButton="outlined" type="button" (click)="openDialog()">{{ m.dialog.open }}</button>
       </div>
       <div class="flex flex-col items-start gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.bottomSheet }" />
+        <ui-example-note [note]="m.notes.bottomSheet" />
         <button matButton="outlined" type="button" (click)="openBottomSheet()">{{ m.bottomSheet.open }}</button>
       </div>
       <div class="flex flex-col items-start gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.snackBar }" />
+        <ui-example-note [note]="m.notes.snackBar" />
         <button matButton="outlined" type="button" (click)="openSnackBar()">{{ m.snackBar.trigger }}</button>
       </div>
     </div>
@@ -31,12 +24,12 @@
     <h2 id="feedback-progress" class="text-title-medium">{{ m.sections.progress }}</h2>
     <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
       <div class="flex flex-col gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.progressBar }" />
+        <ui-example-note [note]="m.notes.progressBar" />
         <mat-progress-bar mode="determinate" [value]="m.progress.value" [attr.aria-label]="m.progress.label" />
         <mat-progress-bar mode="indeterminate" [attr.aria-label]="m.progress.label" />
       </div>
       <div class="flex flex-col gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.progressBuffer }" />
+        <ui-example-note [note]="m.notes.progressBuffer" />
         <mat-progress-bar
           mode="buffer"
           [value]="m.progress.value"
@@ -45,7 +38,7 @@
         />
       </div>
       <div class="flex flex-col gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.spinner }" />
+        <ui-example-note [note]="m.notes.spinner" />
         <div class="flex items-center gap-6">
           <mat-progress-spinner mode="indeterminate" diameter="40" [attr.aria-label]="m.progress.label" />
           <mat-progress-spinner
@@ -57,13 +50,14 @@
         </div>
       </div>
       <div class="flex flex-col items-start gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.spinnerButton }" />
+        <ui-example-note [note]="m.notes.spinnerButton" />
         <button matButton="filled" type="button" disabled>
           <span class="flex items-center gap-2">
             <mat-progress-spinner
               mode="indeterminate"
               diameter="18"
               aria-hidden="true"
+              inert
               class="[--mat-progress-spinner-active-indicator-color:currentColor]"
             />
             {{ m.progress.saving }}
@@ -77,7 +71,7 @@
     <h2 id="feedback-hints" class="text-title-medium">{{ m.sections.hints }}</h2>
     <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2">
       <div class="flex flex-col gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.tooltip }" />
+        <ui-example-note [note]="m.notes.tooltip" />
         <div class="flex flex-wrap gap-2">
           @for (tip of m.tooltips; track tip.label) {
             <button
@@ -93,13 +87,14 @@
         </div>
       </div>
       <div class="flex flex-col gap-3">
-        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.badge }" />
+        <ui-example-note [note]="m.notes.badge" />
         <div class="flex flex-wrap items-center gap-4">
           @for (badge of m.badges.items; track badge.label) {
+            <!-- The dot carries a blank, not a number: a hidden "1" would be text the button's name lacks. -->
             <button matIconButton type="button" [attr.aria-label]="badge.label" [matTooltip]="badge.label">
               <mat-icon
                 aria-hidden="true"
-                [matBadge]="badge.count ?? 1"
+                [matBadge]="badge.count ?? ' '"
                 [matBadgeSize]="badge.count === undefined ? 'small' : 'medium'"
               >
                 {{ badge.icon }}

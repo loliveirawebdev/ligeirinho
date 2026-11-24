@@ -14,6 +14,11 @@
   overflow: auto;
 }
 
+.ui-splitter-pane:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}
+
 .ui-splitter-pane.ui-splitter-end {
   flex: 1 1 0;
 }
@@ -77,8 +82,10 @@
     flex-direction: column;
   }
 
+  /* Stacked, the panes grow with their content and the page scrolls. */
   .ui-splitter[data-direction='row'] > .ui-splitter-pane {
     flex-basis: auto !important;
+    overflow: visible;
   }
 
   .ui-splitter[data-direction='row'] > .ui-splitter-handle {

@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, forwardRef, input, linkedSignal, model, signal } from '@angular/core';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, forwardRef, input, linkedSignal, model } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { FormValueControl } from '../form-value-control';
 
 /**
  * A number with − and + attached (quantities, seats, guests, days): an outlined Material field, so it lines up with
@@ -21,7 +22,7 @@ import { MatInputModule } from '@angular/material/input';
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => NumberInput), multi: true }],
   host: { class: 'block' },
 })
-export class NumberInput implements ControlValueAccessor {
+export class NumberInput extends FormValueControl<number | null> {
   readonly label = input.required<string>();
   /** The − button's name for screen readers: *Remove one guest*. */
   readonly decreaseLabel = input.required<string>();
@@ -32,10 +33,8 @@ export class NumberInput implements ControlValueAccessor {
   readonly step = input(1);
   /** A line under the field: *Up to 8 guests*. */
   readonly hint = input('');
-  readonly disabled = input(false);
   readonly value = model<number | null>(null);
 
-  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   protected readonly atMin = computed(() => this.isAt(this.min()));
   protected readonly atMax = computed(() => this.isAt(this.max()));
   /** What the field shows: the value, or what is being typed until the field is left. */
@@ -44,24 +43,8 @@ export class NumberInput implements ControlValueAccessor {
     return value === null ? '' : String(value);
   });
 
-  private readonly formDisabled = signal(false);
-  private onChange: (value: number | null) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
-
-  writeValue(value: unknown): void {
+  override writeValue(value: unknown): void {
     this.value.set(typeof value === 'number' && Number.isFinite(value) ? value : null);
-  }
-
-  registerOnChange(onChange: (value: number | null) => void): void {
-    this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => void): void {
-    this.onTouched = onTouched;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
   }
 
   /** Moves by `steps` steps from the value (or from `min`, or 0, when empty), within the limits. */

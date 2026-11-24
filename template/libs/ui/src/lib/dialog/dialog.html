@@ -1,7 +1,8 @@
 <div class="relative">
   <h2 mat-dialog-title [class.pe-14]="closeLabel()">{{ title() }}</h2>
   @if (closeLabel(); as close) {
-    <button matIconButton type="button" class="ui-dialog-close !absolute end-3 top-3" mat-dialog-close [attr.aria-label]="close">
+    <!-- The directive's own aria-label input: it writes the attribute and would blank an [attr.aria-label]. -->
+    <button matIconButton type="button" class="ui-dialog-close !absolute end-3 top-3" mat-dialog-close [aria-label]="close">
       <mat-icon aria-hidden="true">close</mat-icon>
     </button>
   }

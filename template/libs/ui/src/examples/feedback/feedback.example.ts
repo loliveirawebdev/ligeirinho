@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, InjectionToken, Injector, input } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
@@ -11,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule, type TooltipPosition } from '@angular/material/tooltip';
 import { ConfirmDialogs, type ConfirmDialogText } from '../../lib/confirm-dialog/confirm-dialog';
 import type { CatalogNote, IconLabel } from '../catalog-note';
+import { ExampleNote } from '../example-note';
 
 export interface FeedbackExampleModel {
   readonly title: string;
@@ -71,13 +71,13 @@ class ActionsSheetExample {
 @Component({
   selector: 'ui-feedback-example',
   imports: [
+    ExampleNote,
     MatBadgeModule,
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    NgTemplateOutlet,
   ],
   templateUrl: './feedback.example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -21,7 +21,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  width: 40px;
   height: 40px;
   border-radius: var(--mat-sys-corner-small);
   color: var(--mat-sys-on-surface-variant);
@@ -53,7 +53,7 @@
 }
 
 .ui-data-table .ui-data-tool:first-child > .ui-data-handle {
-  margin-inline-start: -6px;
+  margin-inline-start: -10px;
 }
 
 .ui-data-list-row > mat-checkbox:first-child {

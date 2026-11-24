@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -15,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTimepickerModule } from '@angular/material/timepicker';
+import { ExampleNote } from '../example-note';
 
 /** What a control is for, shown above it: the Material name and when to use it. */
 export interface ControlNote {
@@ -100,6 +100,7 @@ export interface FormsExampleModel {
 @Component({
   selector: 'ui-forms-example',
   imports: [
+    ExampleNote,
     MatAutocompleteModule,
     MatButtonModule,
     MatCheckboxModule,
@@ -113,7 +114,6 @@ export interface FormsExampleModel {
     MatSliderModule,
     MatSlideToggleModule,
     MatTimepickerModule,
-    NgTemplateOutlet,
     ReactiveFormsModule,
   ],
   providers: [provideNativeDateAdapter()],

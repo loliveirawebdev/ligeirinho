@@ -58,6 +58,11 @@ ui-data-table {
   white-space: nowrap;
 }
 
+/* The sort control is the header's focusable part: 40 px tall, the touch target, inside the 56 px header row. */
+.ui-data-table .mat-sort-header-container {
+  min-height: 40px;
+}
+
 /* Numbers and dates that are compared line up at the end, in equal-width digits. */
 .ui-data-table th.ui-align-end .mat-sort-header-container {
   justify-content: flex-end;

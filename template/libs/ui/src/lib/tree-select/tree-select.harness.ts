@@ -1,5 +1,6 @@
 import { ComponentHarness, type TestElement } from '@angular/cdk/testing';
 import { MatChipGridHarness } from '@angular/material/chips/testing';
+import { expand, isExpanded } from '../harness-helpers';
 
 /** Drives a `ui-tree-select` in tests: reads the field and its chips, opens the panel, searches and picks nodes by label. */
 export class TreeSelectHarness extends ComponentHarness {
@@ -24,13 +25,11 @@ export class TreeSelectHarness extends ComponentHarness {
   }
 
   async isOpen(): Promise<boolean> {
-    return (await (await this.trigger()).getAttribute('aria-expanded')) === 'true';
+    return isExpanded(await this.trigger());
   }
 
   async open(): Promise<void> {
-    if (!(await this.isOpen())) {
-      await (await this.trigger()).click();
-    }
+    await expand(await this.trigger());
   }
 
   async search(text: string): Promise<void> {

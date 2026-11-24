@@ -1,18 +1,6 @@
-import { ComponentHarness } from '@angular/cdk/testing';
+import { TitleAndMessageHarness } from '../harness-helpers';
 
 /** Reads a `ui-empty-state` in tests. */
-export class EmptyStateHarness extends ComponentHarness {
+export class EmptyStateHarness extends TitleAndMessageHarness {
   static readonly hostSelector = 'ui-empty-state';
-
-  private readonly paragraphs = this.locatorForAll('p');
-
-  async getTitle(): Promise<string> {
-    const [title] = await this.paragraphs();
-    return (await title?.text()) ?? '';
-  }
-
-  async getMessage(): Promise<string> {
-    const [, message] = await this.paragraphs();
-    return (await message?.text()) ?? '';
-  }
 }

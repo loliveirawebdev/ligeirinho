@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, forwardRef, input, model, signal } from '@angular/core';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { FormValueControl } from '../form-value-control';
 
 let nextRating = 0;
 
@@ -20,7 +21,7 @@ let nextRating = 0;
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Rating), multi: true }],
   host: { class: 'block' },
 })
-export class Rating implements ControlValueAccessor {
+export class Rating extends FormValueControl<number> {
   /** What is being scored, read as the group's name: *Your rating*. */
   readonly label = input.required<string>();
   /** Each score's name: `(n) => n === 1 ? '1 star' : `${n} stars``, from the page's copy (plural rules differ). */
@@ -29,34 +30,17 @@ export class Rating implements ControlValueAccessor {
   readonly showLabel = input(true);
   readonly max = input(5);
   readonly readonly = input(false);
-  readonly disabled = input(false);
   readonly value = model(0);
 
   protected readonly id = `ui-rating-${String(nextRating++)}`;
   protected readonly stars = computed(() => Array.from({ length: Math.max(1, this.max()) }, (_, index) => index + 1));
-  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   /** The stars drawn filled: the hovered score while the pointer is over them, else the value. */
   protected readonly shown = computed(() => this.hovered() ?? this.value());
 
   private readonly hovered = signal<number | null>(null);
-  private readonly formDisabled = signal(false);
-  private onChange: (value: number) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
 
-  writeValue(value: unknown): void {
+  override writeValue(value: unknown): void {
     this.value.set(typeof value === 'number' ? value : 0);
-  }
-
-  registerOnChange(onChange: (value: number) => void): void {
-    this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => void): void {
-    this.onTouched = onTouched;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
   }
 
   protected choose(stars: number): void {

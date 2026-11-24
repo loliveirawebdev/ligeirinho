@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewEncapsulation, computed, forwardRef, inject, input, model, output, signal, viewChildren } from '@angular/core';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewEncapsulation, computed, forwardRef, inject, input, model, output, viewChildren } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
+import { FormValueControl } from '../form-value-control';
 
 let nextOtp = 0;
 
@@ -19,7 +20,7 @@ let nextOtp = 0;
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => OtpInput), multi: true }],
   host: { class: 'block', '(focusout)': 'leave($event)' },
 })
-export class OtpInput implements ControlValueAccessor {
+export class OtpInput extends FormValueControl<string> {
   /** What the code is, read as the group's name: *Verification code*. */
   readonly label = input.required<string>();
   /** Shows the label above the boxes; when false it is only read by screen readers (the page's title says it). */
@@ -31,7 +32,6 @@ export class OtpInput implements ControlValueAccessor {
   readonly error = input('');
   /** Each box's name after the group's, for screen readers: *1 of 6*. */
   readonly boxLabel = input<(position: number, length: number) => string>((position, length) => `${String(position)}/${String(length)}`);
-  readonly disabled = input(false);
   /** The code typed so far, without gaps. */
   readonly value = model('');
 
@@ -40,28 +40,12 @@ export class OtpInput implements ControlValueAccessor {
 
   protected readonly id = `ui-otp-input-${String(nextOtp++)}`;
   protected readonly boxes = computed(() => Array.from({ length: Math.max(1, this.length()) }, (_, index) => index));
-  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
-  private readonly formDisabled = signal(false);
   private readonly inputs = viewChildren<ElementRef<HTMLInputElement>>('box');
-  private onChange: (code: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
 
-  writeValue(code: unknown): void {
+  override writeValue(code: unknown): void {
     this.value.set(this.clean(typeof code === 'string' ? code : ''));
-  }
-
-  registerOnChange(onChange: (code: string) => void): void {
-    this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => void): void {
-    this.onTouched = onTouched;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
   }
 
   protected charAt(index: number): string {

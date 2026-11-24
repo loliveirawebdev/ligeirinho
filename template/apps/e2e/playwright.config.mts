@@ -25,8 +25,12 @@ export default defineLigeirinhoConfig({
       },
     },
     {
-      // Its own configuration, so Nx runs it next to a `make preview` already serving web:serve:development.
-      command: `pnpm exec nx run web:serve:e2e --port=${webPort}`,
+      // The development build (the previewer only exists in dev mode), from the Nx cache when the app didn't change,
+      // served with /api proxied to the e2e API: no dev server compiling the app on every run.
+      command: [
+        'pnpm exec nx run web:build:development',
+        `pnpm exec tsx tools/serve-e2e-web.ts dist/apps/web-development/browser ${webPort} http://localhost:${apiPort}`,
+      ].join(' && '),
       cwd: '../..',
       url: `http://localhost:${webPort}`,
       reuseExistingServer: false,

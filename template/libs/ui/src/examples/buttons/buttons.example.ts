@@ -3,6 +3,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ExampleNote } from '../example-note';
 
 /** One of Material's text buttons, from the most emphasis to the least. */
 export type ButtonEmphasis = 'filled' | 'tonal' | 'outlined' | 'elevated' | 'text';
@@ -55,10 +56,12 @@ export interface ButtonsExampleModel {
  */
 @Component({
   selector: 'ui-buttons-example',
-  imports: [MatButtonModule, MatButtonToggleModule, MatIconModule, MatTooltipModule],
+  imports: [ExampleNote, MatButtonModule, MatButtonToggleModule, MatIconModule, MatTooltipModule],
   templateUrl: './buttons.example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ButtonsExample {
   readonly model = input.required<ButtonsExampleModel>();
+  /** Each button twice: as it is, then disabled. */
+  protected readonly enabledThenDisabled = [false, true] as const;
 }

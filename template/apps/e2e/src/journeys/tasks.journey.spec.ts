@@ -16,7 +16,7 @@ test.describe('tasks journey', () => {
     await expect(page.getByText('All done')).toBeVisible();
 
     await page.reload();
-    await expect(page.getByRole('listitem').filter({ hasText: 'Ship the template' })).toContainText('Done');
+    await expect(page.getByRole('listitem').filter({ hasText: 'Ship the template' })).toContainText('Completed');
   });
 
   test('a user without permission sees the failure, not someone else data', async ({ page }) => {

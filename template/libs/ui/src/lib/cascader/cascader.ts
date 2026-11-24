@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { OverlayModule, type ConnectedPosition } from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import {
   afterNextRender,
   ChangeDetectionStrategy,
@@ -16,12 +16,14 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { map } from 'rxjs';
 import { formatText } from '../copy/copy';
+import { FormValueControl } from '../form-value-control';
+import { DROPDOWN_POSITIONS, opensPanel } from '../dropdown-panel';
 
 /** One level of the hierarchy: a branch (with `children`) or a leaf the user can pick. */
 export interface CascaderOption {
@@ -79,7 +81,7 @@ function isText(value: unknown): value is string {
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Cascader), multi: true }],
   host: { class: 'block' },
 })
-export class Cascader implements ControlValueAccessor {
+export class Cascader extends FormValueControl<readonly string[]> {
   readonly options = input.required<readonly CascaderOption[]>();
   /** The field's label: *City*. */
   readonly label = input.required<string>();
@@ -87,7 +89,6 @@ export class Cascader implements ControlValueAccessor {
   readonly backLabel = input.required<string>();
   /** The values from the top level down to the chosen leaf; empty is nothing chosen. */
   readonly value = model<readonly string[]>([]);
-  readonly disabled = input(false);
   /** Between the levels in the field. */
   readonly separator = input(' / ');
 
@@ -102,13 +103,8 @@ export class Cascader implements ControlValueAccessor {
       .pipe(map((state) => state.matches)),
     { initialValue: false },
   );
-  protected readonly positions: ConnectedPosition[] = [
-    { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
-    { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
-  ];
+  protected readonly positions = DROPDOWN_POSITIONS;
 
-  private readonly formDisabled = signal(false);
-  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   protected readonly text = computed(() =>
     optionsAlong(this.options(), this.value())
       .map((option) => option.label)
@@ -123,23 +119,9 @@ export class Cascader implements ControlValueAccessor {
   private readonly injector = inject(Injector);
   private readonly trigger = viewChild.required<ElementRef<HTMLInputElement>>('trigger');
   private readonly panel = viewChild<ElementRef<HTMLElement>>('panel');
-  private onChange: (value: readonly string[]) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
 
-  writeValue(value: unknown): void {
+  override writeValue(value: unknown): void {
     this.value.set(Array.isArray(value) ? value.filter(isText) : []);
-  }
-
-  registerOnChange(onChange: (value: readonly string[]) => void): void {
-    this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => void): void {
-    this.onTouched = onTouched;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
   }
 
   protected isBranch(option: CascaderOption): boolean {
@@ -187,6 +169,12 @@ export class Cascader implements ControlValueAccessor {
     this.focusActive();
   }
 
+  protected onTriggerKeydown(event: KeyboardEvent): void {
+    if (opensPanel(event)) {
+      this.openPanel();
+    }
+  }
+
   protected close(returnFocus = false): void {
     if (!this.open()) {
       return;
@@ -196,13 +184,6 @@ export class Cascader implements ControlValueAccessor {
     this.onTouched();
     if (returnFocus) {
       this.trigger().nativeElement.focus();
-    }
-  }
-
-  protected onTriggerKeydown(event: KeyboardEvent): void {
-    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
-      event.preventDefault();
-      this.openPanel();
     }
   }
 

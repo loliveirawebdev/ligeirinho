@@ -59,12 +59,16 @@
   filter: none;
 }
 
-/* The native input covers the button, invisible: a click or Enter opens the browser's picker. */
+/*
+ * The native input covers the button and 4 px around it, invisible: a click or Enter opens the browser's picker,
+ * and the target is 40 px like the swatches' (5 px past the 30 px inside the dashed border).
+ */
 .ui-color-picker-native {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  inset: -5px;
+  width: calc(100% + 10px);
+  height: calc(100% + 10px);
+  margin: 0;
   opacity: 0;
   cursor: inherit;
 }

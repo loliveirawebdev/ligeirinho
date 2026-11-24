@@ -14,14 +14,19 @@ class FormHost {
   readonly code = new FormControl('', { nonNullable: true });
 }
 
+/** A six-box code field, with the codes it reported as completed. */
+async function renderOtp(): Promise<{ otp: OtpInputHarness; completed: string[] }> {
+  const completed: string[] = [];
+  const { fixture } = await render(OtpInput, {
+    inputs: { label: 'Verification code' },
+    on: { completed: (code: string) => completed.push(code) },
+  });
+  return { otp: await TestbedHarnessEnvironment.harnessForFixture(fixture, OtpInputHarness), completed };
+}
+
 describe('otp input', () => {
   it('types one digit per box, ignores letters and emits the completed code once', async () => {
-    const completed: string[] = [];
-    const { fixture } = await render(OtpInput, {
-      inputs: { label: 'Verification code' },
-      on: { completed: (code: string) => completed.push(code) },
-    });
-    const otp = await TestbedHarnessEnvironment.harnessForFixture(fixture, OtpInputHarness);
+    const { otp, completed } = await renderOtp();
     expect(await otp.getBoxCount()).toBe(6);
     await otp.type('48a29');
     expect(await otp.getValue()).toBe('4829');
@@ -32,12 +37,7 @@ describe('otp input', () => {
   });
 
   it('fills every box from a pasted code, spaces and dashes left out', async () => {
-    const completed: string[] = [];
-    const { fixture } = await render(OtpInput, {
-      inputs: { label: 'Verification code' },
-      on: { completed: (code: string) => completed.push(code) },
-    });
-    const otp = await TestbedHarnessEnvironment.harnessForFixture(fixture, OtpInputHarness);
+    const { otp, completed } = await renderOtp();
     await otp.paste('482-913');
     expect(await otp.getValue()).toBe('482913');
     expect(completed).toEqual(['482913']);

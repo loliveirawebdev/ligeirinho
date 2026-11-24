@@ -4,9 +4,21 @@
 }
 
 /* On the chips' line while it fits, instead of a line of its own under them. */
-.ui-tree-select-trigger.ui-tree-select-trigger {
+.ui-tree-select-trigger-row {
+  display: flex;
   flex: 1 1 48px;
   min-width: 48px;
+}
+
+.ui-tree-select-trigger-cell {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+}
+
+.ui-tree-select-trigger.ui-tree-select-trigger {
+  flex: 1;
+  min-width: 0;
   cursor: pointer;
   text-overflow: ellipsis;
 }

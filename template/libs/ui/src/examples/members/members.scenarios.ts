@@ -1,29 +1,9 @@
 import { defineScenarios } from '@ligeirinho/previewer';
-import { MEMBER_COLUMNS, SAMPLE_MEMBER_ROWS, SAMPLE_NAVIGATION } from './sample-members';
+import { MEMBER_COLUMNS, SAMPLE_MEMBER_ROWS, SAMPLE_SHELL, SAMPLE_STATUS_FILTERS } from './sample-members';
 import { MemberDetailExample, type MemberDetailExampleModel } from './member-detail.example';
-import { MemberListExample, type ExampleShell, type MemberListExampleModel } from './member-list.example';
+import { MemberListExample, type MemberListExampleModel } from './member-list.example';
 
-const shell: ExampleShell = {
-  productName: 'Northwind',
-  navigation: SAMPLE_NAVIGATION,
-  navigationLabel: 'Main',
-  menuLabel: 'Open navigation',
-  actions: [
-    { id: 'help', icon: 'help', label: 'Help' },
-    { id: 'notifications', icon: 'notifications', label: 'Notifications, 3 unread', badge: 3 },
-  ],
-  user: {
-    name: 'Marta Ruiz',
-    detail: 'marta.ruiz@northwind.example',
-    label: 'Account: Marta Ruiz',
-    closeLabel: 'Close',
-    menu: [
-      { id: 'profile', icon: 'person', label: 'Profile' },
-      { id: 'settings', icon: 'settings', label: 'Settings' },
-      { id: 'sign-out', icon: 'logout', label: 'Sign out' },
-    ],
-  },
-};
+const shell = SAMPLE_SHELL;
 
 const more = {
   kind: 'more',
@@ -51,12 +31,7 @@ const list: MemberListExampleModel = {
     clearSearchAction: 'Clear search',
   },
   query: '',
-  filters: [
-    { value: 'all', label: 'All' },
-    { value: 'active', label: 'Active' },
-    { value: 'invited', label: 'Invited' },
-    { value: 'suspended', label: 'Suspended' },
-  ],
+  filters: SAMPLE_STATUS_FILTERS,
   selectedFilter: 'all',
   columns: MEMBER_COLUMNS,
   rows: SAMPLE_MEMBER_ROWS,
@@ -65,7 +40,7 @@ const list: MemberListExampleModel = {
 
 export const memberListScenarios = defineScenarios({
   flow: 'Screen patterns',
-  title: 'Back office list',
+  title: 'Back office list pattern',
   component: MemberListExample,
   scenarios: {
     full: list,
@@ -105,7 +80,7 @@ const detail: MemberDetailExampleModel = {
 
 export const memberDetailScenarios = defineScenarios({
   flow: 'Screen patterns',
-  title: 'Back office detail',
+  title: 'Back office detail pattern',
   component: MemberDetailExample,
   scenarios: {
     active: detail,

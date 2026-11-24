@@ -1,6 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, forwardRef, input, model, signal, ViewEncapsulation } from '@angular/core';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule, type MatSelectionListChange } from '@angular/material/list';
 import { formatText } from '../copy/copy';
+import { FormValueControl } from '../form-value-control';
 
 export interface TransferItem {
   readonly value: string;
@@ -71,40 +72,22 @@ function folded(text: string): string {
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => Transfer), multi: true }],
   host: { class: 'block' },
 })
-export class Transfer implements ControlValueAccessor {
+export class Transfer extends FormValueControl<readonly string[]> {
   readonly items = input.required<readonly TransferItem[]>();
   readonly labels = input.required<TransferLabels>();
   /** The chosen items' values. */
   readonly value = model<readonly string[]>([]);
-  readonly disabled = input(false);
 
   protected readonly queries = signal<Readonly<Record<TransferSide, string>>>({ source: '', target: '' });
   protected readonly checked = signal<Readonly<Record<TransferSide, ReadonlySet<string>>>>({ source: new Set(), target: new Set() });
 
-  private readonly formDisabled = signal(false);
-  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   private readonly chosen = computed(() => new Set(this.value()));
   protected readonly source = computed(() => this.list('source'));
   protected readonly target = computed(() => this.list('target'));
 
-  private onChange: (value: readonly string[]) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
-
-  writeValue(value: unknown): void {
+  override writeValue(value: unknown): void {
     this.value.set(Array.isArray(value) ? value.filter(isText) : []);
     this.checked.set({ source: new Set(), target: new Set() });
-  }
-
-  registerOnChange(onChange: (value: readonly string[]) => void): void {
-    this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => void): void {
-    this.onTouched = onTouched;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
   }
 
   protected search(side: TransferSide, inputEvent: Event): void {

@@ -1,18 +1,9 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  effect,
-  inject,
-  InjectionToken,
-  Injector,
-  input,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, InjectionToken, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { defineScenarios } from '@ligeirinho/previewer';
 import { Dialog } from './dialog';
+import { previewDialog } from '../preview-dialog';
 
 interface DialogPreviewModel {
   readonly open: string;
@@ -57,28 +48,7 @@ class DialogPreviewContent {
 class DialogPreview {
   readonly model = input.required<DialogPreviewModel>();
 
-  private readonly dialog = inject(MatDialog);
-  private readonly injector = inject(Injector);
-
-  constructor() {
-    effect(() => {
-      this.model();
-      untracked(() => {
-        this.dialog.closeAll();
-        this.open();
-      });
-    });
-    inject(DestroyRef).onDestroy(() => {
-      this.dialog.closeAll();
-    });
-  }
-
-  protected open(): void {
-    this.dialog.open(DialogPreviewContent, {
-      injector: Injector.create({ providers: [{ provide: PREVIEW_MODEL, useValue: this.model() }], parent: this.injector }),
-      width: '480px',
-    });
-  }
+  protected readonly open = previewDialog(this.model, DialogPreviewContent, PREVIEW_MODEL);
 }
 
 export const dialogScenarios = defineScenarios({

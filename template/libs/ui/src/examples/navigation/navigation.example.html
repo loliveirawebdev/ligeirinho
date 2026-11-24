@@ -1,18 +1,11 @@
 @let m = model();
-<ng-template #note let-note>
-  <div class="flex flex-col">
-    <code class="text-label-large">{{ note.name }}</code>
-    <span class="text-body-small text-on-surface-variant">{{ note.use }}</span>
-  </div>
-</ng-template>
-
 <main class="flex w-full flex-col gap-10 px-4 pt-6 pb-16 sm:px-6 lg:px-8">
   <h1 class="text-headline-medium">{{ m.title }}</h1>
 
   <section class="flex flex-col gap-6" aria-labelledby="navigation-tabs">
     <h2 id="navigation-tabs" class="text-title-medium">{{ m.sections.tabs }}</h2>
     <div class="flex flex-col gap-2">
-      <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.tabs }" />
+      <ui-example-note [note]="m.notes.tabs" />
       <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
         @for (tab of m.tabs; track tab.label) {
           <mat-tab [label]="tab.label">
@@ -22,7 +15,7 @@
       </mat-tab-group>
     </div>
     <div class="flex flex-col gap-2">
-      <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.tabsIcons }" />
+      <ui-example-note [note]="m.notes.tabsIcons" />
       <mat-tab-group>
         @for (tab of m.tabs; track tab.label) {
           <mat-tab>
@@ -39,7 +32,7 @@
 
   <section class="flex flex-col gap-2" aria-labelledby="navigation-menu">
     <h2 id="navigation-menu" class="text-title-medium">{{ m.sections.menu }}</h2>
-    <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.menu }" />
+    <ui-example-note [note]="m.notes.menu" />
     <div>
       <button matButton="outlined" type="button" [matMenuTriggerFor]="menu">
         {{ m.menu.open }}
@@ -76,7 +69,7 @@
 
   <section class="flex flex-col gap-2" aria-labelledby="navigation-context-menu">
     <h2 id="navigation-context-menu" class="text-title-medium">{{ m.sections.contextMenu }}</h2>
-    <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.contextMenu }" />
+    <ui-example-note [note]="m.notes.contextMenu" />
     <div
       class="border-outline-variant text-body-medium text-on-surface-variant flex h-32 items-center justify-center rounded-md border border-dashed px-4 text-center"
       tabindex="0"
@@ -109,49 +102,33 @@
 
   <section class="flex flex-col gap-6" aria-labelledby="navigation-stepper">
     <h2 id="navigation-stepper" class="text-title-medium">{{ m.sections.stepper }}</h2>
-    <div class="flex flex-col gap-2">
-      <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.stepper }" />
-      <mat-stepper #horizontal class="-mx-2">
-        <ng-template matStepperIcon="edit"><mat-icon aria-hidden="true">check</mat-icon></ng-template>
-        @for (step of m.steps; track step.label; let i = $index; let last = $last; let first = $first) {
-          <mat-step [label]="step.label" [completed]="i < horizontal.selectedIndex">
-            <p class="text-body-medium text-on-surface-variant py-4">{{ step.content }}</p>
-            <div class="flex gap-2">
-              @if (!first) {
-                <button matButton type="button" matStepperPrevious>{{ m.stepActions.back }}</button>
-              }
-              <button matButton="filled" type="button" matStepperNext>
-                {{ last ? m.stepActions.done : m.stepActions.next }}
-              </button>
-            </div>
-          </mat-step>
-        }
-      </mat-stepper>
-    </div>
-    <div class="flex flex-col gap-2">
-      <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.stepperVertical }" />
-      <mat-stepper #vertical orientation="vertical" class="-mx-2">
-        <ng-template matStepperIcon="edit"><mat-icon aria-hidden="true">check</mat-icon></ng-template>
-        @for (step of m.steps; track step.label; let i = $index; let last = $last; let first = $first) {
-          <mat-step [label]="step.label" [completed]="i < vertical.selectedIndex">
-            <p class="text-body-medium text-on-surface-variant pb-4">{{ step.content }}</p>
-            <div class="flex gap-2">
-              @if (!first) {
-                <button matButton type="button" matStepperPrevious>{{ m.stepActions.back }}</button>
-              }
-              <button matButton="filled" type="button" matStepperNext>
-                {{ last ? m.stepActions.done : m.stepActions.next }}
-              </button>
-            </div>
-          </mat-step>
-        }
-      </mat-stepper>
-    </div>
+    @for (orientation of stepperOrientations; track orientation) {
+      <div class="flex flex-col gap-2">
+        <ui-example-note [note]="orientation === 'horizontal' ? m.notes.stepper : m.notes.stepperVertical" />
+        <mat-stepper #stepper class="-mx-2" [orientation]="orientation">
+          <ng-template matStepperIcon="edit"><mat-icon aria-hidden="true">check</mat-icon></ng-template>
+          @for (step of m.steps; track step.label; let i = $index; let last = $last; let first = $first) {
+            <mat-step [label]="step.label" [completed]="i < stepper.selectedIndex">
+              <!-- The horizontal stepper's header sits above the content; the vertical one's beside it. -->
+              <p class="text-body-medium text-on-surface-variant pb-4" [class.pt-4]="orientation === 'horizontal'">{{ step.content }}</p>
+              <div class="flex gap-2">
+                @if (!first) {
+                  <button matButton type="button" matStepperPrevious>{{ m.stepActions.back }}</button>
+                }
+                <button matButton="filled" type="button" matStepperNext>
+                  {{ last ? m.stepActions.done : m.stepActions.next }}
+                </button>
+              </div>
+            </mat-step>
+          }
+        </mat-stepper>
+      </div>
+    }
   </section>
 
   <section class="flex flex-col gap-2" aria-labelledby="navigation-toolbar">
     <h2 id="navigation-toolbar" class="text-title-medium">{{ m.sections.toolbar }}</h2>
-    <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.toolbar }" />
+    <ui-example-note [note]="m.notes.toolbar" />
     <mat-toolbar class="border-outline-variant rounded-md border">
       <span class="text-title-medium">{{ m.toolbar.title }}</span>
       <span class="flex-1"></span>
@@ -165,7 +142,7 @@
 
   <section class="flex flex-col gap-2" aria-labelledby="navigation-side-sheet">
     <h2 id="navigation-side-sheet" class="text-title-medium">{{ m.sections.sideSheet }}</h2>
-    <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.sideSheet }" />
+    <ui-example-note [note]="m.notes.sideSheet" />
     <mat-drawer-container class="border-outline-variant h-96 rounded-md border">
       <mat-drawer #sheet position="end" mode="over" autoFocus="dialog" class="w-80 max-w-full">
         <div class="flex items-center justify-between gap-2 py-2 ps-6 pe-2">

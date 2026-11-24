@@ -1,4 +1,4 @@
-import { ComponentHarness, TestKey } from '@angular/cdk/testing';
+import { ComponentHarness, type TestElement, TestKey } from '@angular/cdk/testing';
 import { MatCheckboxHarness } from '@angular/material/checkbox/testing';
 import { MatPaginatorHarness } from '@angular/material/paginator/testing';
 import { MatSortHeaderHarness } from '@angular/material/sort/testing';
@@ -21,7 +21,8 @@ export class DataTableHarness extends ComponentHarness {
   private readonly showMoreBar = this.locatorForOptional('button.ui-data-more');
   private readonly showMoreParts = this.locatorForAll('.ui-data-more-text');
   private readonly loadingMore = this.locatorForOptional('.ui-data-loading');
-  private readonly listTitles = this.locatorForAll('.ui-data-list [matListItemTitle]');
+  private readonly listTitles = this.locatorForAll('.ui-data-list .ui-data-title');
+  private readonly listOpenLabels = this.locatorForAll('.ui-data-list .ui-data-open');
   private readonly lineLabels = this.locatorForAll('.ui-data-list .ui-data-line-label');
   private readonly lineValues = this.locatorForAll('.ui-data-list .ui-data-line-value');
 
@@ -36,7 +37,8 @@ export class DataTableHarness extends ComponentHarness {
   /** Each row's accessible action, in order: `['Open Ana Souza', …]`. */
   async getRowLabels(): Promise<string[]> {
     const actions = await this.rowActions();
-    return Promise.all(actions.map(async (action) => (await action.getAttribute('aria-label')) ?? ''));
+    const openLabels = await this.listOpenLabels();
+    return Promise.all(actions.map((action, index) => this.labelOf(action, openLabels[index])));
   }
 
   /** On phones, each row's title, in order. */
@@ -128,11 +130,17 @@ export class DataTableHarness extends ComponentHarness {
   }
 
   async openRow(openLabel: string): Promise<void> {
-    for (const action of await this.rowActions()) {
-      if ((await action.getAttribute('aria-label')) === openLabel) {
+    const openLabels = await this.listOpenLabels();
+    for (const [index, action] of (await this.rowActions()).entries()) {
+      if ((await this.labelOf(action, openLabels[index])) === openLabel) {
         await action.click();
         return;
       }
     }
+  }
+
+  /** The table's row buttons carry an aria-label; the list's say their action in hidden text (`.ui-data-open`). */
+  private async labelOf(action: TestElement, openLabel: TestElement | undefined): Promise<string> {
+    return (await action.getAttribute('aria-label')) ?? (await openLabel?.text()) ?? '';
   }
 }

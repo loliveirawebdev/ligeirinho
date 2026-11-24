@@ -49,7 +49,41 @@ run_integration_tests() {
   DATABASE_URL="$TEST_DATABASE_URL" nx $(scope_arguments) -t test-integration
 }
 
+# Which screens the responsive checks open. A full run checks every one. An affected run checks only the screens of
+# the projects the change reaches (LIGEIRINHO_PREVIEW_ENTRIES, read by @ligeirinho/e2e-kit), unless it touched the
+# app's own files (theme, styles, routes) or the e2e specs, which reach every screen.
+choose_responsive_screens() {
+  unset LIGEIRINHO_PREVIEW_ENTRIES
+  [ "$mode" = "affected" ] || return 0
+  if git diff --name-only "$(base_commit)" -- apps/web apps/e2e | grep -q .; then
+    return 0
+  fi
+  local graph_dir roots entries
+  graph_dir="$(mktemp -d)"
+  nx graph --file="$graph_dir/graph.json" >/dev/null
+  roots="$(nx show projects --affected --base="$(base_commit)" \
+    | node -e '
+      const nodes = require(process.argv[1]).graph.nodes;
+      const listed = require("fs").readFileSync(0, "utf8").trim();
+      // A JSON array when piped, one name per line on a terminal.
+      const names = listed.startsWith("[") ? JSON.parse(listed) : listed.split("\n").filter(Boolean);
+      console.log(names.map((name) => nodes[name]?.data.root).filter(Boolean).join(" "));
+    ' "$graph_dir/graph.json")"
+  rm -rf "$graph_dir"
+  if [ -z "$roots" ]; then
+    export LIGEIRINHO_PREVIEW_ENTRIES=""
+    echo "Responsive checks: no screen is reached by this change"
+    return 0
+  fi
+  # shellcheck disable=SC2046
+  if entries="$(pnpm exec ligeirinho-preview-registry $(printf -- '--entries-in %s ' $roots))"; then
+    export LIGEIRINHO_PREVIEW_ENTRIES="$entries"
+    echo "Responsive checks only for the screens this change reaches: ${entries:-none}"
+  fi
+}
+
 run_e2e() {
+  choose_responsive_screens
   reset_test_database
   step "Building the API for e2e"
   nx build api

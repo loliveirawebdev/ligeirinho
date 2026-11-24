@@ -9,19 +9,27 @@
         </button>
       </mat-chip-row>
     }
-    <input
-      #trigger
-      readonly
-      role="combobox"
-      aria-haspopup="tree"
-      autocomplete="off"
-      class="ui-tree-select-trigger"
-      [matChipInputFor]="grid"
-      [value]="summary()"
-      [attr.aria-expanded]="open()"
-      [attr.aria-controls]="open() ? id + '-panel' : null"
-      (keydown)="onTriggerKeydown($event)"
-    />
+    <!--
+      A grid holds rows only: the input gets a row of its own after the chips (axe aria-required-children). Without
+      chips or text Material drops the grid's role, and the row's goes with it.
+    -->
+    <div class="ui-tree-select-trigger-row" [attr.role]="gridHasRole() ? 'row' : null">
+      <div class="ui-tree-select-trigger-cell" [attr.role]="gridHasRole() ? 'gridcell' : null">
+        <input
+          #trigger
+          readonly
+          role="combobox"
+          aria-haspopup="tree"
+          autocomplete="off"
+          class="ui-tree-select-trigger"
+          [matChipInputFor]="grid"
+          [value]="summary()"
+          [attr.aria-expanded]="open()"
+          [attr.aria-controls]="open() ? id + '-panel' : null"
+          (keydown)="onTriggerKeydown($event)"
+        />
+      </div>
+    </div>
   </mat-chip-grid>
   <mat-icon matSuffix aria-hidden="true" class="ui-tree-select-arrow" [class.ui-tree-select-arrow-open]="open()">arrow_drop_down</mat-icon>
 </mat-form-field>

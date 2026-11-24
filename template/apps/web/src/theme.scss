@@ -72,7 +72,7 @@ $accent-hue: color.channel(map.get($app-accent, 40), 'hue', $space: oklch);
 @function _palette($tones, $chroma-of) {
   $palette: ();
   @each $tone in $tones {
-    $palette: map.set($palette, $tone, _tone($tone, call($chroma-of, $tone)));
+    $palette: map.set($palette, $tone, _tone($tone, meta.call($chroma-of, $tone)));
   }
   @return map.merge($palette, (0: #000000, 100: #ffffff));
 }
@@ -200,7 +200,7 @@ body {
 }
 
 // The select's arrow: Material draws a 10 × 5 px triangle with no token for its size, too small beside 20 px icons.
-// Every mat-select shows Material Symbols' expand_more instead, at the icon size, turning while the list is open.
+// Every mat-select shows Material Symbols' keyboard_arrow_down instead, at the icon size, turning while the list is open.
 // (Two classes: Material's own rule loads after this file and must lose.)
 .mat-mdc-select-arrow-wrapper .mat-mdc-select-arrow {
   width: 20px;

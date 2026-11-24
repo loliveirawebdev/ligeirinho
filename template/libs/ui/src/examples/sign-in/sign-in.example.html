@@ -1,7 +1,8 @@
 @let m = model();
 @let text = m.text;
 
-<main class="grid min-h-dvh place-items-center bg-surface-container-low p-4">
+<!-- grid-cols-1 (minmax(0, 1fr)): the column is the screen's width, not the code boxes' widest. -->
+<main class="grid min-h-dvh grid-cols-1 place-items-center bg-surface-container-low p-4">
   <mat-card appearance="outlined" class="w-full max-w-sm p-2 sm:p-4">
     <mat-card-content>
       <p class="text-title-medium">{{ m.productName }}</p>

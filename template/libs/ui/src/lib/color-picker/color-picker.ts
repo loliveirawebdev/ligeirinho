@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, forwardRef, input, model, signal } from '@angular/core';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, ViewEncapsulation, computed, forwardRef, input, model } from '@angular/core';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
+import { FormValueControl } from '../form-value-control';
 
 export interface ColorSwatch {
   /** A hex color: `#1e88e5`. */
@@ -27,7 +28,7 @@ let nextPicker = 0;
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => ColorPicker), multi: true }],
   host: { class: 'block', '(focusout)': 'touched()' },
 })
-export class ColorPicker implements ControlValueAccessor {
+export class ColorPicker extends FormValueControl<string> {
   /** What the color is for, read as the group's name: *Label color*. */
   readonly label = input.required<string>();
   readonly swatches = input.required<readonly ColorSwatch[]>();
@@ -35,35 +36,17 @@ export class ColorPicker implements ControlValueAccessor {
   readonly showLabel = input(true);
   /** The name of the button for any other color (*Custom color*); without it, only the presets. */
   readonly customLabel = input('');
-  readonly disabled = input(false);
   readonly value = model('');
 
   protected readonly id = `ui-color-picker-${String(nextPicker++)}`;
-  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   protected readonly normalized = computed(() => this.value().toLowerCase());
   /** A value that is none of the presets: a custom color. */
   protected readonly isCustom = computed(() => this.normalized() !== '' && !this.swatches().some((swatch) => swatch.value.toLowerCase() === this.normalized()));
   /** The native picker opens on the value when it is a full hex color. */
   protected readonly pickerValue = computed(() => (/^#[0-9a-f]{6}$/.test(this.normalized()) ? this.normalized() : '#000000'));
 
-  private readonly formDisabled = signal(false);
-  private onChange: (value: string) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
-
-  writeValue(value: unknown): void {
+  override writeValue(value: unknown): void {
     this.value.set(typeof value === 'string' ? value.toLowerCase() : '');
-  }
-
-  registerOnChange(onChange: (value: string) => void): void {
-    this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => void): void {
-    this.onTouched = onTouched;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
   }
 
   protected isChosen(swatch: ColorSwatch): boolean {

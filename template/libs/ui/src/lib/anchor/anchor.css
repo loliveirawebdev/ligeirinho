@@ -8,7 +8,7 @@
 .ui-anchor-link {
   display: block;
   margin-inline-start: -1px;
-  padding-block: 6px;
+  padding-block: 10px;
   padding-inline-end: 8px;
   border-inline-start: 2px solid transparent;
   color: var(--mat-sys-on-surface-variant);

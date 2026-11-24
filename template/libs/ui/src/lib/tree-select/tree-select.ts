@@ -1,4 +1,4 @@
-import { OverlayModule, type ConnectedPosition } from '@angular/cdk/overlay';
+import { OverlayModule } from '@angular/cdk/overlay';
 import {
   afterNextRender,
   afterRenderEffect,
@@ -15,7 +15,7 @@ import {
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
-import { type ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatPseudoCheckboxModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -23,6 +23,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTree, MatTreeModule } from '@angular/material/tree';
 import { formatText } from '../copy/copy';
+import { FormValueControl } from '../form-value-control';
+import { DROPDOWN_POSITIONS, opensPanel } from '../dropdown-panel';
 
 /** A node of the tree: a folder, a department. Any node can be chosen, branches too. */
 export interface TreeSelectNode {
@@ -97,7 +99,7 @@ function isText(value: unknown): value is string {
   providers: [{ provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => TreeSelect), multi: true }],
   host: { class: 'block' },
 })
-export class TreeSelect implements ControlValueAccessor {
+export class TreeSelect extends FormValueControl<readonly string[]> {
   readonly options = input.required<readonly TreeSelectNode[]>();
   /** The field's label, and the tree's name for screen readers: *Departments*. */
   readonly label = input.required<string>();
@@ -107,20 +109,14 @@ export class TreeSelect implements ControlValueAccessor {
   readonly multiple = input(false);
   /** With `multiple`, how many chips the field shows before it shows the count instead. */
   readonly maxChips = input(3);
-  readonly disabled = input(false);
 
   protected readonly id = `ui-tree-select-${String(nextTreeSelect++)}`;
   protected readonly open = signal(false);
   protected readonly query = signal('');
-  protected readonly positions: ConnectedPosition[] = [
-    { originX: 'start', originY: 'bottom', overlayX: 'start', overlayY: 'top', offsetY: 4 },
-    { originX: 'start', originY: 'top', overlayX: 'start', overlayY: 'bottom', offsetY: -4 },
-  ];
+  protected readonly positions = DROPDOWN_POSITIONS;
   protected readonly childrenOf = (node: TreeSelectNode): TreeSelectNode[] => [...(node.children ?? [])];
   protected readonly keyOf = (node: TreeSelectNode): string => node.value;
 
-  private readonly formDisabled = signal(false);
-  protected readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
   protected readonly chosen = computed(() => new Set(this.value()));
   /** A fresh array each time: mat-tree takes a mutable one. */
   protected readonly nodes = computed((): TreeSelectNode[] => {
@@ -143,14 +139,16 @@ export class TreeSelect implements ControlValueAccessor {
     return chosen.length > this.maxChips() ? formatText(this.labels().count, { count: chosen.length }) : '';
   });
 
+  /** Material's chip grid has its role while it shows chips or text (`MatChipGrid.empty`); the input's row follows it. */
+  protected readonly gridHasRole = computed(() => this.chips().length > 0 || this.summary() !== '');
+
   private readonly injector = inject(Injector);
   private readonly trigger = viewChild.required<ElementRef<HTMLInputElement>>('trigger');
   private readonly search = viewChild<ElementRef<HTMLInputElement>>('search');
   private readonly tree = viewChild<MatTree<TreeSelectNode, string>>(MatTree);
-  private onChange: (value: readonly string[]) => void = () => undefined;
-  private onTouched: () => void = () => undefined;
 
   constructor() {
+    super();
     // While searching, every match shows: all branches left open.
     afterRenderEffect(() => {
       const tree = this.tree();
@@ -160,20 +158,8 @@ export class TreeSelect implements ControlValueAccessor {
     });
   }
 
-  writeValue(value: unknown): void {
+  override writeValue(value: unknown): void {
     this.value.set(Array.isArray(value) ? value.filter(isText) : []);
-  }
-
-  registerOnChange(onChange: (value: readonly string[]) => void): void {
-    this.onChange = onChange;
-  }
-
-  registerOnTouched(onTouched: () => void): void {
-    this.onTouched = onTouched;
-  }
-
-  setDisabledState(disabled: boolean): void {
-    this.formDisabled.set(disabled);
   }
 
   protected hasChildren(node: TreeSelectNode): boolean {
@@ -231,8 +217,7 @@ export class TreeSelect implements ControlValueAccessor {
   }
 
   protected onTriggerKeydown(event: KeyboardEvent): void {
-    if (['ArrowDown', 'ArrowUp', 'Enter', ' '].includes(event.key)) {
-      event.preventDefault();
+    if (opensPanel(event)) {
       this.openPanel();
     }
   }

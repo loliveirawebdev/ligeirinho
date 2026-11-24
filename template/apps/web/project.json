@@ -50,6 +50,7 @@
           "outputHashing": "all"
         },
         "development": {
+          "outputPath": "dist/apps/web-development",
           "optimization": false,
           "extractLicenses": false,
           "sourceMap": true
@@ -69,11 +70,6 @@
         },
         "development": {
           "buildTarget": "web:build:development"
-        },
-        "e2e": {
-          "buildTarget": "web:build:development",
-          "proxyConfig": "apps/e2e/proxy.e2e.json",
-          "port": 4300
         }
       },
       "options": {

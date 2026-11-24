@@ -14,6 +14,7 @@ export class AppShellHarness extends ComponentHarness {
   private readonly asidePanel = this.locatorForOptional('aside');
   private readonly secondaryLinks = this.locatorForAll('nav.ui-shell-secondary a [matListItemTitle]');
   private readonly userButton = this.locatorForOptional('mat-toolbar .ui-shell-user');
+  private readonly userLabel = this.locatorForOptional('mat-toolbar .ui-shell-user-label');
   // The account card opens in an overlay, outside the shell's element.
   private readonly accountItems = this.documentRootLocatorFactory().locatorForAll('.ui-account-card [data-item]');
 
@@ -52,7 +53,7 @@ export class AppShellHarness extends ComponentHarness {
 
   /** The signed-in person's button name, or an empty string when nobody is signed in. */
   async getUserLabel(): Promise<string> {
-    return (await (await this.userButton())?.getAttribute('aria-label')) ?? '';
+    return (await (await this.userLabel())?.text()) ?? '';
   }
 
   /** Opens the signed-in person's account card and returns its entries. */

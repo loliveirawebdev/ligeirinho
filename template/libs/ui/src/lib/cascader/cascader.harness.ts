@@ -1,4 +1,5 @@
 import { ComponentHarness, type TestKey } from '@angular/cdk/testing';
+import { expand, isExpanded } from '../harness-helpers';
 
 /** Drives a `ui-cascader` in tests: reads the field, opens the panel and picks along a path, by labels. */
 export class CascaderHarness extends ComponentHarness {
@@ -12,13 +13,11 @@ export class CascaderHarness extends ComponentHarness {
   }
 
   async isOpen(): Promise<boolean> {
-    return (await (await this.trigger()).getAttribute('aria-expanded')) === 'true';
+    return isExpanded(await this.trigger());
   }
 
   async open(): Promise<void> {
-    if (!(await this.isOpen())) {
-      await (await this.trigger()).click();
-    }
+    await expand(await this.trigger());
   }
 
   /** The labels of each column shown, top level first. */

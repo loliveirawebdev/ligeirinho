@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, input, signal } from '@angular/core';
 import { defineScenarios } from '@ligeirinho/previewer';
+import { SAMPLE_STATUS_FILTERS } from '../../examples/members/sample-members';
 import { FilterBar, type FilterOption, type LightFilter, type LightFilterChange } from './filter-bar';
 
 interface FilterBarPreviewModel {
@@ -91,12 +92,7 @@ const members: FilterBarPreviewModel = {
   searchLabel: 'Search members',
   query: '',
   filtersLabel: 'Status',
-  filters: [
-    { value: 'all', label: 'All' },
-    { value: 'active', label: 'Active' },
-    { value: 'invited', label: 'Invited' },
-    { value: 'suspended', label: 'Suspended' },
-  ],
+  filters: SAMPLE_STATUS_FILTERS,
   selectedFilter: 'all',
 };
 

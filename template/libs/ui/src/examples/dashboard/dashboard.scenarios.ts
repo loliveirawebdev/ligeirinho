@@ -1,29 +1,13 @@
 import { defineScenarios } from '@ligeirinho/previewer';
 import type { DataTableRow } from '../../lib/data-table/data-table';
 import type { ExampleShell } from '../members/member-list.example';
-import { SAMPLE_NAVIGATION } from '../members/sample-members';
+import { SAMPLE_NAVIGATION, SAMPLE_SHELL } from '../members/sample-members';
 import { DashboardExample, type DashboardExampleModel } from './dashboard.example';
 
 /** *Overview* is the current page here. */
 const shell: ExampleShell = {
-  productName: 'Northwind',
+  ...SAMPLE_SHELL,
   navigation: [{ items: [{ label: 'Overview', icon: 'dashboard', path: '/__preview' }] }, ...SAMPLE_NAVIGATION.slice(1)],
-  navigationLabel: 'Main',
-  menuLabel: 'Open navigation',
-  actions: [
-    { id: 'help', icon: 'help', label: 'Help' },
-    { id: 'notifications', icon: 'notifications', label: 'Notifications, 3 unread', badge: 3 },
-  ],
-  user: {
-    name: 'Marta Ruiz',
-    detail: 'marta.ruiz@northwind.example',
-    label: 'Account: Marta Ruiz',
-    closeLabel: 'Close',
-    menu: [
-      { id: 'profile', icon: 'person', label: 'Profile' },
-      { id: 'sign-out', icon: 'logout', label: 'Sign out' },
-    ],
-  },
 };
 
 const DAYS = Array.from({ length: 30 }, (_, index) => `Nov ${String(index + 1)}`);
@@ -84,7 +68,7 @@ const dashboard: DashboardExampleModel = {
 
 export const dashboardScenarios = defineScenarios({
   flow: 'Screen patterns',
-  title: 'Dashboard',
+  title: 'Dashboard pattern',
   component: DashboardExample,
   scenarios: {
     ready: dashboard,

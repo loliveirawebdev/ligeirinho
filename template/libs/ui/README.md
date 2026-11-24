@@ -60,7 +60,8 @@ Copy helpers (`defineCopy`, `injectCopy`, `selectCopy`, `formatText`, `pluralTex
 
 ## Screen patterns
 
-`src/examples` composes the components into whole screens. Copy the composition, not the markup:
+`src/examples` composes the components into whole screens (flow **Screen patterns**, titled *… pattern* so an
+app's own *Dashboard* keeps its name). Copy the composition, not the markup:
 
 | Pattern | Scenario | What it shows |
 |---|---|---|
@@ -69,10 +70,10 @@ Copy helpers (`defineCopy`, `injectCopy`, `selectCopy`, `formatText`, `pluralTex
 | Navigation | `navigation` (flow **Catalog**) | tabs (plain, with icons), the menu (icons, a submenu, disabled, the destructive item last), the context menu (right click or Shift+F10, at the pointer), the stepper (horizontal, vertical), the toolbar of a panel, the side sheet (`mat-drawer` at the end, over the list, the record's facts in `ui-detail-list`) |
 | Feedback and overlays | `feedback-and-overlays` (flow **Catalog**) | the destructive confirmation (`ConfirmDialogs`), the bottom sheet of actions, the snack bar with *Undo*, progress bars (determinate, indeterminate, buffer), spinners (alone, in the button that started the work), tooltips, badges (a count, a dot) |
 | Containers and lists | `containers-and-lists` (flow **Catalog**) | cards (outlined, raised; never filled) with their actions under a divider, the accordion, lists (icons, two lines, subheader, selection, dividers), the grid list, the tree |
-| Back office list | `back-office-list` | shell, header with the primary action, filter bar, then exactly one of loading, error, empty or the table, *Show more* under it |
-| Back office detail | `back-office-detail` | back link, the record's name as title with its actions, a notice when something needs attention, facts in titled sections (no cards) |
-| Dashboard | `dashboard` | shell, header with the period as a toggle, the KPIs as a row split of `ui-statistic`s, the trend as an area `ui-chart` in a panel, recent records in `ui-data-table`; skeletons in place while loading |
-| Sign in | `sign-in` | one-time-code sign-in without a password: the email, then the 6-digit code (`ui-otp-input`) with resend and change-email, in a centered card |
+| Back office list | `back-office-list-pattern` | shell, header with the primary action, filter bar, then exactly one of loading, error, empty or the table, *Show more* under it |
+| Back office detail | `back-office-detail-pattern` | back link, the record's name as title with its actions, a notice when something needs attention, facts in titled sections (no cards) |
+| Dashboard | `dashboard-pattern` | shell, header with the period as a toggle, the KPIs as a row split of `ui-statistic`s, the trend as an area `ui-chart` in a panel, recent records in `ui-data-table`; skeletons in place while loading |
+| Sign in | `sign-in-pattern` | one-time-code sign-in without a password: the email, then the 6-digit code (`ui-otp-input`) with resend and change-email, in a centered card |
 | Single-column task page | `task-list` (tasks area) | header with a count, input group, the list, the states |
 
 ## Testing with the harnesses

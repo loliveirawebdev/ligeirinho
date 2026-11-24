@@ -1,4 +1,5 @@
 import { ComponentHarness } from '@angular/cdk/testing';
+import { clickByText, textOf } from '../harness-helpers';
 
 /** Reads and follows a `ui-breadcrumb` in tests. */
 export class BreadcrumbHarness extends ComponentHarness {
@@ -14,15 +15,10 @@ export class BreadcrumbHarness extends ComponentHarness {
   }
 
   async getCurrent(): Promise<string> {
-    return (await (await this.current())?.text()) ?? '';
+    return textOf(await this.current());
   }
 
   async follow(label: string): Promise<void> {
-    for (const link of await this.links()) {
-      if ((await link.text()) === label) {
-        await link.click();
-        return;
-      }
-    }
+    await clickByText(await this.links(), label);
   }
 }

@@ -29,6 +29,11 @@ ui-app-shell .ui-shell-bar {
   box-sizing: border-box;
 }
 
+/* A long product name gives way (an ellipsis) before the buttons do: they keep their 40 px and more. */
+ui-app-shell mat-toolbar > button {
+  flex-shrink: 0;
+}
+
 ui-app-shell mat-sidenav-content.mat-drawer-content {
   display: flex;
   flex-direction: column;

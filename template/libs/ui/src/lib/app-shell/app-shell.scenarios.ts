@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, effect, input, signal } from '@angular/core';
 import { defineScenarios } from '@ligeirinho/previewer';
-import { SAMPLE_NAVIGATION } from '../../examples/members/sample-members';
+import { SAMPLE_NAVIGATION, SAMPLE_SHELL } from '../../examples/members/sample-members';
 import { DetailList, type DetailItem } from '../detail-list/detail-list';
 import { PageHeader } from '../page-header/page-header';
 import { AppShell, type ShellAction, type ShellAside, type ShellLink, type ShellNavSection, type ShellUser } from './app-shell';
@@ -62,28 +62,7 @@ class AppShellPreview {
   }
 }
 
-const backOffice: AppShellPreviewModel = {
-  productName: 'Northwind',
-  navigation: SAMPLE_NAVIGATION,
-  navigationLabel: 'Main',
-  menuLabel: 'Open navigation',
-  actions: [
-    { id: 'help', icon: 'help', label: 'Help' },
-    { id: 'notifications', icon: 'notifications', label: 'Notifications, 3 unread', badge: 3 },
-  ],
-  user: {
-    name: 'Marta Ruiz',
-    detail: 'marta.ruiz@northwind.example',
-    label: 'Account: Marta Ruiz',
-    closeLabel: 'Close',
-    menu: [
-      { id: 'profile', icon: 'person', label: 'Profile' },
-      { id: 'settings', icon: 'settings', label: 'Settings' },
-      { id: 'sign-out', icon: 'logout', label: 'Sign out' },
-    ],
-  },
-  pageTitle: 'Members',
-};
+const backOffice: AppShellPreviewModel = { ...SAMPLE_SHELL, pageTitle: 'Members' };
 
 const { user: _signedIn, ...signedOut } = backOffice;
 

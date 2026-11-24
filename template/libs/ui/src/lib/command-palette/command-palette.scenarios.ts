@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog } from '@angular/material/dialog';
 import { defineScenarios } from '@ligeirinho/previewer';
 import { Kbd } from '../kbd/kbd';
 import { CommandPalette, type CommandPaletteText, CommandPaletteShortcut, type PaletteCommand } from './command-palette';
+import { reopenOnEveryScenario } from '../preview-dialog';
 
 interface CommandPalettePreviewModel {
   readonly open: string;
@@ -28,18 +28,10 @@ class CommandPalettePreview {
   readonly model = input.required<CommandPalettePreviewModel>();
 
   private readonly palette = inject(CommandPalette);
-  private readonly dialog = inject(MatDialog);
 
   constructor() {
-    effect(() => {
-      this.model();
-      untracked(() => {
-        this.dialog.closeAll();
-        this.open();
-      });
-    });
-    inject(DestroyRef).onDestroy(() => {
-      this.dialog.closeAll();
+    reopenOnEveryScenario(this.model, () => {
+      this.open();
     });
   }
 

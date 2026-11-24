@@ -112,8 +112,9 @@
         @if (selection(); as picked) {
           <mat-checkbox [checked]="isSelected(row)" [aria-label]="picked.text.selectRow(title(row))" (change)="toggleRow(row)" />
         }
-      <button mat-list-item type="button" [attr.aria-label]="row.openLabel" (click)="rowOpened.emit(row.id)">
-        <span matListItemTitle>{{ row.cells[titleKey()] }}</span>
+      <!-- No aria-label: it would hide the detail lines everyone sees. The action is heard, the title only seen. -->
+      <button mat-list-item type="button" (click)="rowOpened.emit(row.id)">
+        <span matListItemTitle><span class="ui-data-open sr-only">{{ row.openLabel }}</span><span class="ui-data-title" aria-hidden="true">{{ row.cells[titleKey()] }}</span></span>
         <span class="ui-data-detail text-body-medium text-on-surface-variant" [class.ui-data-detail-labeled]="phoneLabels()">
           @for (line of detailLines(row); track line.key) {
             <span class="ui-data-line">
@@ -151,13 +152,14 @@
   >
     @if (more.loading) {
       <span class="ui-data-more-label" role="status">
-        <mat-progress-spinner mode="indeterminate" diameter="20" aria-hidden="true" />
+        <!-- inert: Material gives the spinner tabindex="-1", a focusable control nested in the button. -->
+        <mat-progress-spinner mode="indeterminate" diameter="20" aria-hidden="true" inert />
         <span class="ui-data-more-text">{{ more.text.loading }}</span>
       </span>
     } @else {
       <span class="ui-data-more-label">
         <span class="ui-data-more-text">{{ more.text.action }}</span>
-        <mat-icon aria-hidden="true">expand_more</mat-icon>
+        <mat-icon aria-hidden="true">keyboard_arrow_down</mat-icon>
       </span>
     }
   </button>

@@ -44,9 +44,11 @@
             </span>
             <span class="hidden min-w-0 flex-col gap-0.5 sm:flex">
               @for (event of day.events.slice(0, maxEvents()); track event.id) {
+                <!-- Compact (24 px): 40 px chips would swell the month grid; the day itself is the full-size target. -->
                 <button
                   class="ui-calendar-event text-label-medium"
                   type="button"
+                  data-touch-target="compact"
                   [attr.data-tone]="event.tone ?? 'neutral'"
                   [attr.tabindex]="isActive ? 0 : -1"
                   (click)="openEvent(event, $event)"

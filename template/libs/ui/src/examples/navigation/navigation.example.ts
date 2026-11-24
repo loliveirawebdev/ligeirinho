@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input, signal, viewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
@@ -11,6 +10,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DetailList, type DetailItem } from '../../lib/detail-list/detail-list';
 import type { CatalogNote, IconLabel } from '../catalog-note';
+import { ExampleNote } from '../example-note';
 
 export interface NavigationExampleModel {
   readonly title: string;
@@ -62,6 +62,7 @@ export interface NavigationExampleModel {
 @Component({
   selector: 'ui-navigation-example',
   imports: [
+    ExampleNote,
     DetailList,
     MatButtonModule,
     MatDividerModule,
@@ -72,13 +73,13 @@ export interface NavigationExampleModel {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    NgTemplateOutlet,
   ],
   templateUrl: './navigation.example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class NavigationExample {
   readonly model = input.required<NavigationExampleModel>();
+  protected readonly stepperOrientations = ['horizontal', 'vertical'] as const;
 
   /** Where the context menu opens: under the pointer, or at the target's corner from the keyboard. */
   protected readonly contextPoint = signal({ left: 0, top: 0 });

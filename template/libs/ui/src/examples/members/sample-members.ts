@@ -1,5 +1,7 @@
 import type { DataTableColumn, DataTableRow } from '../../lib/data-table/data-table';
 import type { ShellNavSection } from '../../lib/app-shell/app-shell';
+import type { FilterOption } from '../../lib/filter-bar/filter-bar';
+import type { ExampleShell } from './member-list.example';
 
 /** Example data for the catalog's screens: a back office's members, with the long and the odd cases. */
 
@@ -33,6 +35,37 @@ export const SAMPLE_NAVIGATION: readonly ShellNavSection[] = [
     ],
   },
 ];
+
+/** The members' status filter, *All* first. */
+export const SAMPLE_STATUS_FILTERS: readonly FilterOption[] = [
+  { value: 'all', label: 'All' },
+  { value: 'active', label: 'Active' },
+  { value: 'invited', label: 'Invited' },
+  { value: 'suspended', label: 'Suspended' },
+];
+
+/** The shell around the catalog's back-office screens: Northwind, signed in as Marta Ruiz. */
+export const SAMPLE_SHELL: ExampleShell = {
+  productName: 'Northwind',
+  navigation: SAMPLE_NAVIGATION,
+  navigationLabel: 'Main',
+  menuLabel: 'Open navigation',
+  actions: [
+    { id: 'help', icon: 'help', label: 'Help' },
+    { id: 'notifications', icon: 'notifications', label: 'Notifications, 3 unread', badge: 3 },
+  ],
+  user: {
+    name: 'Marta Ruiz',
+    detail: 'marta.ruiz@northwind.example',
+    label: 'Account: Marta Ruiz',
+    closeLabel: 'Close',
+    menu: [
+      { id: 'profile', icon: 'person', label: 'Profile' },
+      { id: 'settings', icon: 'settings', label: 'Settings' },
+      { id: 'sign-out', icon: 'logout', label: 'Sign out' },
+    ],
+  },
+};
 
 export const MEMBER_COLUMNS: readonly DataTableColumn[] = [
   { key: 'name', label: 'Name' },

@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule, type MatCardAppearance } from '@angular/material/card';
@@ -9,6 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTreeModule } from '@angular/material/tree';
 import type { CatalogNote } from '../catalog-note';
+import { ExampleNote } from '../example-note';
 
 export interface ListSample {
   readonly icon: string;
@@ -65,6 +65,7 @@ export interface ContainersExampleModel {
 @Component({
   selector: 'ui-containers-example',
   imports: [
+    ExampleNote,
     MatButtonModule,
     MatCardModule,
     MatDividerModule,
@@ -73,7 +74,6 @@ export interface ContainersExampleModel {
     MatIconModule,
     MatListModule,
     MatTreeModule,
-    NgTemplateOutlet,
   ],
   templateUrl: './containers.example.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

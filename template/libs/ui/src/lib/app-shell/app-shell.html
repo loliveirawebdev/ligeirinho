@@ -97,7 +97,7 @@
         <button matIconButton data-menu type="button" [attr.aria-label]="menuLabel()" (click)="drawerOpen.set(true)">
           <mat-icon aria-hidden="true">menu</mat-icon>
         </button>
-        <span class="text-title-medium">{{ productName() }}</span>
+        <span class="text-title-medium min-w-0 truncate">{{ productName() }}</span>
       } @else if (railCollapsible()) {
         <button
           matIconButton
@@ -111,7 +111,7 @@
           <mat-icon aria-hidden="true">{{ rail() ? 'left_panel_open' : 'left_panel_close' }}</mat-icon>
         </button>
         @if (rail()) {
-          <span class="text-title-medium" aria-hidden="true">{{ productName() }}</span>
+          <span class="text-title-medium min-w-0 truncate" aria-hidden="true">{{ productName() }}</span>
         }
       }
       <span class="flex-1"></span>
@@ -149,9 +149,10 @@
           #accountOrigin="cdkOverlayOrigin"
           aria-haspopup="dialog"
           [attr.aria-expanded]="accountOpen()"
-          [attr.aria-label]="person.label"
           (click)="accountOpen.set(!accountOpen())"
         >
+          <!-- Named by hidden text, not aria-label, which would hide the detail everyone sees: Account: Ana Souza, Admin. -->
+          <span class="ui-shell-user-label sr-only">{{ person.label }}</span>
           <span class="ui-shell-user-content">
             @if (person.avatarUrl) {
               <img class="ui-shell-avatar" [src]="person.avatarUrl" alt="" />
@@ -160,7 +161,7 @@
             }
             @if (isWide()) {
               <span class="ui-shell-user-text">
-                <span class="text-label-large">{{ person.name }}</span>
+                <span class="text-label-large" aria-hidden="true">{{ person.name }}</span>
                 @if (person.detail) {
                   <span class="text-body-small text-on-surface-variant">{{ person.detail }}</span>
                 }

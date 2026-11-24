@@ -27,7 +27,7 @@ const code: SignInExampleModel = { ...email, step: 'code', email: 'ana.souza@nor
 
 export const signInScenarios = defineScenarios({
   flow: 'Screen patterns',
-  title: 'Sign in',
+  title: 'Sign-in pattern',
   component: SignInExample,
   scenarios: {
     /** Step one, in a centered card: the email. */

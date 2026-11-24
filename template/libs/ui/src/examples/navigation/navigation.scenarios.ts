@@ -46,7 +46,7 @@ const navigation: NavigationExampleModel = {
     target: 'Right-click here, or focus it and press Shift+F10',
     items: [
       { icon: 'open_in_new', label: 'Open' },
-      { icon: 'drive_file_rename_outline', label: 'Rename' },
+      { icon: 'drive_file_rename', label: 'Rename' },
       { icon: 'download', label: 'Download' },
     ],
     remove: { icon: 'delete', label: 'Delete file…' },

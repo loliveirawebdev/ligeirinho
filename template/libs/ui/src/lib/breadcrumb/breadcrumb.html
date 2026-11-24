@@ -3,8 +3,9 @@
     @for (item of items(); track $index; let last = $last) {
       <li class="flex min-w-0 items-center gap-1">
         @if (!last && item.link) {
+          <!-- 40 px tall and at least as wide, the touch target (rules/responsive.md); the text keeps its line. -->
           <a
-            class="truncate rounded-sm text-on-surface-variant underline-offset-4 hover:text-on-surface hover:underline focus-visible:outline-2 focus-visible:outline-primary"
+            class="block min-w-10 truncate rounded-sm py-2.5 text-center text-on-surface-variant underline-offset-4 hover:text-on-surface hover:underline focus-visible:outline-2 focus-visible:outline-primary"
             [routerLink]="item.link"
             >{{ item.label }}</a
           >

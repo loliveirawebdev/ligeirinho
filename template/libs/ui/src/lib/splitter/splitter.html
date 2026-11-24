@@ -1,4 +1,5 @@
-<div class="ui-splitter-pane" [style.flex-basis.%]="current()"><ng-content select="[uiSplitterStart]" /></div>
+<!-- Each pane scrolls on its own: focusable, so the keyboard can scroll it too. -->
+<div class="ui-splitter-pane" tabindex="0" [style.flex-basis.%]="current()"><ng-content select="[uiSplitterStart]" /></div>
 <div
   class="ui-splitter-handle"
   role="separator"
@@ -11,4 +12,4 @@
   (pointerdown)="startDrag($event)"
   (keydown)="moveByKey($event)"
 ></div>
-<div class="ui-splitter-pane ui-splitter-end"><ng-content select="[uiSplitterEnd]" /></div>
+<div class="ui-splitter-pane ui-splitter-end" tabindex="0"><ng-content select="[uiSplitterEnd]" /></div>
