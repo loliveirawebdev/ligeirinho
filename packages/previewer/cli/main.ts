@@ -1,15 +1,21 @@
 #!/usr/bin/env node
+import { asksForEntryIds, printEntryIds } from './entry-ids.js';
 import { InvalidRegistryArguments, checkRegistry, parseRegistryArguments, writeRegistry } from './registry-command.js';
 import { DuplicateScenarioExportName } from './registry-file.js';
 
 async function main(): Promise<void> {
-  const registryArguments = parseRegistryArguments(process.argv.slice(2), process.cwd());
-  const outcome = registryArguments.check
-    ? await checkRegistry(registryArguments)
-    : await writeRegistry(registryArguments);
+  const commandLineArguments = process.argv.slice(2);
+  const outcome = asksForEntryIds(commandLineArguments)
+    ? await printEntryIds(commandLineArguments, process.cwd())
+    : await runRegistry(commandLineArguments);
   const stream = outcome.exitCode === 0 ? process.stdout : process.stderr;
   stream.write(`${outcome.message}\n`);
   process.exitCode = outcome.exitCode;
+}
+
+async function runRegistry(commandLineArguments: readonly string[]) {
+  const registryArguments = parseRegistryArguments(commandLineArguments, process.cwd());
+  return registryArguments.check ? checkRegistry(registryArguments) : writeRegistry(registryArguments);
 }
 
 main().catch((commandError: unknown) => {

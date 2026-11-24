@@ -3,7 +3,8 @@ import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { collectScenarioExports, renderRegistry } from './registry-file.js';
 
-export const USAGE = 'Usage: ligeirinho-preview-registry --root <dir> --out <file> [--check]';
+export const USAGE =
+  'Usage: ligeirinho-preview-registry --root <dir> --out <file> [--check]\n       ligeirinho-preview-registry --entries-in <dir> [--entries-in <dir>…]';
 
 export class InvalidRegistryArguments extends Error {
   override readonly name = 'InvalidRegistryArguments';

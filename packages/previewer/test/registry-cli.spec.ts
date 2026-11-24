@@ -10,7 +10,9 @@ import {
   parseRegistryArguments,
   writeRegistry,
 } from '../cli/registry-command';
+import { findEntryTitles, listEntryIds, printEntryIds, toEntryId as cliToEntryId } from '../cli/entry-ids';
 import { DuplicateScenarioExportName, findExportNames, renderRegistry, toImportPath } from '../cli/registry-file';
+import { toEntryId } from '../lib/src/lib/scenario-entry';
 
 const runFile = promisify(execFile);
 const packageDirectory = path.resolve(import.meta.dirname, '..');
@@ -159,5 +161,41 @@ describe('built bin', () => {
         cwd: packageDirectory,
       }),
     ).resolves.toBeDefined();
+  });
+});
+
+describe('entry ids', () => {
+  it("names entries like the library's toEntryId", () => {
+    for (const title of ['Task list', 'TaskList', 'Sign in', 'App shell 2', '  Odd -- title  ']) {
+      expect(cliToEntryId(title)).toBe(toEntryId(title));
+    }
+  });
+
+  it('reads the title of every defineScenarios call, null when it is not a plain string', () => {
+    const source = [
+      "export const listScenarios = defineScenarios<List>({ flow: 'Tasks', title: 'Task list', component: List });",
+      'export const detailScenarios = defineScenarios({ flow: "Tasks", title: "Task detail" });',
+      'export const computedScenarios = defineScenarios({ title: someTitle });',
+    ].join('\n');
+    expect(findEntryTitles(source)).toEqual(['Task list', 'Task detail', null]);
+  });
+
+  it('lists the ids under the folders only, sorted, skipping folders that do not exist', async () => {
+    await writeProjectFile('libs/tasks/web/list.scenarios.ts', "export const a = defineScenarios({ title: 'Task list' });");
+    await writeProjectFile('libs/ui/card.scenarios.ts', "export const b = defineScenarios({ title: 'Card' });");
+    await writeProjectFile('libs/ui/alert.scenarios.ts', "export const c = defineScenarios({ title: 'Alert' });");
+
+    const outcome = await listEntryIds(['libs/ui', 'libs/missing'].map((folder) => path.join(projectDirectory, folder)));
+
+    expect(outcome).toEqual({ ids: ['alert', 'card'], unreadable: [] });
+  });
+
+  it('prints the ids comma separated, and fails when a title cannot be read', async () => {
+    await writeProjectFile('libs/ui/card.scenarios.ts', "export const b = defineScenarios({ title: 'Card' });");
+    expect(await printEntryIds(['--entries-in', 'libs/ui'], projectDirectory)).toEqual({ exitCode: 0, message: 'card' });
+    expect(await printEntryIds(['--entries-in', 'libs/none'], projectDirectory)).toEqual({ exitCode: 0, message: '' });
+
+    await writeProjectFile('libs/ui/odd.scenarios.ts', 'export const d = defineScenarios({ title: TITLE });');
+    expect((await printEntryIds(['--entries-in', 'libs/ui'], projectDirectory)).exitCode).toBe(1);
   });
 });

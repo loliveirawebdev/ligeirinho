@@ -26,7 +26,10 @@ export class DuplicatePreviewEntryId extends Error {
   override readonly name = 'DuplicatePreviewEntryId';
 
   constructor(readonly entryId: string) {
-    super(`Two preview entries share the id "${entryId}". Give them different titles.`);
+    super(
+      `Two preview entries share the id "${entryId}" (the id is the title in kebab case, whatever the flow). ` +
+        'Give them different titles.',
+    );
   }
 }
 

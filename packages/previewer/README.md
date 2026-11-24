@@ -113,6 +113,16 @@ It finds every `export const <name> = defineScenarios...` in `*.scenarios.ts` fi
 `dist` and hidden folders) and writes a sorted registry. Exit codes: 0 ok, 1 stale, 2 bad arguments or two
 exports with the same name.
 
+The same command lists the entry ids under some folders, comma separated, for the gate to check only the screens a
+change reaches (`LIGEIRINHO_PREVIEW_ENTRIES`, see `@ligeirinho/e2e-kit`):
+
+```sh
+ligeirinho-preview-registry --entries-in libs/tasks/web --entries-in libs/ui   # app-shell,...,task-list
+```
+
+It reads each `defineScenarios` call's `title` and turns it into the id as the library does. Exit 1 when a title
+isn't a plain string (the gate then checks every screen), 2 on bad arguments.
+
 ## Develop
 
 `pnpm build` (ng-packagr, partial compilation, into `dist/`; CLI with tsc into `dist-cli/`), `pnpm test` (type
