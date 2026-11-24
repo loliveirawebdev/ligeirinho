@@ -46,12 +46,23 @@ export const clippedButtonPage = page(
    </div>`,
 );
 
+/** An app shell's shape: a fixed-height frame that hides overflow around a content area that scrolls. */
+export const scrolledBelowPage = page(
+  'Below the fold of a scrolling area',
+  `<div style="height: 300px; overflow: hidden">
+     <div style="height: 100%; overflow: auto">
+       <div style="height: 600px"></div>
+       <button type="button" style="min-height: 44px">Open order</button>
+     </div>
+   </div>`,
+);
+
 export const tinyButtonPage = page(
   'Tiny button',
   '<button type="button" aria-label="Close" style="min-width: 0; min-height: 0; width: 24px; height: 24px; padding: 0">×</button>',
 );
 
-/** The DOM shapes Angular Material uses around small native elements (buttons, checkboxes, text fields). */
+/** The DOM shapes Angular Material uses around small native elements (buttons, checkboxes, chips, text fields). */
 export const materialHitAreaPage = page(
   'Material hit areas',
   `<button type="button" class="mdc-button" style="position: relative; height: 40px; padding: 0 12px">
@@ -61,6 +72,9 @@ export const materialHitAreaPage = page(
      <input type="checkbox" aria-label="Complete" style="width: 40px; height: 40px; margin: 0" />
      <div class="mat-mdc-checkbox-touch-target" style="position: absolute; inset: -4px; width: 48px; height: 48px"></div>
    </div>
+   <button type="button" style="position: relative; height: 32px; padding: 0 12px">
+     <span class="mat-mdc-chip-action-label">Active<span class="mat-mdc-chip-touch-target" style="position: absolute; left: 0; right: 0; top: -8px; height: 48px"></span></span>
+   </button>
    <div class="mat-mdc-text-field-wrapper" style="height: 56px; padding: 16px">
      <input type="text" aria-label="New task" style="height: 24px; width: 200px" />
    </div>`,
@@ -70,6 +84,12 @@ export const decoyTouchTargetPage = page(
   'Touch target that is not the element’s',
   `<div><span class="mat-mdc-button-touch-target" style="display: block; width: 48px; height: 48px"></span></div>
    <button type="button" aria-label="Close" style="min-width: 0; min-height: 0; width: 24px; height: 24px; padding: 0">×</button>`,
+);
+
+export const compactTargetsPage = page(
+  'Compact targets',
+  `<button type="button" data-touch-target="compact" style="min-width: 0; min-height: 0; width: 91px; height: 24px; padding: 0">Standup</button>
+   <button type="button" data-touch-target="compact" style="min-width: 0; min-height: 0; width: 91px; height: 20px; padding: 0">Payroll</button>`,
 );
 
 export const standaloneSmallLinkPage = page('Standalone link', '<a href="/help" style="font-size: 12px">Help</a>');
@@ -91,10 +111,12 @@ const iconBox = 'mat-icon { display: inline-block; width: 24px; height: 24px; ov
 /** No icon font on the page: the name is drawn as text, clipped by the 24 px box. */
 export const iconAsTextPage = page('Icon as text', '<mat-icon aria-hidden="true">arrow_back</mat-icon>', iconBox);
 
-/** A glyph-sized icon (one character stands in for the ligature) and an SVG icon. */
+/** A glyph-sized icon (one character stands in for the ligature), one padded like a text field's prefix, and an SVG icon. */
 export const iconDrawnPage = page(
   'Icon drawn',
   `<mat-icon aria-hidden="true">a</mat-icon>
+   <mat-icon aria-hidden="true" style="padding: 12px; box-sizing: content-box">a</mat-icon>
+   <mat-icon aria-hidden="true">a<span>99+</span></mat-icon>
    <mat-icon aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 12h16" /></svg></mat-icon>`,
   iconBox,
 );

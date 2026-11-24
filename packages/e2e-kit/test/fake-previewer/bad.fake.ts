@@ -11,6 +11,7 @@ import { fakePreviewerTest } from './fake-previewer.js';
 
 responsiveChecks({
   previewPath: '/__preview',
+  groups: 1,
   widths: [390],
   themes: ['dark'],
   test: fakePreviewerTest({

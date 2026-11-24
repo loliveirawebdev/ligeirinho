@@ -4,6 +4,7 @@ import { fakePreviewerTest } from './fake-previewer.js';
 
 responsiveChecks({
   previewPath: '/__preview',
+  groups: 1,
   viewports: [
     { width: 390, height: 844 },
     { width: 844, height: 390 },

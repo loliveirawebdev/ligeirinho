@@ -16,7 +16,7 @@ export interface InspectedClickable {
   readonly clippingAncestor: string | null;
   /** Inside an `overflow-x: auto|scroll` container (a carousel, a scrollable table): it may sit off screen. */
   readonly insideHorizontalScroller: boolean;
-  /** An inline `<a>` inside a sentence: exempt from the 44 px rule (WCAG 2.5.5 "inline" exception). */
+  /** An inline `<a>` inside a sentence: exempt from the touch target rule (WCAG 2.5.5 "inline" exception). */
   readonly inlineTextLink: boolean;
   /** Size of the largest associated `<label>`, which extends the target of inputs; 0 when there is none. */
   readonly labelWidth: number;
@@ -28,6 +28,11 @@ export interface InspectedClickable {
    */
   readonly hitAreaWidth: number;
   readonly hitAreaHeight: number;
+  /**
+   * Marked `data-touch-target="compact"`: a dense grid's target (a calendar's event chips) held to WCAG 2.5.8's
+   * 24 px instead of the 40 px rule.
+   */
+  readonly compactTarget: boolean;
 }
 
 /** Inspects every visible clickable in one browser round trip. */
@@ -68,6 +73,22 @@ function inspectClickablesInBrowser(clickableSelector: string): InspectedClickab
     const outsideX = rect.left < box.left - pixelTolerance || rect.right > box.right + pixelTolerance;
     const outsideY = rect.top < box.top - pixelTolerance || rect.bottom > box.bottom + pixelTolerance;
     return (hides(style.overflowX) && outsideX) || (hides(style.overflowY) && outsideY);
+  }
+
+  function isScroller(ancestor: Element): boolean {
+    if (ancestor === document.documentElement || ancestor === document.body) {
+      return false;
+    }
+    const style = getComputedStyle(ancestor);
+    const scrolls = (overflow: string): boolean => overflow === 'auto' || overflow === 'scroll';
+    return scrolls(style.overflowX) || scrolls(style.overflowY);
+  }
+
+  /** Only up to the nearest scroller: past its edge the element is scrolled out of sight, not cut off. */
+  function clippingAncestorOf(ancestors: readonly Element[], rect: DOMRect): Element | undefined {
+    const scroller = ancestors.findIndex(isScroller);
+    const reachable = scroller === -1 ? ancestors : ancestors.slice(0, scroller);
+    return reachable.find((ancestor) => clips(ancestor, rect));
   }
 
   function isHorizontalScroller(ancestor: Element): boolean {
@@ -117,8 +138,12 @@ function inspectClickablesInBrowser(clickableSelector: string): InspectedClickab
 
   function hitArea(element: Element): { readonly width: number; readonly height: number } {
     const touchTargetSelector = ':scope > [class*="-touch-target"]';
+    // A chip option keeps its touch target inside its label; one inside a nested control is that control's.
+    const ownTouchTargets = [...element.querySelectorAll('[class*="-touch-target"]')].filter(
+      (touchTarget) => touchTarget.parentElement?.closest(clickableSelector) === element,
+    );
     const areas = [
-      element.querySelector(touchTargetSelector),
+      ...ownTouchTargets,
       element.parentElement?.querySelector(touchTargetSelector) ?? null,
       element.closest('.mat-mdc-text-field-wrapper'),
     ].filter((area) => area !== null);
@@ -132,7 +157,7 @@ function inspectClickablesInBrowser(clickableSelector: string): InspectedClickab
   function inspect(element: Element): InspectedClickable {
     const rect = element.getBoundingClientRect();
     const ancestors = ancestorsOf(element);
-    const clippingAncestor = ancestors.find((ancestor) => clips(ancestor, rect));
+    const clippingAncestor = clippingAncestorOf(ancestors, rect);
     const label = largestLabel(element);
     const area = hitArea(element);
     return {
@@ -149,6 +174,7 @@ function inspectClickablesInBrowser(clickableSelector: string): InspectedClickab
       labelHeight: label.height,
       hitAreaWidth: area.width,
       hitAreaHeight: area.height,
+      compactTarget: element.getAttribute('data-touch-target') === 'compact',
     };
   }
 

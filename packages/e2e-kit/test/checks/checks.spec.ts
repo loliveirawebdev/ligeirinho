@@ -13,12 +13,14 @@ import {
 import {
   axeViolationPage,
   clippedButtonPage,
+  compactTargetsPage,
   decoyTouchTargetPage,
   goodPage,
   iconAsTextPage,
   iconDrawnPage,
   materialHitAreaPage,
   offscreenButtonPage,
+  scrolledBelowPage,
   standaloneSmallLinkPage,
   tinyButtonPage,
   widePage,
@@ -72,6 +74,12 @@ test.describe('clickables in view', () => {
       { element: '<button> "Delete"', reason: 'cut off by <div> "Delete" (overflow hidden)' },
     ]);
   });
+
+  test('leaves a button below the fold of a scrolling area alone', async ({ page }) => {
+    await page.setContent(scrolledBelowPage);
+
+    expect(await findClickablesOutOfView(page)).toEqual([]);
+  });
 });
 
 test.describe('touch target size', () => {
@@ -91,6 +99,12 @@ test.describe('touch target size', () => {
     await page.setContent(decoyTouchTargetPage);
 
     expect(await findSmallTouchTargets(page)).toEqual([{ element: '<button> "Close"', width: 24, height: 24 }]);
+  });
+
+  test('holds targets marked compact to 24 px', async ({ page }) => {
+    await page.setContent(compactTargetsPage);
+
+    expect(await findSmallTouchTargets(page)).toEqual([{ element: '<button> "Payroll"', width: 91, height: 20 }]);
   });
 
   test('catches a small link that is not part of a sentence', async ({ page }) => {
