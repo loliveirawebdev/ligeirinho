@@ -62,12 +62,13 @@ export async function lintFixture(
   relativeFilePath: string,
   code: string,
   overrideConfig: Linter.Config[] = projectConfig(),
+  cwd = fixturesDir,
 ): Promise<LintedMessage[]> {
   const filePath = path.join(fixturesDir, relativeFilePath);
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(filePath, code);
   try {
-    const eslint = new ESLint({ cwd: fixturesDir, overrideConfigFile: true, overrideConfig });
+    const eslint = new ESLint({ cwd, overrideConfigFile: true, overrideConfig });
     const [lintResult] = await eslint.lintFiles([filePath]);
     return (lintResult?.messages ?? []).map(({ ruleId, severity, message }) => ({ ruleId, severity, message }));
   } finally {

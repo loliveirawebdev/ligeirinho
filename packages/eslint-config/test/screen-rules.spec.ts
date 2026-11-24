@@ -88,6 +88,15 @@ describe('known-icons', () => {
     expect(await ruleIdsFor('<mat-icon fontIcon="sparkles" />')).toContain('@ligeirinho/known-icons');
     expect(await ruleIdsFor('<mat-icon>{{ icon }}</mat-icon>')).not.toContain('@ligeirinho/known-icons');
   });
+
+  test('run from a project folder, as Nx does, it finds the names in the workspace root', async () => {
+    const projectFolder = path.join(fixturesDir, 'libs/ui');
+    await mkdir(projectFolder, { recursive: true });
+    // The config file sits in the workspace root, so its globs stay relative to it.
+    const rootConfig = projectConfig().map((config) => ({ basePath: fixturesDir, ...config }));
+    const messages = await lintFixture('libs/ui/src/known-icons.html', '<mat-icon>arrow_bak</mat-icon>', rootConfig, projectFolder);
+    expect(ruleIdsOf(messages)).toContain('@ligeirinho/known-icons');
+  });
 });
 
 describe('use-catalog', () => {

@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { Rule } from 'eslint';
 import { isTemplateElement, staticAttributeValue, staticText } from './template-ast.js';
@@ -21,6 +21,28 @@ function readIconNames(filePath: string): ReadonlySet<string> | undefined {
   } catch {
     // Not installed (a fresh checkout before `pnpm install`): nothing to check against, so the rule stays quiet.
     return undefined;
+  }
+}
+
+/**
+ * The file from the working directory up: Nx runs ESLint from each project's folder (`libs/ui`), where there is no
+ * `node_modules`, so a path relative to it alone would find nothing and leave the rule quiet.
+ */
+function findUpwards(startDirectory: string, relativePath: string): string | undefined {
+  if (path.isAbsolute(relativePath)) {
+    return relativePath;
+  }
+  let directory = path.resolve(startDirectory);
+  for (;;) {
+    const candidate = path.join(directory, relativePath);
+    if (existsSync(candidate)) {
+      return candidate;
+    }
+    const parent = path.dirname(directory);
+    if (parent === directory) {
+      return undefined;
+    }
+    directory = parent;
   }
 }
 
@@ -49,7 +71,8 @@ export const knownIcons: Rule.RuleModule = {
   create(context) {
     const [firstOption] = context.options;
     const iconNamesFile = (isOptions(firstOption) ? firstOption.iconNamesFile : undefined) ?? defaultIconNamesFile;
-    const iconNames = readIconNames(path.resolve(context.cwd, iconNamesFile));
+    const iconNamesPath = findUpwards(context.cwd, iconNamesFile);
+    const iconNames = iconNamesPath === undefined ? undefined : readIconNames(iconNamesPath);
     if (iconNames === undefined) {
       return {};
     }
