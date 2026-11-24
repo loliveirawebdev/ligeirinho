@@ -1,0 +1,88 @@
+<ul
+  ngTree
+  #tree="ngTree"
+  class="tree"
+  aria-label="Scenarios"
+  nav
+  currentType="page"
+  [value]="selectedValues()"
+  (valueChange)="choose($event)"
+>
+  @for (flow of flows(); track flow.key) {
+    <li
+      ngTreeItem
+      #flowItem="ngTreeItem"
+      class="node"
+      [parent]="tree"
+      [value]="flow.key"
+      [label]="flow.flow"
+      [attr.aria-label]="flow.flow"
+      [selectable]="false"
+      [expanded]="isExpanded(flow.key)"
+      (expandedChange)="setExpanded(flow.key, $event)"
+    >
+      <span class="row row-flow">
+        <span class="chevron" aria-hidden="true"></span>
+        <span class="label">
+          @for (part of flow.label; track $index) {
+            @if (part.match) {<mark>{{ part.text }}</mark>} @else {{{ part.text }}}
+          }
+        </span>
+        <span class="count" aria-hidden="true">{{ flow.entries.length }}</span>
+      </span>
+      <ul role="group">
+        <ng-template ngTreeItemGroup [ownedBy]="flowItem" #flowGroup="ngTreeItemGroup">
+          @for (entry of flow.entries; track entry.key) {
+            <li
+              ngTreeItem
+              #entryItem="ngTreeItem"
+              class="node"
+              [parent]="flowGroup"
+              [value]="entry.key"
+              [label]="entry.title"
+              [attr.aria-label]="entry.title"
+              [selectable]="false"
+              [expanded]="isExpanded(entry.key)"
+              (expandedChange)="setExpanded(entry.key, $event)"
+            >
+              <span class="row row-entry">
+                <span class="chevron" aria-hidden="true"></span>
+                <span class="label">
+                  @for (part of entry.label; track $index) {
+                    @if (part.match) {<mark>{{ part.text }}</mark>} @else {{{ part.text }}}
+                  }
+                </span>
+                <span class="count" aria-hidden="true">{{ entry.scenarios.length }}</span>
+              </span>
+              <ul role="group">
+                <ng-template ngTreeItemGroup [ownedBy]="entryItem" #entryGroup="ngTreeItemGroup">
+                  @for (scenario of entry.scenarios; track scenario.key) {
+                    <li
+                      ngTreeItem
+                      class="node"
+                      [parent]="entryGroup"
+                      [value]="scenario.key"
+                      [label]="scenario.scenarioName"
+                      [attr.aria-label]="scenario.hasPlay ? scenario.scenarioName + ', has play steps' : scenario.scenarioName"
+                    >
+                      <span class="row row-scenario">
+                        <span class="label">
+                          @for (part of scenario.label; track $index) {
+                            @if (part.match) {<mark>{{ part.text }}</mark>} @else {{{ part.text }}}
+                          }
+                        </span>
+                        @if (scenario.hasPlay) {
+                          <span class="play-mark" title="Has play steps">steps</span>
+                        }
+                      </span>
+                    </li>
+                  }
+                </ng-template>
+              </ul>
+            </li>
+          }
+        </ng-template>
+      </ul>
+    </li>
+  }
+</ul>

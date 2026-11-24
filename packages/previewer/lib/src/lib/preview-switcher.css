@@ -1,0 +1,77 @@
+.switcher {
+  width: min(560px, calc(100vw - 32px));
+  margin: 12vh auto auto;
+  padding: 0;
+  border: 1px solid var(--pv-border-strong);
+  border-radius: 10px;
+  background: var(--pv-surface);
+  color: var(--pv-text);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 0.28);
+  font: inherit;
+  overflow: hidden;
+}
+
+.switcher::backdrop {
+  background: rgb(0 0 0 / 0.35);
+}
+
+.field {
+  display: block;
+  width: 100%;
+  padding: 14px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--pv-border);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+
+.matches {
+  max-height: min(420px, 60vh);
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.match {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.match[aria-selected='true'] {
+  background: var(--pv-selected);
+  color: var(--pv-accent);
+}
+
+.match-name {
+  font-weight: 500;
+}
+
+.match-where {
+  overflow: hidden;
+  color: var(--pv-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.no-match {
+  padding: 12px 10px;
+  color: var(--pv-muted);
+}
+
+.hint {
+  margin: 0;
+  padding: 8px 16px;
+  border-top: 1px solid var(--pv-border);
+  color: var(--pv-muted);
+  font-size: 11px;
+}

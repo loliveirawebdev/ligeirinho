@@ -6,7 +6,11 @@ A dev-only route, `/__preview`, that renders the app's **real** view components 
 The page works like a browser's device mode: **one scenario at a time** in a frame with rulers, which you resize by
 dragging its right edge, bottom edge or corner (arrow keys on a focused edge: ±10 px, ±50 with Shift).
 
-- **Sidebar:** every scenario, grouped by flow and entry, with a search; ↑/↓ moves through them.
+- **Sidebar:** a tree of flows → screens → scenarios (Angular Aria's tree), collapsed by default except the path
+  to the open scenario; the groups you open are remembered in the browser, with expand all / collapse all. Keys:
+  ↑/↓ move, → opens, ← closes, Enter opens the scenario. The filter opens every match, highlights it, Enter
+  opens the first one and Escape clears it.
+- **⌘K / Ctrl+K:** jump to any scenario by typing parts of its flow, screen and name (`task err`).
 - **Toolbar:** device presets (phones, tablets, laptop, desktop), width × height, rotate, zoom (fit or a fixed
   scale), dark theme, run steps on or off, replay, open the scenario alone in a tab.
 - **Rulers:** px marks and the breakpoints (`sm` 640 … `2xl` 1536); click one to set the width.
@@ -15,6 +19,9 @@ dragging its right edge, bottom edge or corner (arrow keys on a focused edge: ±
 Everything (scenario, size, theme, zoom, steps) is in the URL, so a reload or a shared link opens the same view.
 
 ## Use
+
+Peer dependencies: `@angular/common`, `core`, `platform-browser`, `router`, plus `@angular/cdk` and
+`@angular/aria` (the sidebar's tree).
 
 ```ts
 // task-list.scenarios.ts, next to task-list.view.ts
@@ -31,12 +38,15 @@ export const taskListScenarios = defineScenarios<TaskListViewModel>({
 ```
 
 ```ts
-// app.routes.ts
+// preview.routes.ts: loaded only when /__preview opens, so the scenarios stay out of the app's bundle
 import { previewRoutes } from '@ligeirinho/previewer';
 import { scenarioRegistry } from './preview.registry';
 
+export default previewRoutes(scenarioRegistry);
+
+// app.routes.ts
 export const routes: Routes = [
-  ...(isDevMode() ? [{ path: '__preview', children: previewRoutes(scenarioRegistry) }] : []),
+  ...(isDevMode() ? [{ path: '__preview', loadChildren: () => import('./preview.routes') }] : []),
 ];
 ```
 

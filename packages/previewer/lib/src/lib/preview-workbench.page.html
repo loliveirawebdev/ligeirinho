@@ -1,50 +1,46 @@
 <div class="workbench" [class.sidebar-closed]="!sidebarOpen()" [class.panel-closed]="!panelOpen()">
-  <aside class="sidebar" aria-label="Scenarios">
+  <aside class="sidebar" aria-label="Scenario list">
     <div class="sidebar-head">
-      <h1>Preview</h1>
+      <div class="sidebar-title">
+        <h1>Preview</h1>
+        <button type="button" class="jump" title="Go to scenario (⌘K / Ctrl+K)" (click)="openSwitcher()">
+          Go to… <kbd>⌘K</kbd>
+        </button>
+      </div>
       <input
         type="search"
         class="search"
-        placeholder="Find a screen or scenario"
-        aria-label="Find a screen or scenario"
+        placeholder="Filter screens and scenarios"
+        aria-label="Filter screens and scenarios"
         [value]="search()"
         (input)="onSearch($event)"
+        (keydown)="onSearchKeydown($event)"
       />
+      @if (hasScenarios && !searching()) {
+        <div class="tree-actions">
+          <button type="button" class="link-button" (click)="scenarioTree()?.expandAll()">Expand all</button>
+          <button type="button" class="link-button" (click)="scenarioTree()?.collapseAll()">Collapse all</button>
+        </div>
+      }
     </div>
-    <nav #scenarioList class="tree" (keydown.arrowdown)="moveSelection($event, 1)" (keydown.arrowup)="moveSelection($event, -1)">
-      @for (group of flowGroups(); track group.flow) {
-        <section class="flow">
-          <h2>{{ group.flow }}</h2>
-          @for (entry of group.entries; track entry.id) {
-            <h3>{{ entry.title }}</h3>
-            <ul>
-              @for (scenario of entry.scenarios; track scenario.name) {
-                <li>
-                  <a
-                    [routerLink]="[]"
-                    [queryParams]="scenarioQuery(entry.id, scenario.name)"
-                    [replaceUrl]="true"
-                    [attr.aria-current]="isSelected(entry.id, scenario.name) ? 'page' : null"
-                  >
-                    <span class="scenario-name">{{ scenario.name }}</span>
-                    @if (scenario.hasPlay) {
-                      <span class="play-mark" title="Has play steps">steps</span>
-                    }
-                  </a>
-                </li>
-              }
-            </ul>
-          }
-        </section>
-      } @empty {
-        @if (hasScenarios) {
-          <p class="empty">Nothing matches “{{ search() }}”.</p>
-        } @else {
-          <p class="empty">No scenarios yet. Add a <code>*.scenarios.ts</code> file next to a view and regenerate the registry.</p>
-        }
+    <nav class="tree-scroll" aria-label="Scenarios">
+      @if (tree().length > 0) {
+        <ligeirinho-preview-scenario-tree
+          [entries]="entries"
+          [flows]="tree()"
+          [selection]="selection()"
+          [searching]="searching()"
+          (chosen)="select($event)"
+        />
+      } @else if (hasScenarios) {
+        <p class="empty">Nothing matches “{{ search() }}”.</p>
+      } @else {
+        <p class="empty">No scenarios yet. Add a <code>*.scenarios.ts</code> file next to a view and regenerate the registry.</p>
       }
     </nav>
   </aside>
+
+  <ligeirinho-preview-switcher [entries]="entries" (chosen)="select($event)" />
 
   <header class="toolbar">
     <button

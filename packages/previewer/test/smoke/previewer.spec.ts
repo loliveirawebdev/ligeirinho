@@ -4,6 +4,14 @@ function previewFrame(page: Page) {
   return page.locator('ligeirinho-preview-canvas iframe');
 }
 
+/** The names of the tree items on screen, in order (collapsed groups hide their children). */
+function visibleTreeItems(page: Page): Promise<(string | null)[]> {
+  return page
+    .getByRole('tree', { name: 'Scenarios' })
+    .getByRole('treeitem')
+    .evaluateAll((items) => items.map((item) => item.getAttribute('aria-label')));
+}
+
 test.describe('workbench', () => {
   test('opens the first scenario in an iPhone-sized frame', async ({ page }) => {
     await page.goto('/__preview');
@@ -19,43 +27,109 @@ test.describe('workbench', () => {
     ).toBeVisible();
   });
 
-  test('lists every scenario by flow and entry in the sidebar', async ({ page }) => {
+  test('the scenario tree starts collapsed, except the path to the open scenario', async ({ page }) => {
     await page.goto('/__preview');
 
-    const sidebar = page.getByRole('complementary', { name: 'Scenarios' });
-    await expect(sidebar.getByRole('heading', { level: 2, name: 'Account' })).toBeVisible();
-    await expect(sidebar.getByRole('heading', { level: 2, name: 'Tasks' })).toBeVisible();
-    await expect(sidebar.getByRole('heading', { level: 3, name: 'Task list' })).toBeVisible();
-    await expect(sidebar.getByRole('link')).toHaveText(['complete', 'minimal', 'empty', 'full', 'error', /confirmDelete/]);
+    const tree = page.getByRole('tree', { name: 'Scenarios' });
+    await expect.poll(() => visibleTreeItems(page)).toEqual(['Account', 'Profile card', 'complete', 'minimal', 'Tasks']);
+    await expect(tree.getByRole('treeitem', { name: 'Account', exact: true })).toHaveAttribute('aria-expanded', 'true');
+    await expect(tree.getByRole('treeitem', { name: 'Tasks', exact: true })).toHaveAttribute('aria-expanded', 'false');
+    await expect(tree.getByRole('treeitem', { name: 'complete', exact: true })).toHaveAttribute('aria-current', 'page');
+  });
+
+  test('a shared link opens the groups around its scenario', async ({ page }) => {
+    await page.goto('/__preview?entry=task-list&scenario=confirmDelete');
+
+    const tree = page.getByRole('tree', { name: 'Scenarios' });
+    await expect(tree.getByRole('treeitem', { name: 'confirmDelete, has play steps' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
+    await expect(tree.getByRole('treeitem', { name: 'Account', exact: true })).toHaveAttribute('aria-expanded', 'false');
   });
 
   test('picking a scenario keeps the size and theme in the URL', async ({ page }) => {
     await page.goto('/__preview?w=500&h=700&theme=dark');
+    const tree = page.getByRole('tree', { name: 'Scenarios' });
 
-    await page.getByRole('link', { name: 'full' }).click();
+    await tree.getByRole('treeitem', { name: 'Tasks', exact: true }).click();
+    await tree.getByRole('treeitem', { name: 'Task list', exact: true }).click();
+    await tree.getByRole('treeitem', { name: 'full', exact: true }).click();
 
     await expect(page).toHaveURL(/entry=task-list&scenario=full&w=500&h=700&theme=dark/);
-    await expect(page.getByRole('link', { name: 'full' })).toHaveAttribute('aria-current', 'page');
+    await expect(tree.getByRole('treeitem', { name: 'full', exact: true })).toHaveAttribute('aria-current', 'page');
     await expect(previewFrame(page)).toHaveAttribute('src', /\/__preview\/render\/task-list\/full\?theme=dark/);
     await expect(previewFrame(page)).toHaveCSS('width', '500px');
   });
 
-  test('arrow keys move through the scenarios', async ({ page }) => {
+  test('the keyboard walks the tree: arrows move, → opens, Enter picks', async ({ page }) => {
     await page.goto('/__preview');
+    const tree = page.getByRole('tree', { name: 'Scenarios' });
+    const item = (name: string) => tree.getByRole('treeitem', { name, exact: true });
 
-    await page.getByRole('link', { name: 'complete' }).focus();
+    await item('complete').click();
     await page.keyboard.press('ArrowDown');
+    await expect(item('minimal')).toBeFocused();
+    await page.keyboard.press('ArrowDown');
+    await expect(item('Tasks')).toBeFocused();
+    await page.keyboard.press('ArrowRight');
+    await expect(item('Tasks')).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('ArrowDown');
+    await expect(item('Task list')).toBeFocused();
+    await page.keyboard.press('ArrowRight');
+    await expect(item('Task list')).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('ArrowDown');
+    await expect(item('empty')).toBeFocused();
+    await page.keyboard.press('Enter');
 
-    await expect(page).toHaveURL(/scenario=minimal/);
-    await expect(page.getByRole('link', { name: 'minimal' })).toBeFocused();
+    await expect(page).toHaveURL(/entry=task-list&scenario=empty/);
+    await page.keyboard.press('ArrowLeft');
+    await expect(item('Task list')).toBeFocused();
   });
 
-  test('search narrows the list', async ({ page }) => {
+  test('remembers the groups the user opened', async ({ page }) => {
+    await page.goto('/__preview');
+    const tree = page.getByRole('tree', { name: 'Scenarios' });
+
+    await tree.getByRole('treeitem', { name: 'Tasks', exact: true }).click();
+    await expect(tree.getByRole('treeitem', { name: 'Tasks', exact: true })).toHaveAttribute('aria-expanded', 'true');
+    await page.reload();
+
+    await expect(tree.getByRole('treeitem', { name: 'Tasks', exact: true })).toHaveAttribute('aria-expanded', 'true');
+    await page.getByRole('button', { name: 'Collapse all' }).click();
+    await expect.poll(() => visibleTreeItems(page)).toEqual(['Account', 'Tasks']);
+    await page.getByRole('button', { name: 'Expand all' }).click();
+    await expect.poll(() => visibleTreeItems(page)).toHaveLength(10);
+  });
+
+  test('the filter opens every match, highlights it and Enter opens the first one', async ({ page }) => {
+    await page.goto('/__preview');
+    const filter = page.getByLabel('Filter screens and scenarios');
+
+    await filter.fill('err');
+
+    const tree = page.getByRole('tree', { name: 'Scenarios' });
+    await expect.poll(() => visibleTreeItems(page)).toEqual(['Tasks', 'Task list', 'error']);
+    await expect(tree.locator('mark')).toHaveText(['err']);
+    await filter.press('Enter');
+    await expect(page).toHaveURL(/entry=task-list&scenario=error/);
+    await filter.press('Escape');
+    await expect(filter).toHaveValue('');
+  });
+
+  test('Ctrl+K jumps to any scenario', async ({ page }) => {
     await page.goto('/__preview');
 
-    await page.getByLabel('Find a screen or scenario').fill('err');
+    await page.keyboard.press('Control+k');
+    const switcher = page.getByRole('combobox', { name: 'Go to scenario' });
+    await expect(switcher).toBeFocused();
+    await switcher.fill('task conf');
+    const dialog = page.getByRole('dialog', { name: 'Go to scenario' });
+    await expect(dialog.getByRole('option')).toHaveText([/confirmDelete\s*Task list · Tasks/]);
+    await switcher.press('Enter');
 
-    await expect(page.getByRole('complementary', { name: 'Scenarios' }).getByRole('link')).toHaveText(['error']);
+    await expect(page).toHaveURL(/entry=task-list&scenario=confirmDelete/);
+    await expect(dialog).toBeHidden();
   });
 
   test('sets the size from the inputs, a preset and rotate', async ({ page }) => {

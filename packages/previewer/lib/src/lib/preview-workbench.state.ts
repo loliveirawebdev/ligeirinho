@@ -114,25 +114,6 @@ export function flattenScenarios(entries: readonly PreviewEntrySummary[]): Scena
   return entries.flatMap((entry) => entry.scenarios.map((scenarioName) => ({ entryId: entry.id, scenarioName })));
 }
 
-/** The scenario `offset` places away from `current` (wrapping around), or the first one. */
-export function neighborScenario(
-  scenarios: readonly ScenarioReference[],
-  current: ScenarioReference | null,
-  offset: number,
-): ScenarioReference | null {
-  if (scenarios.length === 0) {
-    return null;
-  }
-  const currentIndex = scenarios.findIndex(
-    (scenario) => scenario.entryId === current?.entryId && scenario.scenarioName === current.scenarioName,
-  );
-  if (currentIndex === -1) {
-    return scenarios[0] ?? null;
-  }
-  const nextIndex = (currentIndex + offset + scenarios.length) % scenarios.length;
-  return scenarios[nextIndex] ?? null;
-}
-
 /** The selected scenario if it exists, otherwise the first one. */
 export function resolveSelection(
   entries: readonly PreviewEntrySummary[],
@@ -167,4 +148,142 @@ function readSize(parameter: string | null, fallback: number): number {
 function readZoom(parameter: string | null): WorkbenchZoom {
   const zoom = Number(parameter);
   return ZOOM_LEVELS.includes(zoom) ? zoom : 'fit';
+}
+
+/** A piece of a label, marked when it matches the search. */
+export interface LabelPart {
+  readonly text: string;
+  readonly match: boolean;
+}
+
+export interface FlowNode {
+  readonly key: string;
+  readonly flow: string;
+  readonly label: readonly LabelPart[];
+  readonly entries: readonly EntryNode[];
+}
+
+export interface EntryNode {
+  readonly key: string;
+  readonly id: string;
+  readonly title: string;
+  readonly label: readonly LabelPart[];
+  readonly scenarios: readonly ScenarioNode[];
+}
+
+export interface ScenarioNode {
+  readonly key: string;
+  readonly entryId: string;
+  readonly scenarioName: string;
+  readonly label: readonly LabelPart[];
+  readonly hasPlay: boolean;
+}
+
+export interface ScenarioMatch extends ScenarioReference {
+  readonly key: string;
+  readonly flow: string;
+  readonly entryTitle: string;
+}
+
+export function flowKey(flow: string): string {
+  return `flow:${flow}`;
+}
+
+export function entryKey(entryId: string): string {
+  return `entry:${entryId}`;
+}
+
+export function scenarioKey(reference: ScenarioReference): string {
+  return `scenario:${reference.entryId}:${reference.scenarioName}`;
+}
+
+/** Splits `text` around every case-insensitive occurrence of `search`. */
+export function highlight(text: string, search: string): LabelPart[] {
+  const needle = search.trim().toLowerCase();
+  if (needle === '') {
+    return [{ text, match: false }];
+  }
+  const parts: LabelPart[] = [];
+  const haystack = text.toLowerCase();
+  let start = 0;
+  for (let found = haystack.indexOf(needle); found !== -1; found = haystack.indexOf(needle, start)) {
+    if (found > start) {
+      parts.push({ text: text.slice(start, found), match: false });
+    }
+    parts.push({ text: text.slice(found, found + needle.length), match: true });
+    start = found + needle.length;
+  }
+  if (start < text.length) {
+    parts.push({ text: text.slice(start), match: false });
+  }
+  return parts;
+}
+
+/** The sidebar tree, flow → entry → scenario, of the entries that match the search. */
+export function buildScenarioTree(
+  entries: readonly PreviewEntrySummary[],
+  search: string,
+  hasPlay: (reference: ScenarioReference) => boolean,
+): FlowNode[] {
+  const visible = filterEntries(entries, search);
+  const flows = [...new Set(visible.map((entry) => entry.flow))];
+  return flows.map((flow) => ({
+    key: flowKey(flow),
+    flow,
+    label: highlight(flow, search),
+    entries: visible
+      .filter((entry) => entry.flow === flow)
+      .map((entry) => ({
+        key: entryKey(entry.id),
+        id: entry.id,
+        title: entry.title,
+        label: highlight(entry.title, search),
+        scenarios: entry.scenarios.map((scenarioName) => {
+          const reference = { entryId: entry.id, scenarioName };
+          return {
+            key: scenarioKey(reference),
+            ...reference,
+            label: highlight(scenarioName, search),
+            hasPlay: hasPlay(reference),
+          };
+        }),
+      })),
+  }));
+}
+
+/** The flow and entry keys that must be open to show a scenario. */
+export function pathKeys(entries: readonly PreviewEntrySummary[], reference: ScenarioReference | null): string[] {
+  const entry = entries.find((candidate) => candidate.id === reference?.entryId);
+  return entry === undefined ? [] : [flowKey(entry.flow), entryKey(entry.id)];
+}
+
+/** Every flow and entry key, for "expand all". */
+export function groupKeys(entries: readonly PreviewEntrySummary[]): string[] {
+  return [...new Set(entries.map((entry) => flowKey(entry.flow))), ...entries.map((entry) => entryKey(entry.id))];
+}
+
+/**
+ * Scenarios for the quick switcher: every word of the query must appear in "flow title scenario", in any order.
+ * An empty query lists the first ones.
+ */
+export function searchScenarios(
+  entries: readonly PreviewEntrySummary[],
+  query: string,
+  limit: number,
+): ScenarioMatch[] {
+  const words = query.toLowerCase().split(/\s+/).filter((word) => word !== '');
+  const matches: ScenarioMatch[] = [];
+  for (const entry of entries) {
+    for (const scenarioName of entry.scenarios) {
+      const haystack = `${entry.flow} ${entry.title} ${entry.id} ${scenarioName}`.toLowerCase();
+      if (words.every((word) => haystack.includes(word))) {
+        const reference = { entryId: entry.id, scenarioName };
+        matches.push({ ...reference, key: scenarioKey(reference), flow: entry.flow, entryTitle: entry.title });
+      }
+      if (matches.length >= limit) {
+        return matches;
+      }
+    }
+  }
+  return matches;
 }

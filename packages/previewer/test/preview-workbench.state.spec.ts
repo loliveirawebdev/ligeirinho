@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildScenarioTree,
   clampSize,
+  groupKeys,
+  highlight,
+  pathKeys,
+  searchScenarios,
   filterEntries,
   matchingViewport,
-  neighborScenario,
   readWorkbenchState,
   resolveScale,
   resolveSelection,
@@ -119,24 +123,6 @@ describe('filterEntries', () => {
   });
 });
 
-describe('neighborScenario', () => {
-  const scenarios = [
-    { entryId: 'profile-card', scenarioName: 'minimal' },
-    { entryId: 'task-list', scenarioName: 'empty' },
-  ];
-
-  it('moves to the next or previous scenario, wrapping around', () => {
-    expect(neighborScenario(scenarios, scenarios[0] ?? null, 1)).toEqual(scenarios[1]);
-    expect(neighborScenario(scenarios, scenarios[1] ?? null, 1)).toEqual(scenarios[0]);
-    expect(neighborScenario(scenarios, scenarios[0] ?? null, -1)).toEqual(scenarios[1]);
-  });
-
-  it('starts from the first scenario when the current one is not listed', () => {
-    expect(neighborScenario(scenarios, { entryId: 'task-list', scenarioName: 'full' }, 1)).toEqual(scenarios[0]);
-    expect(neighborScenario([], null, 1)).toBeNull();
-  });
-});
-
 describe('resolveSelection', () => {
   it('returns the selected scenario when it exists', () => {
     expect(resolveSelection(entries, 'task-list', 'error')).toEqual({ entryId: 'task-list', scenarioName: 'error' });
@@ -155,5 +141,64 @@ describe('matchingViewport', () => {
     expect(matchingViewport([phone], 390, 844)).toBe(phone);
     expect(matchingViewport([phone], 844, 390)).toBe(phone);
     expect(matchingViewport([phone], 400, 844)).toBeUndefined();
+  });
+});
+
+describe('highlight', () => {
+  it('marks every case-insensitive match', () => {
+    expect(highlight('Error, then error', 'err')).toEqual([
+      { text: 'Err', match: true },
+      { text: 'or, then ', match: false },
+      { text: 'err', match: true },
+      { text: 'or', match: false },
+    ]);
+  });
+
+  it('returns the whole text for an empty search', () => {
+    expect(highlight('full', ' ')).toEqual([{ text: 'full', match: false }]);
+  });
+});
+
+describe('buildScenarioTree', () => {
+  it('groups the matching entries by flow, with keys and play marks', () => {
+    const tree = buildScenarioTree(entries, 'err', (reference) => reference.scenarioName === 'error');
+
+    expect(tree).toHaveLength(1);
+    expect(tree[0]?.key).toBe('flow:Tasks');
+    expect(tree[0]?.entries[0]?.key).toBe('entry:task-list');
+    expect(tree[0]?.entries[0]?.scenarios).toEqual([
+      {
+        key: 'scenario:task-list:error',
+        entryId: 'task-list',
+        scenarioName: 'error',
+        label: [
+          { text: 'err', match: true },
+          { text: 'or', match: false },
+        ],
+        hasPlay: true,
+      },
+    ]);
+  });
+});
+
+describe('pathKeys and groupKeys', () => {
+  it('lists the groups around a scenario', () => {
+    expect(pathKeys(entries, { entryId: 'task-list', scenarioName: 'full' })).toEqual(['flow:Tasks', 'entry:task-list']);
+    expect(pathKeys(entries, null)).toEqual([]);
+  });
+
+  it('lists every group', () => {
+    expect(groupKeys(entries)).toEqual(['flow:Account', 'flow:Tasks', 'entry:profile-card', 'entry:task-list']);
+  });
+});
+
+describe('searchScenarios', () => {
+  it('matches every word anywhere in flow, title and scenario name', () => {
+    expect(searchScenarios(entries, 'task ERR', 10).map((match) => match.key)).toEqual(['scenario:task-list:error']);
+    expect(searchScenarios(entries, 'account', 10).map((match) => match.scenarioName)).toEqual(['complete', 'minimal']);
+  });
+
+  it('lists the first ones for an empty query, up to the limit', () => {
+    expect(searchScenarios(entries, '', 3).map((match) => match.scenarioName)).toEqual(['complete', 'minimal', 'empty']);
   });
 });

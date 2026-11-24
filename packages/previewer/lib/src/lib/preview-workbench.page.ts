@@ -2,8 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   DOCUMENT,
-  type ElementRef,
-  Injector,
   afterNextRender,
   computed,
   inject,
@@ -13,20 +11,22 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { DomSanitizer } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { type FrameSize, PreviewCanvas } from './preview-canvas';
 import { type PreviewStepStatus, isPreviewMessage } from './preview-messages';
 import { PREVIEW_CONFIG, type PreviewViewport } from './preview-options';
+import { PreviewScenarioTree } from './preview-scenario-tree';
+import { PreviewSwitcher } from './preview-switcher';
 import {
   type ScenarioReference,
   type WorkbenchState,
   type WorkbenchZoom,
   ZOOM_LEVELS,
+  buildScenarioTree,
   clampSize,
   filterEntries,
   flattenScenarios,
   matchingViewport,
-  neighborScenario,
   readWorkbenchState,
   resolveSelection,
   toQueryParameters,
@@ -52,17 +52,6 @@ interface EventView {
   readonly value: string;
 }
 
-interface FlowGroup {
-  readonly flow: string;
-  readonly entries: readonly EntryGroup[];
-}
-
-interface EntryGroup {
-  readonly id: string;
-  readonly title: string;
-  readonly scenarios: readonly { readonly name: string; readonly hasPlay: boolean }[];
-}
-
 const MAXIMUM_EVENTS = 100;
 const DEFAULT_VIEWPORT_LABEL = 'iPhone 15';
 
@@ -73,11 +62,11 @@ const DEFAULT_VIEWPORT_LABEL = 'iPhone 15';
  */
 @Component({
   selector: 'ligeirinho-preview-workbench',
-  imports: [RouterLink, PreviewCanvas],
+  imports: [PreviewCanvas, PreviewScenarioTree, PreviewSwitcher],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './preview-workbench.page.html',
   styleUrl: './preview-workbench.page.css',
-  host: { '(window:message)': 'receive($event)' },
+  host: { '(window:message)': 'receive($event)', '(window:keydown)': 'onWindowKeydown($event)' },
 })
 export class PreviewWorkbenchPage {
   private readonly config = inject(PREVIEW_CONFIG);
@@ -87,11 +76,11 @@ export class PreviewWorkbenchPage {
   private readonly document = inject(DOCUMENT);
   private readonly basePath = this.document.location.pathname.replace(/\/+$/, '');
   private readonly queryParameters = toSignal(this.route.queryParamMap, { requireSync: true });
-  private readonly injector = inject(Injector);
-  private readonly scenarioList = viewChild<ElementRef<HTMLElement>>('scenarioList');
+  private readonly switcher = viewChild.required(PreviewSwitcher);
+  protected readonly scenarioTree = viewChild(PreviewScenarioTree);
   private nextEventId = 0;
 
-  private readonly entries = summarizeEntries(this.config.registry);
+  protected readonly entries = summarizeEntries(this.config.registry);
   protected readonly viewports = this.config.viewports;
   protected readonly breakpoints = this.config.breakpoints;
   protected readonly zoomLevels = ZOOM_LEVELS;
@@ -116,7 +105,12 @@ export class PreviewWorkbenchPage {
   protected readonly steps = signal<readonly StepView[]>([]);
   protected readonly events = signal<readonly EventView[]>([]);
 
-  protected readonly flowGroups = computed(() => this.groupByFlow(filterEntries(this.entries, this.search())));
+  protected readonly searching = computed(() => this.search().trim() !== '');
+  protected readonly tree = computed(() =>
+    buildScenarioTree(this.entries, this.search(), (reference) =>
+      this.hasPlay(reference.entryId, reference.scenarioName),
+    ),
+  );
   private readonly visibleScenarios = computed(() => flattenScenarios(filterEntries(this.entries, this.search())));
   protected readonly selectedEntry = computed(() => this.entries.find((entry) => entry.id === this.selection()?.entryId));
   protected readonly selectedHasPlay = computed(() => {
@@ -168,30 +162,36 @@ export class PreviewWorkbenchPage {
     }
   }
 
-  protected isSelected(entryId: string, scenarioName: string): boolean {
-    const selection = this.selection();
-    return selection?.entryId === entryId && selection.scenarioName === scenarioName;
-  }
-
   protected onSearch(event: Event): void {
     if (event.target instanceof HTMLInputElement) {
       this.search.set(event.target.value);
     }
   }
 
-  protected moveSelection(event: Event, offset: number): void {
-    event.preventDefault();
-    const next = neighborScenario(this.visibleScenarios(), this.selection(), offset);
-    if (next === null) {
-      return;
+  /** Enter opens the first match, Escape clears the search. */
+  protected onSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Enter') {
+      const first = this.visibleScenarios()[0];
+      if (first !== undefined) {
+        event.preventDefault();
+        this.select(first);
+      }
+    } else if (event.key === 'Escape' && event.target instanceof HTMLInputElement && event.target.value !== '') {
+      event.preventDefault();
+      event.target.value = '';
+      this.search.set('');
     }
-    this.select(next);
-    afterNextRender(
-      () => {
-        this.scenarioList()?.nativeElement.querySelector<HTMLElement>('[aria-current="page"]')?.focus();
-      },
-      { injector: this.injector },
-    );
+  }
+
+  protected onWindowKeydown(event: KeyboardEvent): void {
+    if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+      event.preventDefault();
+      this.switcher().open();
+    }
+  }
+
+  protected openSwitcher(): void {
+    this.switcher().open();
   }
 
   protected choosePreset(event: Event): void {
@@ -247,15 +247,11 @@ export class PreviewWorkbenchPage {
     this.navigate({ width: size.width, height: size.height });
   }
 
-  protected scenarioQuery(entryId: string, scenarioName: string): Record<string, string> {
-    return toQueryParameters({ ...this.state(), ...this.frameSize(), entryId, scenarioName });
-  }
-
   protected zoomValue(zoom: WorkbenchZoom): string {
     return String(zoom);
   }
 
-  private select(reference: ScenarioReference): void {
+  protected select(reference: ScenarioReference): void {
     this.navigate({ entryId: reference.entryId, scenarioName: reference.scenarioName });
   }
 
@@ -274,20 +270,6 @@ export class PreviewWorkbenchPage {
   private hasPlay(entryId: string, scenarioName: string): boolean {
     const entry = this.config.registry.find((candidate) => candidate.id === entryId);
     return entry?.play?.[scenarioName] !== undefined;
-  }
-
-  private groupByFlow(entries: ReturnType<typeof filterEntries>): FlowGroup[] {
-    const flows = [...new Set(entries.map((entry) => entry.flow))];
-    return flows.map((flow) => ({
-      flow,
-      entries: entries
-        .filter((entry) => entry.flow === flow)
-        .map((entry) => ({
-          id: entry.id,
-          title: entry.title,
-          scenarios: entry.scenarios.map((name) => ({ name, hasPlay: this.hasPlay(entry.id, name) })),
-        })),
-    }));
   }
 }
 

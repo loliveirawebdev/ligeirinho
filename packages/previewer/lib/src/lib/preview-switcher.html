@@ -1,0 +1,36 @@
+<dialog #dialog class="switcher" aria-label="Go to scenario" (click)="closeOnBackdrop($event)">
+  <input
+    #field
+    type="text"
+    class="field"
+    role="combobox"
+    aria-label="Go to scenario"
+    aria-autocomplete="list"
+    aria-controls="ligeirinho-switcher-list"
+    aria-expanded="true"
+    placeholder="Go to scenario…"
+    autocomplete="off"
+    spellcheck="false"
+    [attr.aria-activedescendant]="activeId()"
+    (input)="onInput($event)"
+    (keydown)="onKeydown($event)"
+  />
+  <ul id="ligeirinho-switcher-list" class="matches" role="listbox" aria-label="Scenarios">
+    @for (match of matches(); track match.key; let index = $index) {
+      <li
+        role="option"
+        class="match"
+        [id]="optionId(index)"
+        [attr.aria-selected]="index === activeIndex()"
+        (click)="choose(match)"
+        (mousemove)="activeIndex.set(index)"
+      >
+        <span class="match-name">{{ match.scenarioName }}</span>
+        <span class="match-where">{{ match.entryTitle }} · {{ match.flow }}</span>
+      </li>
+    } @empty {
+      <li class="no-match" role="presentation">Nothing matches “{{ query() }}”.</li>
+    }
+  </ul>
+  <p class="hint" aria-hidden="true">↑↓ to move · Enter to open · Esc to close</p>
+</dialog>
