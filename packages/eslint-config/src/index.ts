@@ -14,3 +14,7 @@ export { playwright, type PlaywrightOptions } from './playwright.js';
 export { defaultRawElements, type AttributePattern } from './rules/no-raw-elements.js';
 export { defaultVendoredPaths, type VendoredPathsOption } from './vendored-paths.js';
 export { genericNames } from './rules/no-generic-names.js';
+export { readCopyConfig, type CopyConfig } from './copy-config.js';
+export type { CopyTextOptions } from './rules/copy-text.js';
+export { defaultIgnoredTextElements, defaultTextAttributes } from './rules/no-literal-text.js';
+export type { CatalogPattern } from './rules/use-catalog.js';

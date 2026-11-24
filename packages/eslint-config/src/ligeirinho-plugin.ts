@@ -1,5 +1,8 @@
 import type { ESLint } from 'eslint';
+import { copyText } from './rules/copy-text.js';
+import { knownIcons } from './rules/known-icons.js';
 import { noGenericNames } from './rules/no-generic-names.js';
+import { noLiteralText } from './rules/no-literal-text.js';
 import { noRawElements } from './rules/no-raw-elements.js';
 import {
   noConstructorDependenciesInView,
@@ -9,6 +12,8 @@ import {
   noSystemClock,
   noViMock,
 } from './rules/restricted-syntax-rules.js';
+import { iconAlignsWithText, navListInNav, noSuffixButton } from './rules/template-structure-rules.js';
+import { useCatalog } from './rules/use-catalog.js';
 
 /** Registered under the `@ligeirinho` prefix: `@ligeirinho/no-raw-elements`, `@ligeirinho/no-new-error`… */
 export const ligeirinhoPlugin = {
@@ -22,6 +27,13 @@ export const ligeirinhoPlugin = {
     'no-constructor-dependencies-in-view': noConstructorDependenciesInView,
     'no-css-class-locator': noCssClassLocator,
     'no-system-clock': noSystemClock,
+    'no-literal-text': noLiteralText,
+    'nav-list-in-nav': navListInNav,
+    'icon-aligns-with-text': iconAlignsWithText,
+    'no-suffix-button': noSuffixButton,
+    'known-icons': knownIcons,
+    'use-catalog': useCatalog,
+    'copy-text': copyText,
   },
 } satisfies ESLint.Plugin;
 

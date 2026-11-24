@@ -93,7 +93,7 @@ export class TaskTitleView {
 
 describe('angular: rules/mvvm.md raw elements only in the design system', () => {
   test('a raw <button> in an app template fails', async () => {
-    const template = '<section><button type="button">Open</button></section>';
+    const template = '<section><button type="button">{{ openLabel }}</button></section>';
     const messages = await lintFixture('apps/web/src/tasks/task-list.view.html', template);
     expect(ruleIdsOf(messages)).toEqual(['@ligeirinho/no-raw-elements']);
   });
@@ -116,7 +116,7 @@ describe('angular: rules/mvvm.md raw elements only in the design system', () => 
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 @Component({
   selector: 'app-task-actions',
-  template: '<button type="button">Open</button>',
+  template: '<button type="button">{{ openLabel }}</button>',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskActionsView {}
@@ -126,7 +126,7 @@ export class TaskActionsView {}
   });
 
   test('design system components pass', async () => {
-    const template = '<ui-button (clicked)="open()">Open</ui-button>';
+    const template = '<ui-button (clicked)="open()">{{ openLabel }}</ui-button>';
     expect(await lintFixture('apps/web/src/tasks/task-list.view.html', template)).toEqual([]);
   });
 });

@@ -1,7 +1,10 @@
 import angularEslint from 'angular-eslint';
 import { applyAdoption, type AdoptionOption } from './adoption.js';
 import { ligeirinhoPlugin, ligeirinhoPluginPrefix } from './ligeirinho-plugin.js';
+import { defaultIconNamesFile } from './rules/known-icons.js';
 import { defaultRawElements, type AttributePattern } from './rules/no-raw-elements.js';
+import type { CopyTextOptions } from './rules/copy-text.js';
+import type { CatalogPattern } from './rules/use-catalog.js';
 import type { FlatConfig, RuleEntry, RulesRecord } from './flat-config.js';
 import { ignoreVendoredPaths, type VendoredPathsOption } from './vendored-paths.js';
 
@@ -20,6 +23,18 @@ export interface AngularOptions extends AdoptionOption, VendoredPathsOption {
    * `<table mat-table>`).
    */
   readonly designSystemAttributes?: readonly RegExp[];
+  /**
+   * Markup the project's catalog already builds, and the component to use instead (`@ligeirinho/use-catalog`), e.g.
+   * `{ element: 'mat-sidenav-container', use: 'ui-app-shell' }`. Checked outside `designSystemPaths`.
+   */
+  readonly catalog?: readonly CatalogPattern[];
+  /** Where `<mat-icon>` names are checked against. Default `node_modules/material-symbols/index.d.ts`. */
+  readonly iconNamesFile?: string;
+  /**
+   * The copy files (default `['**\/*.copy.ts']`) and the locales every one must have, usually from
+   * `readCopyConfig(import.meta.dirname)` (`copy.locales` in `.ligeirinho.yml`).
+   */
+  readonly copy?: CopyTextOptions & { readonly files?: string[] };
 }
 
 const defaultDesignSystemAttributes: readonly RegExp[] = [/^mat/i];
@@ -82,19 +97,47 @@ function templateConfigs(options: AngularOptions): FlatConfig[] {
     elements: options.rawElements ?? defaultRawElements,
     designSystemAttributes: toAttributePatterns(options.designSystemAttributes ?? defaultDesignSystemAttributes),
   };
+  const designSystemRules: RulesRecord = {
+    '@ligeirinho/no-raw-elements': ['error', rawElementsOptions],
+    '@ligeirinho/use-catalog': ['error', { patterns: options.catalog ?? [] }],
+  };
+  const screenRules: RulesRecord = {
+    '@ligeirinho/no-literal-text': 'error',
+    '@ligeirinho/nav-list-in-nav': 'error',
+    '@ligeirinho/icon-aligns-with-text': 'error',
+    '@ligeirinho/no-suffix-button': 'error',
+    '@ligeirinho/known-icons': ['error', { iconNamesFile: options.iconNamesFile ?? defaultIconNamesFile }],
+  };
   const configs: FlatConfig[] = [
     ...presets.map((preset) => ({ ...preset, files: templates })),
-    { files: templates, plugins, rules: { '@ligeirinho/no-raw-elements': ['error', rawElementsOptions] } },
+    { files: templates, plugins, rules: { ...designSystemRules, ...screenRules } },
+    // The app's host page (`<title>` before Angular boots) is not a screen; the router sets the real title.
+    { files: ['**/src/index.html'], plugins, rules: { '@ligeirinho/no-literal-text': 'off' } },
   ];
   const designSystemPaths = options.designSystemPaths ?? [];
   if (designSystemPaths.length === 0) {
     return configs;
   }
-  return [...configs, { files: designSystemPaths, plugins, rules: { '@ligeirinho/no-raw-elements': 'off' } }];
+  const insideDesignSystem: RulesRecord = { '@ligeirinho/no-raw-elements': 'off', '@ligeirinho/use-catalog': 'off' };
+  return [...configs, { files: designSystemPaths, plugins, rules: insideDesignSystem }];
 }
 
-/** rules/mvvm.md: signals, pure view, view-model without Angular, raw elements only in the design system. */
+/** rules/copy.md: every locale has every key and placeholder, in a language-neutral style. */
+function copyConfigs(options: AngularOptions): FlatConfig[] {
+  const { files = ['**/*.copy.ts'], ...copyOptions } = options.copy ?? {};
+  return [{ files, plugins, rules: { '@ligeirinho/copy-text': ['error', copyOptions] } }];
+}
+
+/**
+ * rules/mvvm.md, design.md and copy.md: signals, pure view, view-model without Angular, raw elements and hand-built
+ * patterns only in the design system, no text written in templates, copy complete in every locale.
+ */
 export function angular(options: AngularOptions): FlatConfig[] {
-  const configs = [...componentConfigs(options.files), ...mvvmConfigs(options.files), ...templateConfigs(options)];
+  const configs = [
+    ...componentConfigs(options.files),
+    ...mvvmConfigs(options.files),
+    ...templateConfigs(options),
+    ...copyConfigs(options),
+  ];
   return applyAdoption(ignoreVendoredPaths(configs, options.vendoredPaths), options.adoption);
 }

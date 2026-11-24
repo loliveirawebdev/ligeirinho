@@ -6,8 +6,8 @@ const appTemplate = 'apps/web/src/tasks/task-list.view.html';
 
 describe('no-raw-elements: design system directives on native elements', () => {
   test.each([
-    '<button matButton type="button">Open</button>',
-    '<button matButton="filled" type="button">Open</button>',
+    '<button matButton type="button">{{ openLabel }}</button>',
+    '<button matButton="filled" type="button">{{ openLabel }}</button>',
     '<input matInput />',
     '<input [matDatepicker]="picker" />',
     '<table mat-table [dataSource]="rows"></table>',
@@ -15,7 +15,7 @@ describe('no-raw-elements: design system directives on native elements', () => {
     expect(await lintFixture(appTemplate, `<div>${template}</div>`)).toEqual([]);
   });
 
-  test.each(['<button type="button" class="mat-button">Open</button>', '<input type="text" />'])(
+  test.each(['<button type="button" class="mat-button">{{ openLabel }}</button>', '<input type="text" />'])(
     '%s without a directive still fails',
     async (template) => {
       expect(ruleIdsOf(await lintFixture(appTemplate, `<div>${template}</div>`))).toEqual(['@ligeirinho/no-raw-elements']);
@@ -27,7 +27,7 @@ describe('no-raw-elements: design system directives on native elements', () => {
       ...projectConfig(),
       ...angular({ files: ['apps/web/**/*.ts'], templates: ['apps/web/**/*.html'], designSystemAttributes: [/^ui[A-Z]/] }),
     ]);
-    const template = '<div><button uiButton type="button">Open</button><button matButton type="button">Open</button></div>';
+    const template = '<div><button uiButton type="button">{{ openLabel }}</button><button matButton type="button">{{ openLabel }}</button></div>';
     const messages = await lintFixture(appTemplate, template, customConfig);
     expect(ruleIdsOf(messages)).toEqual(['@ligeirinho/no-raw-elements']);
     expect(messages[0]?.message).toContain('<button>');
