@@ -1,0 +1,20 @@
+<form class="ui-input-group" (submit)="submit($event)">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic">
+    <mat-label>{{ label() }}</mat-label>
+    <input
+      matInput
+      autocomplete="off"
+      [name]="name()"
+      [attr.maxlength]="maxLength()"
+      [placeholder]="placeholder()"
+      [value]="draft()"
+      (input)="updateDraft($event)"
+    />
+  </mat-form-field>
+  <button matButton="filled" type="submit" [disabled]="busy()">
+    @if (icon()) {
+      <mat-icon aria-hidden="true">{{ icon() }}</mat-icon>
+    }
+    <span data-label>{{ busy() && busyActionLabel() ? busyActionLabel() : actionLabel() }}</span>
+  </button>
+</form>

@@ -1,0 +1,49 @@
+/* Outlined stars at rest, filled in the primary up to the score; a 40px target per star. */
+.ui-rating {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The first star's outline lines up with the label: its target's 8 px and the glyph's 2 px side taken back. */
+.ui-rating:not(.ui-rating-readonly) {
+  margin-inline-start: -10px;
+}
+
+.ui-rating-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--mat-sys-corner-full);
+  cursor: pointer;
+}
+
+.ui-rating-option:hover:not(.ui-rating-option-disabled) {
+  background: color-mix(in srgb, var(--mat-sys-primary) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.ui-rating-option:has(input:focus-visible) {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}
+
+.ui-rating-option.ui-rating-option-disabled {
+  cursor: default;
+  opacity: 0.38;
+}
+
+.ui-rating-star {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-rating-star.ui-rating-star-on {
+  color: var(--mat-sys-primary);
+  font-variation-settings: 'FILL' 1;
+}
+
+.ui-rating-readonly .ui-rating-star {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}

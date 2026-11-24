@@ -1,0 +1,15 @@
+<mat-icon class="ui-notification-icon" aria-hidden="true">{{ look().icon }}</mat-icon>
+<div class="min-w-0 flex-1">
+  <p class="ui-notification-title text-title-small">{{ title() }}</p>
+  @if (message()) {
+    <p class="ui-notification-message text-body-medium text-on-surface-variant">{{ message() }}</p>
+  }
+  @if (action(); as action) {
+    <div class="-ms-3 mt-2">
+      <button class="ui-notification-action" matButton type="button" (click)="act()">{{ action }}</button>
+    </div>
+  }
+</div>
+<button class="ui-notification-close" matIconButton type="button" [attr.aria-label]="closeLabel()" (click)="dismissed.emit()">
+  <mat-icon aria-hidden="true">close</mat-icon>
+</button>

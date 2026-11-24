@@ -1,0 +1,16 @@
+<div class="mx-auto flex max-w-lg flex-col items-center px-4 py-12 text-center">
+  <span
+    class="flex h-16 w-16 items-center justify-center rounded-full"
+    [style.background]="look().background"
+    [style.color]="look().color"
+    aria-hidden="true"
+  >
+    <mat-icon class="!h-8 !w-8 !text-[32px]">{{ look().icon }}</mat-icon>
+  </span>
+  <h1 class="text-headline-small mt-5">{{ title() }}</h1>
+  @if (message()) {
+    <p class="text-body-large mt-2 text-on-surface-variant">{{ message() }}</p>
+  }
+  <div class="mt-6 flex flex-wrap justify-center gap-2 empty:hidden"><ng-content select="[uiResultActions]" /></div>
+  <div class="mt-8 w-full text-start empty:hidden"><ng-content /></div>
+</div>

@@ -1,0 +1,25 @@
+<form class="contents" novalidate (submit)="submit($event)">
+  <ui-dialog [title]="title()" [supportingText]="supportingText()">
+    <ng-content />
+    <!-- A failed submit shows right above the actions: where the eye is when the button was pressed. -->
+    @if (error(); as failure) {
+      <ui-notice class="mt-4" tone="error" [title]="failure.title" [message]="failure.message ?? ''" />
+    }
+    <button uiDialogActions matButton type="button" (click)="close()">{{ cancelLabel() }}</button>
+    <button uiDialogActions matButton="filled" type="submit" class="ui-form-dialog-submit" [attr.aria-disabled]="saving()">
+      @if (saving()) {
+        <span class="flex items-center gap-2" role="status">
+          <mat-progress-spinner
+            mode="indeterminate"
+            diameter="18"
+            aria-hidden="true"
+            class="[--mat-progress-spinner-active-indicator-color:currentColor]"
+          />
+          {{ savingLabel() }}
+        </span>
+      } @else {
+        {{ submitLabel() }}
+      }
+    </button>
+  </ui-dialog>
+</form>

@@ -1,62 +1,38 @@
-<main class="mx-auto w-full max-w-2xl px-4 pt-8 pb-16 sm:px-6 sm:pt-12">
-  <header class="mb-6">
-    <h1 class="text-headline-medium">Tasks</h1>
-    @if (model().openTaskCountLabel) {
-      <p class="text-body-medium text-on-surface-variant mt-1 tabular-nums">{{ model().openTaskCountLabel }}</p>
-    }
-  </header>
+@let text = model().text;
+<main class="w-full px-4 pt-6 pb-16 sm:px-6 lg:px-8">
+  <ui-page-header [title]="text.title" [supportingText]="model().openTaskCountLabel" />
 
-  <form class="input-group" (submit)="submitNewTask($event)">
-    <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label>New task</mat-label>
-      <input
-        matInput
-        name="title"
-        autocomplete="off"
-        maxlength="200"
-        placeholder="What needs doing?"
-        [value]="newTaskTitle()"
-        (input)="updateNewTaskTitle($event)"
-      />
-    </mat-form-field>
-    <button matButton="filled" type="submit" [disabled]="model().isCreatingTask">
-      <mat-icon aria-hidden="true">add</mat-icon>
-      <span>{{ model().isCreatingTask ? 'Adding…' : 'Add task' }}</span>
-    </button>
-  </form>
+  <ui-input-group
+    class="mt-6"
+    name="title"
+    icon="add"
+    [label]="text.newTaskLabel"
+    [placeholder]="text.newTaskPlaceholder"
+    [actionLabel]="text.addTaskAction"
+    [busyActionLabel]="text.addingTask"
+    [busy]="model().isCreatingTask"
+    [maxLength]="200"
+    (submitted)="createTask.emit($event)"
+  />
 
   @if (model().isLoading) {
-    <div class="mt-8">
-      <mat-progress-bar mode="indeterminate" aria-hidden="true" />
-      <p role="status" class="text-body-medium text-on-surface-variant mt-3">Loading tasks…</p>
-    </div>
+    <ui-loading-state class="mt-2" [label]="text.loading" />
   }
 
   @if (model().showError) {
-    <section
-      role="alert"
-      class="bg-error-container text-on-error-container mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 rounded-md p-4"
-    >
-      <div>
-        <p class="text-title-small">Couldn’t load your tasks</p>
-        <p class="text-body-medium mt-1">Check your connection, then try again.</p>
-      </div>
-      <button matButton="outlined" type="button" (click)="retry.emit()">Try again</button>
-    </section>
+    <ui-notice class="mt-6" tone="error" [title]="text.loadFailedTitle" [message]="text.loadFailedMessage">
+      <button uiNoticeAction matButton="outlined" type="button" (click)="retry.emit()">{{ text.retryAction }}</button>
+    </ui-notice>
   }
 
   @if (model().showEmptyState) {
-    <div class="mt-10 text-center">
-      <mat-icon class="text-on-surface-variant" aria-hidden="true">task_alt</mat-icon>
-      <p class="text-title-medium mt-2">No tasks yet</p>
-      <p class="text-body-medium text-on-surface-variant mt-1">Tasks you add will show up here.</p>
-    </div>
+    <ui-empty-state class="mt-4" icon="task_alt" [title]="text.emptyTitle" [message]="text.emptyMessage" />
   }
 
   @if (model().items.length > 0) {
-    <ul class="mt-6" aria-label="Tasks">
+    <ul class="mt-6" [attr.aria-label]="text.listLabel">
       @for (item of model().items; track item.id) {
-        <li class="border-outline-variant flex items-center gap-2 border-b py-1 last:border-b-0">
+        <li class="border-outline-variant flex items-start gap-2 border-b py-1 last:border-b-0">
           <mat-checkbox
             class="shrink-0"
             [checked]="item.completed"
@@ -71,10 +47,10 @@
           >
             {{ item.title }}
           </span>
-          <span class="text-body-small text-on-surface-variant shrink-0 pr-2 tabular-nums">
+          <span class="text-body-small text-on-surface-variant shrink-0 py-3 pr-2 tabular-nums">
             {{ item.createdAtLabel }}
             @if (item.completed) {
-              <span class="sr-only">· Done</span>
+              <span class="sr-only">{{ text.completed }}</span>
             }
           </span>
         </li>
@@ -84,7 +60,7 @@
 
   @if (model().canLoadMore) {
     <div class="mt-2">
-      <button matButton type="button" (click)="loadMore.emit()">Show more</button>
+      <button matButton type="button" (click)="loadMore.emit()">{{ text.showMoreAction }}</button>
     </div>
   }
 </main>

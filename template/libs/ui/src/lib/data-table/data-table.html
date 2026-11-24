@@ -1,0 +1,186 @@
+@if (isWide()) {
+  <div class="ui-data-scroll" [class.ui-data-bleed]="fullBleed()">
+    <table
+      mat-table
+      matSort
+      class="ui-data-table"
+      [dataSource]="rows()"
+      [attr.aria-label]="label()"
+      [trackBy]="trackRow"
+      [matSortActive]="sort()?.column ?? ''"
+      [matSortDirection]="sort()?.direction ?? ''"
+      (matSortChange)="changeSort($event)"
+      cdkDropList
+      cdkDropListLockAxis="y"
+      [cdkDropListDisabled]="!reorder()"
+      (cdkDropListDropped)="drop($event)"
+    >
+      @if (reorder(); as order) {
+        <ng-container matColumnDef="ui-move">
+          <th mat-header-cell *matHeaderCellDef class="ui-data-tool"></th>
+          <td mat-cell *matCellDef="let row" class="ui-data-tool">
+            <button
+              type="button"
+              class="ui-data-handle"
+              cdkDragHandle
+              aria-keyshortcuts="ArrowUp ArrowDown"
+              [attr.aria-label]="order.handleLabel(title(row))"
+              [attr.data-handle]="row.id"
+              (keydown)="moveByKey($event, row)"
+            >
+              <mat-icon aria-hidden="true">drag_indicator</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+      }
+      @if (selection(); as picked) {
+        <ng-container matColumnDef="ui-select">
+          <th mat-header-cell *matHeaderCellDef class="ui-data-tool">
+            <mat-checkbox
+              [checked]="allSelected()"
+              [indeterminate]="someSelected()"
+              [aria-label]="picked.text.selectAll"
+              (change)="toggleAll()"
+            />
+          </th>
+          <td mat-cell *matCellDef="let row" class="ui-data-tool">
+            <mat-checkbox [checked]="isSelected(row)" [aria-label]="picked.text.selectRow(title(row))" (change)="toggleRow(row)" />
+          </td>
+        </ng-container>
+      }
+      @for (column of columns(); track column.key; let first = $first) {
+        <ng-container [matColumnDef]="column.key">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            scope="col"
+            [mat-sort-header]="column.key"
+            [disabled]="!column.sortLabel"
+            [sortActionDescription]="column.sortLabel ?? ''"
+            [arrowPosition]="column.align === 'end' ? 'before' : 'after'"
+            [class.ui-align-end]="column.align === 'end'"
+          >
+            {{ column.label }}
+          </th>
+          <td mat-cell *matCellDef="let row" [class.ui-align-end]="column.align === 'end'">
+            @if (first) {
+              <button type="button" class="ui-row-action text-body-large" [attr.aria-label]="row.openLabel" (click)="rowOpened.emit(row.id)">
+                {{ row.cells[column.key] }}
+              </button>
+            } @else {
+              {{ row.cells[column.key] }}
+            }
+          </td>
+        </ng-container>
+      }
+      <tr mat-header-row *matHeaderRowDef="columnKeys()"></tr>
+      <tr
+        mat-row
+        class="ui-data-row"
+        *matRowDef="let row; columns: columnKeys()"
+        cdkDrag
+        [cdkDragData]="row"
+        [class.ui-data-selected]="isSelected(row)"
+      ></tr>
+    </table>
+  </div>
+} @else {
+  <mat-action-list
+    class="ui-data-list"
+    [class.ui-data-list-wrap]="phoneWrap()"
+    [attr.aria-label]="label()"
+    cdkDropList
+    cdkDropListLockAxis="y"
+    [cdkDropListDisabled]="!reorder()"
+    (cdkDropListDropped)="drop($event)"
+  >
+    @for (row of rows(); track row.id) {
+      <div class="ui-data-list-row" cdkDrag [cdkDragData]="row" [class.ui-data-selected]="isSelected(row)">
+        @if (reorder(); as order) {
+          <button
+            type="button"
+            class="ui-data-handle"
+            cdkDragHandle
+            aria-keyshortcuts="ArrowUp ArrowDown"
+            [attr.aria-label]="order.handleLabel(title(row))"
+            [attr.data-handle]="row.id"
+            (keydown)="moveByKey($event, row)"
+          >
+            <mat-icon aria-hidden="true">drag_indicator</mat-icon>
+          </button>
+        }
+        @if (selection(); as picked) {
+          <mat-checkbox [checked]="isSelected(row)" [aria-label]="picked.text.selectRow(title(row))" (change)="toggleRow(row)" />
+        }
+      <button mat-list-item type="button" [attr.aria-label]="row.openLabel" (click)="rowOpened.emit(row.id)">
+        <span matListItemTitle>{{ row.cells[titleKey()] }}</span>
+        <span class="ui-data-detail text-body-medium text-on-surface-variant" [class.ui-data-detail-labeled]="phoneLabels()">
+          @for (line of detailLines(row); track line.key) {
+            <span class="ui-data-line">
+              @if (phoneLabels()) {
+                <span class="ui-data-line-label">{{ line.label }}</span>
+              }
+              <span class="ui-data-line-value">{{ line.value }}</span>
+            </span>
+          }
+        </span>
+      </button>
+      </div>
+    }
+  </mat-action-list>
+}
+
+@if (pages(); as p) {
+  <mat-paginator
+    class="ui-data-paginator"
+    [length]="p.total"
+    [pageIndex]="p.pageIndex"
+    [pageSize]="p.pageSize"
+    hidePageSize
+    [showFirstLastButtons]="isWide()"
+    (page)="changePage($event)"
+  />
+}
+@if (showMore(); as more) {
+  <button
+    type="button"
+    class="ui-data-more"
+    [class.ui-data-bleed]="fullBleed() && isWide()"
+    [disabled]="more.loading"
+    (click)="moreRequested.emit()"
+  >
+    @if (more.loading) {
+      <span class="ui-data-more-label" role="status">
+        <mat-progress-spinner mode="indeterminate" diameter="20" aria-hidden="true" />
+        <span class="ui-data-more-text">{{ more.text.loading }}</span>
+      </span>
+    } @else {
+      <span class="ui-data-more-label">
+        <span class="ui-data-more-text">{{ more.text.action }}</span>
+        <mat-icon aria-hidden="true">expand_more</mat-icon>
+      </span>
+    }
+  </button>
+}
+@if (infinite(); as more) {
+  <div #endOfRows class="ui-data-end">
+    @if (more.loading) {
+      <div class="ui-data-loading text-body-medium text-on-surface-variant" role="status">
+        <mat-progress-spinner mode="indeterminate" diameter="20" aria-hidden="true" />
+        <span>{{ more.loadingLabel }}</span>
+      </div>
+    }
+  </div>
+}
+@if (selection(); as picked) {
+  @if (selectedCount() > 0) {
+    <!-- Floats over the bottom of the rows while any is picked: the count, the page's bulk actions, a way out. -->
+    <div class="ui-data-bulk" role="toolbar" [attr.aria-label]="picked.text.selected(selectedCount())">
+      <button matIconButton type="button" [attr.aria-label]="picked.text.clear" (click)="clearSelection()">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+      <span class="ui-data-bulk-count text-title-small" role="status">{{ picked.text.selected(selectedCount()) }}</span>
+      <span class="ui-data-bulk-actions"><ng-content select="[uiBulkActions]" /></span>
+    </div>
+  }
+}

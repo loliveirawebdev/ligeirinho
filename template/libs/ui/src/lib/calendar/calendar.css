@@ -1,0 +1,163 @@
+/* The month: a 7-column grid with hairlines between the days. */
+.ui-calendar-grid {
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+  overflow: hidden;
+}
+
+.ui-calendar-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.ui-calendar-row + .ui-calendar-row {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.ui-calendar-weekday {
+  padding: 8px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-calendar-day {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  min-height: 112px;
+  padding: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.ui-calendar-day + .ui-calendar-day {
+  border-inline-start: 1px solid var(--mat-sys-outline-variant);
+}
+
+.ui-calendar-day:hover {
+  background: color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.ui-calendar-day:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--mat-sys-primary);
+}
+
+.ui-calendar-outside {
+  background: var(--mat-sys-surface-container-low);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-calendar-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-calendar-number.ui-calendar-today-mark {
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+}
+
+/* An event: a one-line chip in its tone's container. */
+.ui-calendar-event {
+  display: block;
+  width: 100%;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: var(--mat-sys-corner-extra-small);
+  text-align: start;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  font: inherit;
+  background: var(--ui-calendar-container);
+  color: var(--ui-calendar-on-container);
+}
+
+.ui-calendar-event:focus-visible,
+.ui-calendar-agenda-event:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 1px;
+}
+
+.ui-calendar-more {
+  padding: 0 6px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-calendar [data-tone] {
+  --ui-calendar-container: var(--mat-sys-surface-container-highest);
+  --ui-calendar-on-container: var(--mat-sys-on-surface-variant);
+  --ui-calendar-dot: var(--mat-sys-outline);
+}
+.ui-calendar [data-tone='primary'] {
+  --ui-calendar-container: var(--mat-sys-primary-container);
+  --ui-calendar-on-container: var(--mat-sys-on-primary-container);
+  --ui-calendar-dot: var(--mat-sys-primary);
+}
+.ui-calendar [data-tone='success'] {
+  --ui-calendar-container: var(--app-success-container);
+  --ui-calendar-on-container: var(--app-on-success-container);
+  --ui-calendar-dot: var(--app-success);
+}
+.ui-calendar [data-tone='warning'] {
+  --ui-calendar-container: var(--app-warning-container);
+  --ui-calendar-on-container: var(--app-on-warning-container);
+  --ui-calendar-dot: var(--app-warning);
+}
+.ui-calendar [data-tone='error'] {
+  --ui-calendar-container: var(--mat-sys-error-container);
+  --ui-calendar-on-container: var(--mat-sys-on-error-container);
+  --ui-calendar-dot: var(--mat-sys-error);
+}
+
+.ui-calendar-dots {
+  display: none;
+  justify-content: center;
+  gap: 2px;
+}
+
+.ui-calendar-dot {
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ui-calendar-dot);
+}
+
+.ui-calendar-agenda-event {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--mat-sys-corner-medium);
+  background: transparent;
+  color: var(--mat-sys-on-surface);
+  text-align: start;
+  cursor: pointer;
+}
+
+/* Phones: a compact grid, the day's number centered, a dot per event. */
+@media (max-width: 639px) {
+  .ui-calendar-dots {
+    display: flex;
+  }
+
+  .ui-calendar-day {
+    min-height: 48px;
+    align-items: center;
+  }
+
+  .ui-calendar-active .ui-calendar-number:not(.ui-calendar-today-mark) {
+    box-shadow: inset 0 0 0 2px var(--mat-sys-primary);
+  }
+}

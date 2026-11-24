@@ -1,0 +1,5 @@
+{
+  "name": "@app/ui",
+  "private": true,
+  "sideEffects": false
+}

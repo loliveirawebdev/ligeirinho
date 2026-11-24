@@ -1,5 +1,5 @@
 // One config for the whole repo: ligeirinho's rules (rules/code.md, architecture.md, mvvm.md, e2e.md).
-import { angular, base, boundaries, nest, playwright } from '@ligeirinho/eslint-config';
+import { angular, base, boundaries, nest, playwright, readCopyConfig } from '@ligeirinho/eslint-config';
 
 const ADOPTION = false;
 
@@ -24,6 +24,17 @@ export default [
     designSystemPaths: ['libs/ui/**'],
     // Angular Material directives sit on native elements: <button matButton>, <input matInput>, <table mat-table>.
     designSystemAttributes: [/^mat/i],
+    // libs/ui/README.md: what the catalog builds, so screens compose it instead of rebuilding it.
+    catalog: [
+      { element: 'mat-sidenav-container', use: 'ui-app-shell' },
+      { element: 'mat-nav-list', use: 'ui-app-shell' },
+      { attribute: 'mat-table', use: 'ui-data-table' },
+      { element: 'mat-progress-bar', use: 'ui-loading-state' },
+      { className: 'input-group', use: 'ui-input-group' },
+      { className: 'bg-error-container', use: 'ui-notice' },
+    ],
+    // rules/copy.md: every locale of copy.locales in .ligeirinho.yml.
+    copy: readCopyConfig(import.meta.dirname),
     adoption: ADOPTION,
   }),
   ...nest({ files: ['apps/api/**/*.ts', 'libs/**/*.ts', 'tools/**/*.ts'], adoption: ADOPTION }),

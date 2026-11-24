@@ -1,0 +1,121 @@
+/* The person signed in: a pill with the avatar, then the name and a second line; the avatar alone on phones. */
+ui-app-shell .ui-shell-user {
+  --mat-button-text-container-height: 44px;
+  --mat-button-text-horizontal-padding: 0;
+  margin-inline-start: 4px;
+}
+
+/* On phones only the avatar shows: a 44 px circle around it, without the 64 px minimum of a text button. */
+ui-app-shell .ui-shell-user.ui-shell-user-avatar-only {
+  min-width: 0;
+  width: 44px;
+  margin-inline-end: -6px;
+}
+
+ui-app-shell .ui-shell-user-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-inline: 6px;
+}
+
+ui-app-shell .ui-shell-user-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-inline-end: 10px;
+  color: var(--mat-sys-on-surface);
+  text-align: start;
+}
+
+.ui-shell-avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+/*
+ * The account card (like Google's account switcher): a panel in a light wash of the accent, rounded; the profile and the entries
+ * are light blocks joined into one column, round only at its ends. It opens in an overlay, outside ui-app-shell.
+ */
+.ui-account-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: min(360px, calc(100vw - 16px));
+  padding: 12px 16px 16px;
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--mat-sys-primary) 7%, var(--mat-sys-surface-container-low));
+  color: var(--mat-sys-on-surface);
+  box-shadow: var(--mat-sys-level3);
+}
+
+/* The close button lines up with the card's right edge, a small step above the profile. */
+.ui-account-close {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+}
+
+/*
+ * Focus starts on the profile (the name is read first; keyboard users tab on from there), so no button looks hovered
+ * or pressed when the card opens. It is not a tab stop.
+ */
+.ui-account-profile:focus {
+  outline: none;
+}
+
+.ui-account-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 16px;
+  border-radius: 24px 24px 4px 4px;
+  background: var(--mat-sys-surface-container-lowest);
+}
+
+.ui-account-profile:last-child {
+  border-radius: 24px;
+}
+
+.ui-shell-avatar.ui-account-avatar {
+  width: 64px;
+  height: 64px;
+}
+
+.ui-account-item {
+  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 56px;
+  padding-inline: 20px;
+  border-radius: 4px;
+  background: var(--mat-sys-surface-container-lowest);
+  color: var(--mat-sys-on-surface);
+  cursor: pointer;
+}
+
+.ui-account-item:last-child {
+  border-radius: 4px 4px 24px 24px;
+}
+
+.ui-account-item mat-icon {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-account-item:hover {
+  background: color-mix(in srgb, var(--mat-sys-primary) 6%, var(--mat-sys-surface-container-lowest));
+}
+
+.ui-account-item:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}

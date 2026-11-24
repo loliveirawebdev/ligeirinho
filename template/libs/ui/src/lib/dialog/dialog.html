@@ -1,0 +1,15 @@
+<div class="relative">
+  <h2 mat-dialog-title [class.pe-14]="closeLabel()">{{ title() }}</h2>
+  @if (closeLabel(); as close) {
+    <button matIconButton type="button" class="ui-dialog-close !absolute end-3 top-3" mat-dialog-close [attr.aria-label]="close">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  }
+</div>
+<mat-dialog-content>
+  @if (supportingText()) {
+    <p class="text-body-medium text-on-surface-variant mb-4">{{ supportingText() }}</p>
+  }
+  <ng-content />
+</mat-dialog-content>
+<mat-dialog-actions class="empty:hidden"><ng-content select="[uiDialogActions]" /></mat-dialog-actions>

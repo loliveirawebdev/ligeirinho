@@ -1,0 +1,102 @@
+/*
+ * The chips line up with the field: Material's 8 px above and below each chip go (the class doubled to outrank
+ * Material's own rule), the 8 px between wrapped rows stays.
+ */
+.ui-filter-chips .mdc-evolution-chip-set__chips {
+  margin-block-end: -8px;
+}
+
+.ui-filter-chips.ui-filter-chips .mdc-evolution-chip {
+  margin-block: 0 8px;
+}
+
+/* Light filters: a chip per filter, the field's height so the row reads as one bar. */
+.ui-light-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Material 3's filter chip: outlined at rest; once set, filled with the secondary container and no outline. */
+.ui-light-chip {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  height: var(--mat-form-field-container-height, 40px);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-small);
+  color: var(--mat-sys-on-surface-variant);
+  overflow: hidden;
+}
+
+.ui-light-chip.ui-light-set {
+  border-color: transparent;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.ui-light-open,
+.ui-light-clear {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
+}
+
+.ui-light-open {
+  min-width: 0;
+  gap: 2px;
+  padding-inline: 12px 6px;
+}
+
+.ui-light-set .ui-light-open {
+  padding-inline-end: 2px;
+}
+
+.ui-light-clear {
+  justify-content: center;
+  width: 32px;
+}
+
+.ui-light-open:hover,
+.ui-light-clear:hover {
+  background: color-mix(in srgb, currentColor calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.ui-light-open:focus-visible,
+.ui-light-clear:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}
+
+/* A long choice ends in an ellipsis; the name before it always shows. */
+.ui-light-text {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 280px;
+}
+
+.ui-light-chip mat-icon {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+}
+
+.ui-light-open mat-icon {
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+}
+
+/* In the menu, the check keeps its place on every option, seen only on the chosen one. */
+.ui-light-menu .ui-light-unchosen {
+  visibility: hidden;
+}
+
+.ui-light-menu mat-pseudo-checkbox {
+  margin-inline-end: 12px;
+}

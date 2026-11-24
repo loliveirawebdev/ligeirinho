@@ -1,0 +1,68 @@
+/* The stack sits in the top-right corner; on phones it moves to the bottom, full width. */
+.ui-notification-stack {
+  position: fixed;
+  top: 16px;
+  inset-inline-end: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(384px, calc(100vw - 32px));
+}
+
+@media (max-width: 599px) {
+  .ui-notification-stack {
+    top: auto;
+    bottom: 16px;
+    inset-inline: 16px;
+    width: auto;
+    flex-direction: column-reverse;
+  }
+}
+
+/* A card: a raised surface, the tone only in the icon. */
+.ui-notification {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 4px 12px 16px;
+  border-radius: var(--mat-sys-corner-medium);
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  box-shadow: var(--mat-sys-level3);
+  animation: ui-notification-in 200ms ease-out;
+}
+
+/* Two classes: Material's 24 px icon box loads after this file and must lose. */
+.ui-notification-icon.ui-notification-icon {
+  flex-shrink: 0;
+  margin-top: 8px;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: var(--ui-notification-color);
+}
+
+.ui-notification-title {
+  line-height: 36px;
+}
+
+.ui-notification-message {
+  margin-top: -6px;
+}
+
+.ui-notification-close {
+  flex-shrink: 0;
+}
+
+@keyframes ui-notification-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-notification {
+    animation: none;
+  }
+}

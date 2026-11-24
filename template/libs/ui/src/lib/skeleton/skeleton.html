@@ -1,0 +1,20 @@
+<span class="sr-only">{{ label() }}</span>
+<div class="flex flex-col gap-5 motion-safe:animate-pulse" aria-hidden="true">
+  @for (row of rowList(); track row) {
+    <div class="ui-skeleton-row flex items-start gap-4">
+      @if (avatar()) {
+        <span class="h-10 w-10 shrink-0 rounded-full bg-surface-container-highest"></span>
+      }
+      <div class="flex min-w-0 flex-1 flex-col gap-2 pt-1">
+        @for (width of lineWidths(); track $index; let first = $first) {
+          <span
+            class="block rounded-sm bg-surface-container-highest"
+            [class.h-4]="first"
+            [class.h-3]="!first"
+            [style.width]="width"
+          ></span>
+        }
+      </div>
+    </div>
+  }
+</div>

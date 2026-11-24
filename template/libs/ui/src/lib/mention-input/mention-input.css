@@ -1,0 +1,46 @@
+.ui-mention-text {
+  resize: vertical;
+}
+
+/* The suggestions: a menu surface under the field, the option the arrows point at on the secondary container. */
+.ui-mention-panel {
+  width: 100%;
+  max-width: min(360px, calc(100vw - 32px));
+  max-height: 288px;
+  padding-block: 8px;
+  overflow-y: auto;
+  border-radius: var(--mat-sys-corner-extra-small);
+  background: var(--mat-sys-surface-container);
+  box-shadow: var(--mat-sys-level2);
+  color: var(--mat-sys-on-surface);
+}
+
+.ui-mention-option {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 48px;
+  padding: 6px 16px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.ui-mention-option:hover {
+  background: color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.ui-mention-option.ui-mention-active {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.ui-mention-active .ui-mention-secondary {
+  color: inherit;
+}
+
+.ui-mention-name,
+.ui-mention-secondary {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

@@ -1,0 +1,40 @@
+@let m = model();
+@let text = m.text;
+
+<main class="grid min-h-dvh place-items-center bg-surface-container-low p-4">
+  <mat-card appearance="outlined" class="w-full max-w-sm p-2 sm:p-4">
+    <mat-card-content>
+      <p class="text-title-medium">{{ m.productName }}</p>
+      @if (m.step === 'email') {
+        <form class="mt-6 flex flex-col" (submit)="$event.preventDefault()">
+          <h1 class="text-headline-small">{{ text.emailTitle }}</h1>
+          <p class="text-body-medium mt-2 text-on-surface-variant">{{ text.emailSummary }}</p>
+          <mat-form-field appearance="outline" class="mt-6">
+            <mat-label>{{ text.emailLabel }}</mat-label>
+            <input matInput type="email" name="email" autocomplete="email" required [value]="m.email" />
+          </mat-form-field>
+          <button matButton="filled" type="submit" class="mt-2 w-full">{{ text.continueAction }}</button>
+          <p class="text-body-small mt-6 text-on-surface-variant">{{ text.terms }}</p>
+        </form>
+      } @else {
+        <form class="mt-6 flex flex-col" (submit)="$event.preventDefault()">
+          <h1 class="text-headline-small">{{ text.codeTitle }}</h1>
+          <p class="text-body-medium mt-2 text-on-surface-variant">{{ text.codeSummary }}</p>
+          <ui-otp-input
+            class="mt-6"
+            [label]="text.codeLabel"
+            [length]="6"
+            [value]="m.code"
+            [error]="m.codeError"
+            [boxLabel]="text.boxLabel"
+          />
+          <button matButton="filled" type="submit" class="mt-6 w-full">{{ text.verifyAction }}</button>
+          <div class="mt-4 flex flex-wrap justify-between gap-2">
+            <button matButton type="button">{{ text.resendAction }}</button>
+            <button matButton type="button">{{ text.changeEmailAction }}</button>
+          </div>
+        </form>
+      }
+    </mat-card-content>
+  </mat-card>
+</main>

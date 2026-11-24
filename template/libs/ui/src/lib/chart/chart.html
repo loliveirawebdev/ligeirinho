@@ -1,0 +1,151 @@
+<figure class="ui-chart">
+  <div
+    class="ui-chart-plot"
+    role="img"
+    [attr.aria-label]="label()"
+    [attr.tabindex]="isSparkline() ? null : 0"
+    (focus)="focusPlot()"
+    (blur)="point(null)"
+    (keydown)="moveByKey($event)"
+    (mouseleave)="point(null)"
+  >
+    <svg
+      aria-hidden="true"
+      focusable="false"
+      class="block w-full"
+      [attr.viewBox]="viewBox()"
+      [attr.height]="plotHeight()"
+      preserveAspectRatio="none"
+    >
+      @if (!isSparkline() && !isDonut()) {
+        @for (tick of yTicks(); track $index) {
+          <line class="ui-chart-grid" [attr.x1]="gridLeft()" [attr.x2]="gridRight()" [attr.y1]="tick.position" [attr.y2]="tick.position" />
+          <text class="ui-chart-axis" text-anchor="end" dominant-baseline="middle" [attr.x]="gridLeft() - 8" [attr.y]="tick.position">
+            {{ tick.text }}
+          </text>
+        }
+        @for (tick of xTicks(); track $index) {
+          <text class="ui-chart-axis" text-anchor="middle" [attr.x]="tick.position" [attr.y]="plotHeight() - 8">{{ tick.text }}</text>
+        }
+        @if (activeX() !== null) {
+          <line class="ui-chart-cursor" [attr.x1]="activeX()" [attr.x2]="activeX()" [attr.y1]="8" [attr.y2]="baseline()" />
+        }
+      }
+
+      @for (series of lines(); track series.name) {
+        @if (type() === 'area') {
+          <path class="ui-chart-area" [attr.d]="series.area" [style.fill]="series.color" />
+        }
+        <path class="ui-chart-line" [attr.d]="series.line" [style.stroke]="series.color" />
+        @if (!isSparkline()) {
+          @for (dot of series.points; track $index) {
+            <circle
+              class="ui-chart-dot"
+              [class.ui-chart-dot-active]="active() === $index"
+              [attr.cx]="dot.left"
+              [attr.cy]="dot.top"
+              [attr.r]="active() === $index ? 5 : 3"
+              [style.fill]="series.color"
+            />
+          }
+        }
+      }
+
+      @for (bar of bars(); track bar.key) {
+        <rect
+          class="ui-chart-bar"
+          [class.ui-chart-bar-dim]="active() !== null && active() !== bar.index"
+          [attr.x]="bar.left"
+          [attr.y]="bar.top"
+          [attr.width]="bar.width"
+          [attr.height]="bar.height"
+          [attr.rx]="2"
+          [style.fill]="bar.color"
+        />
+      }
+
+      @for (slice of slices(); track slice.index) {
+        <path
+          class="ui-chart-slice"
+          [class.ui-chart-bar-dim]="active() !== null && active() !== slice.index"
+          [attr.d]="slice.path"
+          [style.fill]="slice.color"
+          (mouseenter)="point(slice.index)"
+        />
+      }
+      @if (isDonut()) {
+        <text
+          class="ui-chart-total"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          [attr.x]="donutCenter().left"
+          [attr.y]="donutCenter().top"
+        >{{ valueFormat()(donutTotal()) }}</text>
+      }
+
+      @if (!isSparkline() && !isDonut()) {
+        @for (band of bands(); track band.index) {
+          <rect
+            class="ui-chart-hit"
+            [attr.x]="band.left"
+            [attr.y]="band.top"
+            [attr.width]="band.width"
+            [attr.height]="band.height"
+            (mouseenter)="point(band.index)"
+          />
+        }
+      }
+    </svg>
+  </div>
+
+  <div class="ui-chart-tooltip-region" aria-live="polite">
+    @if (tooltip(); as tip) {
+      <div class="ui-chart-tooltip" [style.left.px]="tip.left">
+        <p class="text-label-medium">{{ tip.title }}</p>
+        @for (row of tip.rows; track row.name) {
+          <p class="text-body-small flex items-center gap-2">
+            <span class="ui-chart-swatch" aria-hidden="true" [style.background]="row.color"></span>
+            <span class="flex-1">{{ row.name }}</span>
+            <span class="tabular-nums">{{ row.value }}</span>
+          </p>
+        }
+      </div>
+    }
+  </div>
+
+  @if (legend().length > 0) {
+    <ul class="ui-chart-legend text-body-small mt-3 flex flex-wrap gap-x-4 gap-y-1 text-on-surface-variant" aria-hidden="true">
+      @for (entry of legend(); track entry.name) {
+        <li class="flex items-center gap-2">
+          <span class="ui-chart-swatch" [style.background]="entry.color"></span>
+          <span>{{ entry.name }}</span>
+          @if (entry.detail) {
+            <span class="tabular-nums text-on-surface">{{ entry.detail }}</span>
+          }
+        </li>
+      }
+    </ul>
+  }
+
+  <table class="sr-only">
+    <caption>{{ label() }}</caption>
+    <thead>
+      <tr>
+        <td></td>
+        @for (header of table().headers; track $index) {
+          <th scope="col">{{ header }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of table().rows; track $index) {
+        <tr>
+          <th scope="row">{{ row.label }}</th>
+          @for (value of row.values; track $index) {
+            <td>{{ value }}</td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</figure>

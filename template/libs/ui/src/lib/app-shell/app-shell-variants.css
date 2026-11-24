@@ -1,0 +1,30 @@
+/*
+ * The rail: the drawer folded to its icons (72 px), each centered in its 48 px pill, the labels in tooltips and
+ * for screen readers only. The section titles step out of sight; their space keeps the groups apart.
+ */
+ui-app-shell.ui-shell-rail {
+  --mat-sidenav-container-width: 72px;
+  --mat-list-list-item-leading-icon-start-space: 14px;
+  --mat-list-list-item-leading-icon-end-space: 0;
+}
+
+/* The rail button sits on the page's edge, where the content starts: the bar's 16 px padding taken back. */
+ui-app-shell .ui-shell-rail-toggle {
+  margin-inline-start: -16px;
+}
+
+/* The secondary links at the drawer's foot: quieter than the main ones. */
+ui-app-shell .ui-shell-secondary {
+  --mat-list-list-item-label-text-color: var(--mat-sys-on-surface-variant);
+}
+
+/* The right-hand panel: the drawer's tone, wider, beside the page from 1200 px. */
+ui-app-shell .ui-shell-aside {
+  --mat-sidenav-container-width: 320px;
+}
+
+ui-app-shell .ui-shell-page-beside-aside {
+  border-right: 1px solid var(--ui-shell-page-border);
+  border-top-right-radius: var(--mat-sys-corner-large);
+}
+

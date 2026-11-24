@@ -1,0 +1,90 @@
+/*
+ * M3's navigation drawer at the compact scale. The drawer and the top bar share one tonal surface, with no lines;
+ * the page sits on it with the only border, round at the top-left corner on wide screens. 256 px drawer,
+ * 40 px links with the pill indicator, 56 px top bar.
+ */
+ui-app-shell {
+  --mat-sidenav-container-width: 256px;
+  --mat-sidenav-container-background-color: var(--mat-sys-surface);
+  --mat-sidenav-container-divider-color: transparent;
+  --mat-sidenav-container-shape: 0;
+  --mat-sidenav-content-background-color: var(--mat-sys-surface);
+  --mat-toolbar-container-background-color: var(--mat-sys-surface);
+  --mat-toolbar-standard-height: 56px;
+  --mat-toolbar-mobile-height: 56px;
+
+  --mat-list-list-item-one-line-container-height: 40px;
+  --mat-list-list-item-leading-icon-size: 20px;
+  --mat-list-list-item-label-text-size: var(--mat-sys-label-large-size);
+  --mat-list-list-item-label-text-line-height: var(--mat-sys-label-large-line-height);
+  --mat-list-list-item-label-text-weight: var(--mat-sys-label-large-weight);
+  --mat-list-list-item-label-text-tracking: var(--mat-sys-label-large-tracking);
+}
+
+/* The drawer's header and the top bar: the same height, so they read as one band. */
+ui-app-shell .ui-shell-bar {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  box-sizing: border-box;
+}
+
+ui-app-shell mat-sidenav-content.mat-drawer-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+ * The page: the surface with the border. The tone sets it apart; the line is nearly invisible, as in Google's own
+ * apps. On phones it runs edge to edge under the top bar.
+ */
+ui-app-shell .ui-shell-page {
+  --ui-shell-page-border: color-mix(in srgb, var(--mat-sys-outline-variant) 40%, transparent);
+
+  flex: 1;
+  min-width: 0;
+  background: var(--mat-sys-surface-container-lowest);
+  border-top: 1px solid var(--ui-shell-page-border);
+}
+
+/* On wide screens it meets the right and bottom edges; only the corner that faces the drawer and the bar is round. */
+ui-app-shell .ui-shell-page-inset {
+  border-left: 1px solid var(--ui-shell-page-border);
+  border-top-left-radius: var(--mat-sys-corner-large);
+}
+
+/* The navigation starts right under the product name. */
+ui-app-shell mat-nav-list.mat-mdc-nav-list {
+  padding-block-start: 0;
+}
+
+/* Sections: a small title over the entries of one subject, and room between subjects. */
+ui-app-shell .ui-shell-nav {
+  padding-bottom: 16px;
+}
+
+ui-app-shell .ui-shell-section + .ui-shell-section {
+  margin-top: 16px;
+}
+
+ui-app-shell .ui-shell-section-title {
+  padding: 8px 16px 4px;
+}
+
+/*
+ * The top bar's icons sit at fractional positions (the user's name sets the width beside them); a layer of their own
+ * keeps them on the same pixel whether hovered or not, instead of jumping 1 px when the state layer appears.
+ */
+ui-app-shell mat-toolbar [matIconButton] {
+  will-change: transform;
+}
+
+/* The count sits a pixel further out than Material's default, clear of the icon's outline. */
+ui-app-shell mat-toolbar .mat-badge-content {
+  translate: 1px -1px;
+}
+
+/* The menu icon lines up with the page's content, not its hover circle (8 px around the icon). */
+ui-app-shell [data-menu] {
+  margin-inline-start: -8px;
+}

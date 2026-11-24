@@ -1,0 +1,96 @@
+/* The field reads as a select: a pointer over it, the arrow turning when open. */
+.ui-cascader-trigger {
+  cursor: pointer;
+  text-overflow: ellipsis;
+}
+
+.ui-cascader-arrow {
+  transition: transform 150ms;
+}
+
+.ui-cascader-arrow-open {
+  transform: rotate(180deg);
+}
+
+/* The panel: a menu surface with a column per level, side by side. */
+.ui-cascader-panel {
+  display: flex;
+  max-width: calc(100vw - 32px);
+  overflow-x: auto;
+  border-radius: var(--mat-sys-corner-extra-small);
+  background: var(--mat-sys-surface-container);
+  box-shadow: var(--mat-sys-level2);
+  color: var(--mat-sys-on-surface);
+}
+
+.ui-cascader-column {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-width: 180px;
+  max-height: 320px;
+  padding-block: 8px;
+  overflow-y: auto;
+}
+
+.ui-cascader-column + .ui-cascader-column {
+  border-inline-start: 1px solid var(--mat-sys-outline-variant);
+}
+
+.ui-cascader-phone .ui-cascader-column {
+  width: 100%;
+}
+
+.ui-cascader-option,
+.ui-cascader-back {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding-inline: 12px 8px;
+  cursor: pointer;
+}
+
+.ui-cascader-back {
+  padding-inline: 12px;
+  border-block-end: 1px solid var(--mat-sys-outline-variant);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-cascader-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ui-cascader-option mat-icon,
+.ui-cascader-back mat-icon {
+  flex-shrink: 0;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-cascader-option:hover:not(.ui-cascader-disabled),
+.ui-cascader-back:hover {
+  background: color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent);
+}
+
+.ui-cascader-option:focus-visible,
+.ui-cascader-back:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}
+
+/* The path: the branches opened and the chosen leaf, on the secondary container like a selected menu item. */
+.ui-cascader-option.ui-cascader-on-path {
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+}
+
+.ui-cascader-option.ui-cascader-disabled {
+  cursor: default;
+  opacity: 0.38;
+}

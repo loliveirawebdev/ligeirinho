@@ -1,0 +1,69 @@
+<mat-form-field #field appearance="outline" subscriptSizing="dynamic" class="ui-cascader-field w-full">
+  <mat-label>{{ label() }}</mat-label>
+  <input
+    #trigger
+    matInput
+    readonly
+    role="combobox"
+    aria-haspopup="listbox"
+    autocomplete="off"
+    class="ui-cascader-trigger"
+    [value]="text()"
+    [disabled]="isDisabled()"
+    [attr.aria-expanded]="open()"
+    [attr.aria-controls]="open() ? id + '-panel' : null"
+    (click)="toggle()"
+    (keydown)="onTriggerKeydown($event)"
+  />
+  <mat-icon matSuffix aria-hidden="true" class="ui-cascader-arrow" [class.ui-cascader-arrow-open]="open()">arrow_drop_down</mat-icon>
+</mat-form-field>
+
+<ng-template
+  cdkConnectedOverlay
+  cdkConnectedOverlayHasBackdrop
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  [cdkConnectedOverlayOrigin]="field.getConnectedOverlayOrigin()"
+  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayMinWidth]="field.getConnectedOverlayOrigin().nativeElement.offsetWidth"
+  (backdropClick)="close()"
+  (detach)="close()"
+>
+  <div #panel class="ui-cascader-panel" [class.ui-cascader-phone]="phone()" [id]="id + '-panel'">
+    @for (column of columns(); track $index; let columnIndex = $index) {
+      @if (!phone() || columnIndex === active().column) {
+        <div class="ui-cascader-column">
+          @if (phone() && columnIndex > 0) {
+            <button type="button" class="ui-cascader-back text-label-large" [attr.aria-label]="backAriaLabel(columnIndex)" (click)="goBack(columnIndex)">
+              <mat-icon aria-hidden="true">arrow_back</mat-icon>
+              <span class="ui-cascader-label">{{ backText(columnIndex) }}</span>
+            </button>
+          }
+          <div role="listbox" class="ui-cascader-list" [attr.aria-label]="columnIndex === 0 ? label() : backText(columnIndex)">
+            @for (option of column; track option.value; let index = $index) {
+              @let isActive = active().column === columnIndex && active().index === index;
+              <div
+                role="option"
+                class="ui-cascader-option text-body-large"
+                [id]="id + '-' + columnIndex + '-' + index"
+                [class.ui-cascader-on-path]="isOnPath(columnIndex, option)"
+                [class.ui-cascader-disabled]="option.disabled"
+                [attr.tabindex]="isActive ? 0 : -1"
+                [attr.aria-selected]="isOnPath(columnIndex, option)"
+                [attr.aria-disabled]="option.disabled ?? null"
+                [attr.aria-haspopup]="isBranch(option) ? 'listbox' : null"
+                (click)="pick(columnIndex, index)"
+                (keydown)="onPanelKeydown($event)"
+              >
+                <span class="ui-cascader-label">{{ option.label }}</span>
+                @if (isBranch(option)) {
+                  <mat-icon aria-hidden="true">chevron_right</mat-icon>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+</ng-template>

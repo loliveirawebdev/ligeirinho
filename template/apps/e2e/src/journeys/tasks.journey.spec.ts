@@ -22,6 +22,6 @@ test.describe('tasks journey', () => {
   test('a user without permission sees the failure, not someone else data', async ({ page }) => {
     await signInAsNewUser(page, []);
     await page.goto('/');
-    await expect(page.getByRole('alert')).toContainText('Couldn’t load your tasks');
+    await expect(page.getByRole('alert')).toContainText('The tasks could not be loaded');
   });
 });

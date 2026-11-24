@@ -1,0 +1,84 @@
+<div class="flex flex-wrap items-center gap-2 pb-3">
+  <h2 class="ui-calendar-title text-title-large me-auto" aria-live="polite">{{ title() }}</h2>
+  <button class="ui-calendar-today" matButton="outlined" type="button" (click)="goToday()">{{ todayLabel() }}</button>
+  <button class="ui-calendar-previous" matIconButton type="button" [attr.aria-label]="previousLabel()" (click)="moveMonth(-1)">
+    <mat-icon aria-hidden="true" class="rtl:-scale-x-100">chevron_left</mat-icon>
+  </button>
+  <button class="ui-calendar-next" matIconButton type="button" [attr.aria-label]="nextLabel()" (click)="moveMonth(1)">
+    <mat-icon aria-hidden="true" class="rtl:-scale-x-100">chevron_right</mat-icon>
+  </button>
+</div>
+
+<div class="ui-calendar-grid" role="grid" [attr.aria-label]="title()">
+  <div class="ui-calendar-row" role="row">
+    @for (weekday of weekdays(); track $index) {
+      <div class="ui-calendar-weekday text-label-medium" role="columnheader" [attr.aria-label]="weekday.long">
+        <span class="hidden sm:inline" aria-hidden="true">{{ weekday.short }}</span>
+        <span class="sm:hidden" aria-hidden="true">{{ weekday.narrow }}</span>
+      </div>
+    }
+  </div>
+  @for (week of weeks(); track week[0]?.date) {
+    <div class="ui-calendar-row" role="row">
+      @for (day of week; track day.date) {
+        @let isActive = day.date === active();
+        <div
+          class="ui-calendar-day"
+          role="gridcell"
+          [class.ui-calendar-outside]="!day.inMonth"
+          [class.ui-calendar-active]="isActive"
+          [attr.data-date]="day.date"
+          [attr.tabindex]="isActive ? 0 : -1"
+          [attr.aria-label]="day.label"
+          [attr.aria-selected]="isActive"
+          [attr.aria-current]="day.isToday ? 'date' : null"
+          (click)="open(day)"
+          (keydown)="key($event, day)"
+        >
+          <span class="ui-calendar-number text-label-large" [class.ui-calendar-today-mark]="day.isToday" aria-hidden="true">{{ day.day }}</span>
+          @if (day.events.length > 0) {
+            <span class="ui-calendar-dots" aria-hidden="true">
+              @for (event of day.events.slice(0, 3); track event.id) {
+                <span class="ui-calendar-dot" [attr.data-tone]="event.tone ?? 'neutral'"></span>
+              }
+            </span>
+            <span class="hidden min-w-0 flex-col gap-0.5 sm:flex">
+              @for (event of day.events.slice(0, maxEvents()); track event.id) {
+                <button
+                  class="ui-calendar-event text-label-medium"
+                  type="button"
+                  [attr.data-tone]="event.tone ?? 'neutral'"
+                  [attr.tabindex]="isActive ? 0 : -1"
+                  (click)="openEvent(event, $event)"
+                  (keydown.enter)="$event.stopPropagation()"
+                >
+                  {{ event.title }}
+                </button>
+              }
+              @if (day.events.length > maxEvents()) {
+                <span class="ui-calendar-more text-label-medium">{{ moreText()(day.events.length - maxEvents()) }}</span>
+              }
+            </span>
+          }
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<div class="ui-calendar-agenda mt-4 sm:hidden">
+  @if (activeEvents().length > 0) {
+    <ul class="flex flex-col gap-1">
+      @for (event of activeEvents(); track event.id) {
+        <li>
+          <button class="ui-calendar-agenda-event text-body-large" type="button" (click)="openEvent(event, $event)">
+            <span class="ui-calendar-dot" [attr.data-tone]="event.tone ?? 'neutral'" aria-hidden="true"></span>
+            <span class="min-w-0 truncate">{{ event.title }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+  } @else if (noEventsText()) {
+    <p class="text-body-medium px-4 py-2 text-on-surface-variant">{{ noEventsText() }}</p>
+  }
+</div>

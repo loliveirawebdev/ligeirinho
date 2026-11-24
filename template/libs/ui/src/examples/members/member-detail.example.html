@@ -1,0 +1,26 @@
+<ui-app-shell
+  [productName]="model().shell.productName"
+  [navigation]="model().shell.navigation"
+  [navigationLabel]="model().shell.navigationLabel"
+  [menuLabel]="model().shell.menuLabel"
+  [actions]="model().shell.actions"
+  [user]="model().shell.user"
+>
+  <ui-page-header [title]="model().name" [supportingText]="model().since" [backLink]="model().backLink">
+    <button uiPageActions matButton="tonal" type="button">{{ model().editAction }}</button>
+    <button uiPageActions matButton="outlined" type="button">{{ model().removeAction }}</button>
+  </ui-page-header>
+
+  @if (model().notice; as notice) {
+    <ui-notice class="mt-6" [title]="notice.title" [message]="notice.message">
+      <button uiNoticeAction matButton="outlined" type="button">{{ notice.action }}</button>
+    </ui-notice>
+  }
+
+  @for (section of model().sections; track section.title) {
+    <section class="mt-8">
+      <h2 class="text-title-medium">{{ section.title }}</h2>
+      <ui-detail-list class="mt-2" [items]="section.items" />
+    </section>
+  }
+</ui-app-shell>

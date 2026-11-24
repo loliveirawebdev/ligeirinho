@@ -1,0 +1,171 @@
+/*
+ * Every row is one target: the first cell's button stretches over the whole row (::after), so the row gets the
+ * pointer, the state layer and the focus ring, and the table stays a real table for screen readers.
+ */
+/* The rows' divider, also under the last row and the Show more bar. */
+ui-data-table {
+  --ui-data-divider: var(--mat-table-row-item-outline-width, 1px) solid
+    var(--mat-table-row-item-outline-color, var(--mat-sys-outline));
+}
+
+.ui-data-table {
+  --mat-table-background-color: transparent;
+}
+
+/*
+ * Cells never squeeze: each keeps its text on one line, and when the columns no longer fit the table scrolls
+ * sideways inside its own box (the page doesn't), until the phone list takes over below 600 px.
+ */
+.ui-data-scroll {
+  overflow-x: auto;
+}
+
+/*
+ * fullBleed: past the page's side padding (ui-app-shell's: 16, 24, 32 px at Tailwind's sm and lg) to the panel's
+ * edges; the outer cells take that padding instead, so their text stays in line with the title above.
+ */
+.ui-data-bleed {
+  --ui-page-inset: 16px;
+
+  margin-inline: calc(-1 * var(--ui-page-inset));
+}
+
+@media (min-width: 640px) {
+  .ui-data-bleed {
+    --ui-page-inset: 24px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ui-data-bleed {
+    --ui-page-inset: 32px;
+  }
+}
+
+.ui-data-bleed .ui-data-table th:first-child,
+.ui-data-bleed .ui-data-table td:first-child {
+  padding-inline-start: var(--ui-page-inset);
+}
+
+/* 4 px more at the end: with the panel's edge right at the window, the same inset reads tighter there than at the start. */
+.ui-data-bleed .ui-data-table th:last-child,
+.ui-data-bleed .ui-data-table td:last-child {
+  padding-inline-end: calc(var(--ui-page-inset) + 4px);
+}
+
+.ui-data-table th,
+.ui-data-table td {
+  white-space: nowrap;
+}
+
+/* Numbers and dates that are compared line up at the end, in equal-width digits. */
+.ui-data-table th.ui-align-end .mat-sort-header-container {
+  justify-content: flex-end;
+}
+
+.ui-data-table .ui-align-end {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-data-row {
+  position: relative;
+}
+
+/* The last row keeps its divider too (Material drops it), so the table closes with a line like every row. */
+.ui-data-table tr.mat-mdc-row:last-child td.mat-mdc-cell {
+  border-bottom: var(--ui-data-divider);
+}
+
+.ui-data-row:hover {
+  background: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+}
+
+.ui-data-row:has(.ui-row-action:focus-visible) {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}
+
+.ui-row-action {
+  all: unset;
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  cursor: pointer;
+  color: var(--mat-sys-on-surface);
+}
+
+.ui-row-action::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+/* The paginator sits right under the rows, on the page's surface, its controls at the end like the last column. */
+.ui-data-paginator {
+  --mat-paginator-container-background-color: transparent;
+}
+
+/* Infinite scroll: the watched end of the rows, and while loading, a spinner and its words centered under them. */
+.ui-data-end {
+  min-height: 1px;
+}
+
+.ui-data-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding-block: 16px;
+}
+
+/*
+ * Show more: a bar the width of the table, right under the last row and closed by the same divider, the action
+ * centered in it.
+ */
+.ui-data-more {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  border-bottom: var(--ui-data-divider);
+  cursor: pointer;
+  color: var(--mat-sys-primary);
+  font: var(--mat-sys-label-large);
+  letter-spacing: var(--mat-sys-label-large-tracking);
+}
+
+/* Edge to edge with the table (`all: unset` above drops the bleed's margins, so they are set again here). */
+.ui-data-more.ui-data-bleed {
+  width: calc(100% + 2 * var(--ui-page-inset));
+  margin-inline: calc(-1 * var(--ui-page-inset));
+}
+
+.ui-data-more:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--mat-sys-primary) 6%, transparent);
+}
+
+.ui-data-more:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: -2px;
+}
+
+.ui-data-more:disabled {
+  cursor: default;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-data-more-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ui-data-more-label mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}

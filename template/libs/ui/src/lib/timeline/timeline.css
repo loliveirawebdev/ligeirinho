@@ -1,0 +1,49 @@
+/* One look for every event: a quiet line, small dots, icons in a tonal circle; what happened is in the words. */
+:host {
+  /* The title's line: every marker is centered on it. */
+  --ui-timeline-title-line: var(--mat-sys-body-large-line-height, 24px);
+}
+
+/* As tall as the title's first line, so the marker's center is the title's. */
+.ui-timeline-marker-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--ui-timeline-title-line);
+}
+
+/* From this marker's center to the next one's. */
+.ui-timeline-line {
+  position: absolute;
+  inset-inline-start: 11.5px;
+  top: calc(var(--ui-timeline-title-line) / 2);
+  bottom: calc(var(--ui-timeline-title-line) / -2);
+  width: 1px;
+  background: var(--mat-sys-outline-variant);
+}
+
+.ui-timeline-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--mat-sys-corner-full);
+  background: var(--mat-sys-surface-container-highest);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+/* Doubled to outrank Material's 24 px icon box. */
+.ui-timeline-icon.ui-timeline-icon {
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+}
+
+.ui-timeline-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--mat-sys-corner-full);
+  background: var(--mat-sys-outline);
+}

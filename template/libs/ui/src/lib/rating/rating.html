@@ -1,0 +1,27 @@
+<span class="text-body-medium mb-1 block text-on-surface-variant" [id]="id + '-label'" [class.sr-only]="!showLabel()">{{ label() }}</span>
+@if (readonly()) {
+  <div class="ui-rating ui-rating-readonly" role="img" [attr.aria-labelledby]="id + '-label ' + id + '-value'">
+    @for (star of stars(); track star) {
+      <mat-icon class="ui-rating-star" aria-hidden="true" [class.ui-rating-star-on]="star <= value()">star</mat-icon>
+    }
+    <span class="sr-only" [id]="id + '-value'">{{ starLabel()(value()) }}</span>
+  </div>
+} @else {
+  <div class="ui-rating" role="radiogroup" [attr.aria-labelledby]="id + '-label'" (mouseleave)="hover(null)" (focusout)="touched()">
+    @for (star of stars(); track star) {
+      <label class="ui-rating-option" [class.ui-rating-option-disabled]="isDisabled()" (mouseenter)="hover(star)">
+        <input
+          class="sr-only"
+          type="radio"
+          [name]="id"
+          [value]="star"
+          [checked]="star === value()"
+          [disabled]="isDisabled()"
+          [attr.aria-label]="starLabel()(star)"
+          (change)="choose(star)"
+        />
+        <mat-icon class="ui-rating-star" aria-hidden="true" [class.ui-rating-star-on]="star <= shown()">star</mat-icon>
+      </label>
+    }
+  </div>
+}

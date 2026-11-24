@@ -1,0 +1,225 @@
+<mat-sidenav-container class="h-full" [autosize]="railCollapsible()">
+  <mat-sidenav
+    [mode]="isWide() ? 'side' : 'over'"
+    [opened]="isWide() || drawerOpen()"
+    (openedChange)="drawerOpen.set($event)"
+  >
+    <div class="flex min-h-full flex-col">
+      <p class="ui-shell-bar text-title-medium px-6" [class.sr-only]="rail()">{{ productName() }}</p>
+      @if (rail()) {
+        <span class="ui-shell-bar" aria-hidden="true"></span>
+      }
+      <nav class="ui-shell-nav px-3" [attr.aria-label]="navigationLabel()">
+        @for (section of sections(); track section.titleId) {
+          <div class="ui-shell-section">
+            @if (section.title) {
+              <h2
+                class="ui-shell-section-title text-label-medium text-on-surface-variant"
+                [class.sr-only]="rail()"
+                [id]="section.titleId"
+              >
+                {{ section.title }}
+              </h2>
+            }
+            <mat-nav-list [attr.aria-labelledby]="section.title ? section.titleId : null">
+              @for (link of section.items; track link.label) {
+                <a
+                  mat-list-item
+                  routerLinkActive
+                  ariaCurrentWhenActive="page"
+                  #linkState="routerLinkActive"
+                  [routerLink]="link.path"
+                  [activated]="linkState.isActive"
+                  [matTooltip]="link.label"
+                  matTooltipPosition="right"
+                  [matTooltipDisabled]="!rail()"
+                  (click)="closeOnPhone()"
+                >
+                  <mat-icon matListItemIcon aria-hidden="true">{{ link.icon }}</mat-icon>
+                  <span matListItemTitle [class.sr-only]="rail()">{{ link.label }}</span>
+                </a>
+              }
+            </mat-nav-list>
+          </div>
+        }
+      </nav>
+      @if (secondaryNavigation().length > 0) {
+        <nav class="ui-shell-secondary mt-auto px-3 pb-3" [attr.aria-label]="secondaryNavigationLabel()">
+          <mat-nav-list>
+            @for (link of secondaryNavigation(); track link.label) {
+              <a
+                mat-list-item
+                routerLinkActive
+                ariaCurrentWhenActive="page"
+                #secondaryState="routerLinkActive"
+                [routerLink]="link.path"
+                [activated]="secondaryState.isActive"
+                [matTooltip]="link.label"
+                matTooltipPosition="right"
+                [matTooltipDisabled]="!rail()"
+                (click)="closeOnPhone()"
+              >
+                <mat-icon matListItemIcon aria-hidden="true">{{ link.icon }}</mat-icon>
+                <span matListItemTitle [class.sr-only]="rail()">{{ link.label }}</span>
+              </a>
+            }
+          </mat-nav-list>
+        </nav>
+      }
+    </div>
+  </mat-sidenav>
+
+  @if (aside(); as panel) {
+    <mat-sidenav
+      class="ui-shell-aside"
+      position="end"
+      [mode]="isAsideWide() ? 'side' : 'over'"
+      [opened]="isAsideWide() || asideOpen()"
+      (openedChange)="asideOpen.set($event)"
+    >
+      <aside class="flex min-h-full flex-col" [attr.aria-label]="panel.label">
+        <div class="ui-shell-bar gap-1 ps-6 pe-2">
+          <h2 class="text-title-medium flex-1 truncate">{{ panel.label }}</h2>
+          @if (!isAsideWide()) {
+            <button matIconButton type="button" [attr.aria-label]="panel.closeLabel" (click)="asideOpen.set(false)">
+              <mat-icon aria-hidden="true">close</mat-icon>
+            </button>
+          }
+        </div>
+        <div class="flex-1 px-6 pb-6"><ng-content select="[uiShellAside]" /></div>
+      </aside>
+    </mat-sidenav>
+  }
+
+  <mat-sidenav-content>
+    <mat-toolbar class="ui-shell-bar gap-1">
+      @if (!isWide()) {
+        <button matIconButton data-menu type="button" [attr.aria-label]="menuLabel()" (click)="drawerOpen.set(true)">
+          <mat-icon aria-hidden="true">menu</mat-icon>
+        </button>
+        <span class="text-title-medium">{{ productName() }}</span>
+      } @else if (railCollapsible()) {
+        <button
+          matIconButton
+          data-rail
+          class="ui-shell-rail-toggle"
+          type="button"
+          [attr.aria-label]="railToggleLabel()"
+          [attr.aria-expanded]="railExpanded()"
+          (click)="toggleRail()"
+        >
+          <mat-icon aria-hidden="true">{{ rail() ? 'left_panel_open' : 'left_panel_close' }}</mat-icon>
+        </button>
+        @if (rail()) {
+          <span class="text-title-medium" aria-hidden="true">{{ productName() }}</span>
+        }
+      }
+      <span class="flex-1"></span>
+      @for (action of actions(); track action.id) {
+        <button matIconButton type="button" [attr.aria-label]="action.label" (click)="actionSelected.emit(action.id)">
+          <mat-icon
+            aria-hidden="true"
+            matBadgeSize="medium"
+            [matBadge]="action.badge ?? null"
+            [matBadgeHidden]="!action.badge"
+          >{{ action.icon }}</mat-icon>
+        </button>
+      }
+      @if (aside(); as panel) {
+        @if (!isAsideWide()) {
+          <button
+            matIconButton
+            data-aside
+            type="button"
+            [attr.aria-label]="panel.openLabel"
+            [attr.aria-expanded]="asideOpen()"
+            (click)="asideOpen.set(true)"
+          >
+            <mat-icon aria-hidden="true">{{ panel.icon ?? 'right_panel_open' }}</mat-icon>
+          </button>
+        }
+      }
+      @if (user(); as person) {
+        <button
+          matButton
+          class="ui-shell-user"
+          type="button"
+          [class.ui-shell-user-avatar-only]="!isWide()"
+          cdkOverlayOrigin
+          #accountOrigin="cdkOverlayOrigin"
+          aria-haspopup="dialog"
+          [attr.aria-expanded]="accountOpen()"
+          [attr.aria-label]="person.label"
+          (click)="accountOpen.set(!accountOpen())"
+        >
+          <span class="ui-shell-user-content">
+            @if (person.avatarUrl) {
+              <img class="ui-shell-avatar" [src]="person.avatarUrl" alt="" />
+            } @else {
+              <span class="ui-shell-avatar text-label-medium" aria-hidden="true">{{ initials() }}</span>
+            }
+            @if (isWide()) {
+              <span class="ui-shell-user-text">
+                <span class="text-label-large">{{ person.name }}</span>
+                @if (person.detail) {
+                  <span class="text-body-small text-on-surface-variant">{{ person.detail }}</span>
+                }
+              </span>
+            }
+          </span>
+        </button>
+        <ng-template
+          cdkConnectedOverlay
+          cdkConnectedOverlayHasBackdrop
+          cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+          [cdkConnectedOverlayOrigin]="accountOrigin"
+          [cdkConnectedOverlayOpen]="accountOpen()"
+          [cdkConnectedOverlayPositions]="accountCardPositions"
+          (backdropClick)="accountOpen.set(false)"
+          (detach)="accountOpen.set(false)"
+          (overlayKeydown)="closeAccountOnEscape($event)"
+        >
+          <section
+            class="ui-account-card"
+            role="dialog"
+            cdkTrapFocus
+            cdkTrapFocusAutoCapture
+            [attr.aria-label]="person.label"
+          >
+            <div class="ui-account-close">
+              <button matIconButton type="button" [attr.aria-label]="person.closeLabel" (click)="accountOpen.set(false)">
+                <mat-icon aria-hidden="true">close</mat-icon>
+              </button>
+            </div>
+            <div class="ui-account-profile" tabindex="-1" cdkFocusInitial>
+              @if (person.avatarUrl) {
+                <img class="ui-shell-avatar ui-account-avatar" [src]="person.avatarUrl" alt="" />
+              } @else {
+                <span class="ui-shell-avatar ui-account-avatar text-title-large" aria-hidden="true">{{ initials() }}</span>
+              }
+              <div class="min-w-0">
+                <p class="text-title-large break-words">{{ person.name }}</p>
+                @if (person.detail) {
+                  <p class="text-body-medium text-on-surface-variant break-words">{{ person.detail }}</p>
+                }
+              </div>
+            </div>
+            @for (item of person.menu; track item.id) {
+              <button class="ui-account-item" type="button" data-item (click)="selectAccountItem(item.id)">
+                <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+                <span class="text-body-large" data-label>{{ item.label }}</span>
+              </button>
+            }
+          </section>
+        </ng-template>
+      }
+    </mat-toolbar>
+    <main
+      class="ui-shell-page"
+      [class.ui-shell-page-inset]="isWide()"
+      [class.ui-shell-page-beside-aside]="aside() && isAsideWide()"
+    >
+      <div class="px-4 pt-6 pb-16 sm:px-6 lg:px-8"><ng-content /></div>
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

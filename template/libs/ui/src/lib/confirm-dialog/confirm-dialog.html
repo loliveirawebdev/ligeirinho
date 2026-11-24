@@ -1,0 +1,5 @@
+<ui-dialog [title]="text.title">
+  <p class="text-body-medium">{{ text.message }}</p>
+  <button uiDialogActions matButton type="button" [mat-dialog-close]="false">{{ text.cancel }}</button>
+  <button uiDialogActions matButton="filled" type="button" [mat-dialog-close]="true">{{ text.confirm }}</button>
+</ui-dialog>

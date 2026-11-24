@@ -1,0 +1,56 @@
+/* A card per option: outlined at rest, the primary's outline and a light wash once chosen. */
+.ui-check-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 12px 14px 16px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+  background: var(--mat-sys-surface);
+  cursor: pointer;
+}
+
+.ui-check-card:hover:not(.ui-check-card-disabled) {
+  background: color-mix(in srgb, var(--mat-sys-primary) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), var(--mat-sys-surface));
+}
+
+.ui-check-card.ui-check-card-chosen {
+  border-color: var(--mat-sys-primary);
+  box-shadow: inset 0 0 0 1px var(--mat-sys-primary);
+  background: color-mix(in srgb, var(--mat-sys-primary) 6%, var(--mat-sys-surface));
+}
+
+.ui-check-card:has(input:focus-visible) {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 2px;
+}
+
+.ui-check-card.ui-check-card-disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+/* The icon, the note and the mark all center on the title's 20 px line, however many lines follow it. */
+.ui-check-card-icon {
+  flex-shrink: 0;
+  margin-block: -2px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-check-card-note {
+  line-height: 20px;
+}
+
+.ui-check-card-chosen .ui-check-card-icon,
+.ui-check-card-chosen .ui-check-card-mark {
+  color: var(--mat-sys-primary);
+}
+
+/* Two classes: Material's 24 px icon box loads after this file and must lose. */
+.ui-check-card-mark.ui-check-card-mark {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: var(--mat-sys-on-surface-variant);
+}

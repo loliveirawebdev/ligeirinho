@@ -1,0 +1,97 @@
+<mat-form-field #field appearance="outline" subscriptSizing="dynamic" class="ui-tree-select-field w-full" (click)="openFrom($event)">
+  <mat-label>{{ label() }}</mat-label>
+  <mat-chip-grid #grid [disabled]="isDisabled()" [attr.aria-label]="label()">
+    @for (node of chips(); track node.value) {
+      <mat-chip-row class="ui-tree-select-chip" (removed)="remove(node.value)">
+        {{ node.label }}
+        <button matChipRemove type="button" [attr.aria-label]="removeAriaLabel(node.label)">
+          <mat-icon aria-hidden="true">cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+    <input
+      #trigger
+      readonly
+      role="combobox"
+      aria-haspopup="tree"
+      autocomplete="off"
+      class="ui-tree-select-trigger"
+      [matChipInputFor]="grid"
+      [value]="summary()"
+      [attr.aria-expanded]="open()"
+      [attr.aria-controls]="open() ? id + '-panel' : null"
+      (keydown)="onTriggerKeydown($event)"
+    />
+  </mat-chip-grid>
+  <mat-icon matSuffix aria-hidden="true" class="ui-tree-select-arrow" [class.ui-tree-select-arrow-open]="open()">arrow_drop_down</mat-icon>
+</mat-form-field>
+
+<ng-template
+  cdkConnectedOverlay
+  cdkConnectedOverlayHasBackdrop
+  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
+  [cdkConnectedOverlayOrigin]="field.getConnectedOverlayOrigin()"
+  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayWidth]="field.getConnectedOverlayOrigin().nativeElement.offsetWidth"
+  (backdropClick)="close()"
+  (detach)="close()"
+  (overlayKeydown)="onOverlayKeydown($event)"
+>
+  <div #panel class="ui-tree-select-panel" [id]="id + '-panel'">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic" class="ui-tree-select-search w-full">
+      <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+      <input
+        #search
+        matInput
+        type="search"
+        autocomplete="off"
+        [placeholder]="labels().search"
+        [attr.aria-label]="labels().search"
+        [value]="query()"
+        (input)="updateQuery($event)"
+        (keydown)="onSearchKeydown($event, panel)"
+      />
+    </mat-form-field>
+    @if (nodes().length === 0) {
+      <p class="text-body-medium px-4 py-3 text-on-surface-variant" role="status">{{ labels().noMatches }}</p>
+    }
+    <mat-tree
+      class="ui-tree-select-tree"
+      [dataSource]="nodes()"
+      [childrenAccessor]="childrenOf"
+      [expansionKey]="keyOf"
+      [attr.aria-label]="label()"
+      [attr.aria-multiselectable]="multiple()"
+    >
+      <mat-tree-node
+        *matTreeNodeDef="let node"
+        matTreeNodePadding
+        matTreeNodePaddingIndent="24"
+        class="ui-tree-select-node text-body-large"
+        [class.ui-tree-select-chosen]="chosen().has(node.value)"
+        [isExpandable]="hasChildren(node)"
+        [isDisabled]="node.disabled ?? false"
+        [attr.data-label]="node.label"
+        [attr.aria-selected]="chosen().has(node.value)"
+        (click)="onNodeClick($event, node)"
+        (keydown)="onNodeKeydown($event, node)"
+      >
+        @if (hasChildren(node)) {
+          <span matTreeNodeToggle class="ui-tree-select-toggle" aria-hidden="true">
+            <mat-icon>chevron_right</mat-icon>
+          </span>
+        } @else {
+          <span class="ui-tree-select-toggle" aria-hidden="true"></span>
+        }
+        @if (multiple()) {
+          <mat-pseudo-checkbox [state]="checkState(node)" [disabled]="node.disabled ?? false" />
+        }
+        <span class="ui-tree-select-label">{{ node.label }}</span>
+        @if (!multiple() && chosen().has(node.value)) {
+          <mat-icon class="ui-tree-select-check" aria-hidden="true">check</mat-icon>
+        }
+      </mat-tree-node>
+    </mat-tree>
+  </div>
+</ng-template>

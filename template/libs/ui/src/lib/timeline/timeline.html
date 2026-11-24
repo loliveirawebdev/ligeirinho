@@ -1,0 +1,28 @@
+<ol [attr.aria-label]="label()">
+  @for (event of events(); track event.id; let last = $last) {
+    <li class="ui-timeline-event relative grid grid-cols-[24px_minmax(0,1fr)] gap-x-3" [class.pb-5]="!last">
+      <!-- The line runs from this marker's center to the next one's, behind the markers. -->
+      @if (!last) {
+        <span class="ui-timeline-line" aria-hidden="true"></span>
+      }
+      <span class="ui-timeline-marker-row" aria-hidden="true">
+        @if (event.icon) {
+          <span class="ui-timeline-marker">
+            <mat-icon class="ui-timeline-icon">{{ event.icon }}</mat-icon>
+          </span>
+        } @else {
+          <span class="ui-timeline-dot"></span>
+        }
+      </span>
+      <div class="min-w-0">
+        <div class="flex flex-wrap items-baseline justify-between gap-x-3">
+          <p class="ui-timeline-title text-body-large">{{ event.title }}</p>
+          <p class="text-body-small shrink-0 text-on-surface-variant tabular-nums">{{ event.time }}</p>
+        </div>
+        @if (event.description) {
+          <p class="text-body-medium mt-0.5 text-on-surface-variant">{{ event.description }}</p>
+        }
+      </div>
+    </li>
+  }
+</ol>

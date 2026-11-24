@@ -1,0 +1,109 @@
+/* The figure holds the tooltip, placed over the plot at the point's x. */
+.ui-chart {
+  position: relative;
+  margin: 0;
+}
+
+.ui-chart-plot {
+  border-radius: var(--mat-sys-corner-extra-small);
+}
+
+.ui-chart-plot:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 2px;
+}
+
+/* Light gridlines, the axes' words in the small label size. */
+.ui-chart-grid {
+  stroke: var(--mat-sys-outline-variant);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+  vector-effect: non-scaling-stroke;
+}
+
+.ui-chart-axis {
+  fill: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-label-small);
+}
+
+.ui-chart-total {
+  fill: var(--mat-sys-on-surface);
+  font: var(--mat-sys-title-large);
+}
+
+.ui-chart-cursor {
+  stroke: var(--mat-sys-outline);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.ui-chart-line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+:host([data-type='sparkline']) .ui-chart-line {
+  stroke-width: 1.5;
+}
+
+.ui-chart-area {
+  fill-opacity: 0.16;
+}
+
+.ui-chart-dot {
+  stroke: var(--mat-sys-surface);
+  stroke-width: 2;
+}
+
+.ui-chart-bar,
+.ui-chart-slice {
+  transition: opacity 120ms;
+}
+
+.ui-chart-slice {
+  stroke: var(--mat-sys-surface);
+  stroke-width: 2;
+}
+
+.ui-chart-bar-dim {
+  opacity: 0.4;
+}
+
+/* The pointer's targets: a column per label across the plot, invisible. */
+.ui-chart-hit {
+  fill: transparent;
+}
+
+/* M3's plain tooltip colors, above the plot, centered on the point. */
+.ui-chart-tooltip {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  min-width: 140px;
+  max-width: 240px;
+  padding: 6px 10px;
+  border-radius: var(--mat-sys-corner-extra-small);
+  background: var(--mat-sys-inverse-surface);
+  color: var(--mat-sys-inverse-on-surface);
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+.ui-chart-swatch {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-chart-bar,
+  .ui-chart-slice {
+    transition: none;
+  }
+}

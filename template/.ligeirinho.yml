@@ -15,5 +15,10 @@ preview:
   url: http://localhost:4200/__preview
   widths: 390,768,1280
 
+copy:
+  source: en                # the locale texts are written in first and approved in
+  locales: en               # every locale the product ships, comma separated (en, es, pt-BR)
+  register: formal          # formal | neutral: how screens address the user (rules/copy.md)
+
 adoption:
   enabled: false

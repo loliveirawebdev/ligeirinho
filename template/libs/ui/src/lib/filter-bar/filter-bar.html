@@ -1,0 +1,63 @@
+<div class="flex flex-col gap-3" [class.md:flex-row]="filtersPosition() === 'beside'" [class.md:items-start]="filtersPosition() === 'beside'" [class.md:gap-4]="filtersPosition() === 'beside'">
+  <mat-form-field appearance="outline" subscriptSizing="dynamic" class="w-full md:max-w-sm">
+    <mat-label>{{ searchLabel() }}</mat-label>
+    <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+    <input matInput type="search" autocomplete="off" [value]="query()" (input)="updateQuery($event)" />
+  </mat-form-field>
+  @if (filters().length > 0) {
+    <!-- The chips share the field's height, so the row reads as one bar. -->
+    <mat-chip-listbox
+      #listbox
+      class="ui-filter-chips [--mat-chip-container-height:var(--mat-form-field-container-height)]"
+      [attr.aria-label]="filtersLabel()"
+      [value]="selectedFilter()"
+      (change)="chooseFilter($event, listbox)"
+    >
+      @for (filter of filters(); track filter.value) {
+        <mat-chip-option [value]="filter.value">{{ filter.label }}</mat-chip-option>
+      }
+    </mat-chip-listbox>
+  }
+  @if (lightFilters().length > 0) {
+    <div class="ui-light-filters" role="group" [attr.aria-label]="filtersLabel() || null">
+      @for (filter of lightFilters(); track filter.key) {
+        @let set = filter.selected.length > 0;
+        <span class="ui-light-chip" [class.ui-light-set]="set">
+          <button type="button" class="ui-light-open text-label-large" [matMenuTriggerFor]="options">
+            <span class="ui-light-text">
+              {{ filter.label }}@if (set) {<span class="ui-light-value">: {{ chosenLabels(filter) }}</span>}
+            </span>
+            <mat-icon aria-hidden="true">arrow_drop_down</mat-icon>
+          </button>
+          @if (set) {
+            <button type="button" class="ui-light-clear" [attr.aria-label]="filter.clearLabel" (click)="clear(filter)">
+              <mat-icon aria-hidden="true">close</mat-icon>
+            </button>
+          }
+        </span>
+        <mat-menu #options="matMenu" class="ui-light-menu">
+          @for (option of filter.options; track option.value) {
+            @let chosen = filter.selected.includes(option.value);
+            @if (filter.multiple) {
+              <button
+                mat-menu-item
+                type="button"
+                role="menuitemcheckbox"
+                [attr.aria-checked]="chosen"
+                (click)="$event.stopPropagation(); choose(filter, option.value)"
+              >
+                <mat-pseudo-checkbox [state]="chosen ? 'checked' : 'unchecked'" />
+                <span>{{ option.label }}</span>
+              </button>
+            } @else {
+              <button mat-menu-item type="button" role="menuitemradio" [attr.aria-checked]="chosen" (click)="choose(filter, option.value)">
+                <mat-icon aria-hidden="true" [class.ui-light-unchosen]="!chosen">check</mat-icon>
+                <span>{{ option.label }}</span>
+              </button>
+            }
+          }
+        </mat-menu>
+      }
+    </div>
+  }
+</div>

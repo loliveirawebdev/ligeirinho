@@ -1,0 +1,16 @@
+<nav [attr.aria-label]="label()">
+  <ul class="ui-anchor-list">
+    @for (row of rows(); track row.id) {
+      <li>
+        <a
+          class="ui-anchor-link text-body-medium"
+          [class.ui-anchor-current]="row.id === currentId()"
+          [style.padding-inline-start.px]="12 + row.depth * 16"
+          [href]="'#' + row.id"
+          [attr.aria-current]="row.id === currentId() ? 'location' : null"
+          (click)="go($event, row.id)"
+        >{{ row.label }}</a>
+      </li>
+    }
+  </ul>
+</nav>

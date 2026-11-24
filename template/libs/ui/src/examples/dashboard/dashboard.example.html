@@ -1,0 +1,57 @@
+@let m = model();
+@let text = m.text;
+<ui-app-shell
+  [productName]="m.shell.productName"
+  [navigation]="m.shell.navigation"
+  [navigationLabel]="m.shell.navigationLabel"
+  [menuLabel]="m.shell.menuLabel"
+  [actions]="m.shell.actions"
+  [user]="m.shell.user"
+>
+  <ui-page-header [title]="text.title" [supportingText]="text.summary">
+    <mat-button-toggle-group uiPageActions hideSingleSelectionIndicator [value]="m.period" [attr.aria-label]="text.periodLabel">
+      @for (period of m.periods; track period.value) {
+        <mat-button-toggle [value]="period.value">{{ period.label }}</mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+  </ui-page-header>
+
+  @if (m.status === 'loading') {
+    <div class="mt-6 flex flex-col gap-6">
+      <ui-panel>
+        <ui-skeleton [label]="text.loading" [rows]="1" [lines]="2" />
+      </ui-panel>
+      <ui-panel [title]="text.trendTitle">
+        <ui-skeleton [label]="text.loading" [rows]="3" [lines]="2" />
+      </ui-panel>
+      <ui-panel [title]="text.recentTitle">
+        <ui-skeleton [label]="text.loading" [rows]="4" [lines]="1" />
+      </ui-panel>
+    </div>
+  } @else {
+    <section class="mt-6" [attr.aria-label]="text.kpisLabel">
+      <ui-panel split="row">
+        @for (kpi of m.kpis; track kpi.label) {
+          <ui-panel>
+            <ui-statistic [label]="kpi.label" [value]="kpi.value" [change]="kpi.change" [supportingText]="kpi.supportingText ?? ''" />
+          </ui-panel>
+        }
+      </ui-panel>
+    </section>
+
+    <ui-panel class="mt-6" [title]="text.trendTitle" [subtitle]="text.trendSubtitle">
+      <ui-chart
+        type="area"
+        [label]="text.trendTitle"
+        [labels]="m.trend.labels"
+        [series]="m.trend.series"
+        [valueFormat]="m.trend.format"
+        [height]="260"
+      />
+    </ui-panel>
+
+    <ui-panel class="mt-6" [title]="text.recentTitle">
+      <ui-data-table [label]="text.recentTitle" [columns]="m.columns" [rows]="m.rows" />
+    </ui-panel>
+  }
+</ui-app-shell>

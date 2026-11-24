@@ -1,0 +1,45 @@
+<span class="text-body-medium mb-2 block text-on-surface-variant" [id]="id + '-label'" [class.sr-only]="!showLabel()">{{ label() }}</span>
+<div class="flex flex-wrap items-center gap-3">
+  <div class="flex flex-wrap gap-3" role="radiogroup" [attr.aria-labelledby]="id + '-label'">
+    @for (swatch of swatches(); track swatch.value) {
+      @let chosen = isChosen(swatch);
+      <label class="ui-color-picker-swatch" [class.ui-color-picker-disabled]="isDisabled()" [title]="swatch.label" [style.background]="swatch.value">
+        <input
+          class="sr-only"
+          type="radio"
+          [name]="id"
+          [value]="swatch.value"
+          [checked]="chosen"
+          [disabled]="isDisabled()"
+          [attr.aria-label]="swatch.label"
+          (change)="choose(swatch.value)"
+        />
+        @if (chosen) {
+          <mat-icon class="ui-color-picker-check" aria-hidden="true">check</mat-icon>
+        }
+      </label>
+    }
+  </div>
+  @if (customLabel()) {
+    <label
+      class="ui-color-picker-swatch ui-color-picker-custom"
+      [class.ui-color-picker-disabled]="isDisabled()"
+      [class.ui-color-picker-custom-chosen]="isCustom()"
+      [title]="customLabel()"
+      [style.background]="isCustom() ? normalized() : null"
+    >
+      <input
+        class="ui-color-picker-native"
+        type="color"
+        [value]="pickerValue()"
+        [disabled]="isDisabled()"
+        [attr.aria-label]="customLabel()"
+        (input)="picked($event)"
+      />
+      <mat-icon class="ui-color-picker-check" aria-hidden="true">{{ isCustom() ? 'check' : 'colorize' }}</mat-icon>
+    </label>
+  }
+  @if (normalized()) {
+    <span class="text-body-medium ui-color-picker-value text-on-surface-variant">{{ normalized() }}</span>
+  }
+</div>

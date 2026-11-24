@@ -1,0 +1,30 @@
+/* The palette's surface: a large corner, no extra padding (the field and the list bring their own). */
+.ui-command-palette-panel .mat-mdc-dialog-surface {
+  border-radius: var(--mat-sys-corner-extra-large);
+  overflow: hidden;
+}
+
+.ui-command-palette-list {
+  max-height: min(56vh, 420px);
+  overflow-y: auto;
+}
+
+.ui-command-palette-list:empty {
+  display: none;
+}
+
+.ui-command-palette-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 12px;
+  border-radius: var(--mat-sys-corner-medium);
+  color: var(--mat-sys-on-surface);
+  cursor: pointer;
+}
+
+/* The active option: Material's hover state layer, the same for the mouse and the arrow keys. */
+.ui-command-palette-option.ui-command-palette-active {
+  background: color-mix(in srgb, var(--mat-sys-on-surface) calc(var(--mat-sys-hover-state-layer-opacity) * 100%), transparent);
+}

@@ -1,0 +1,26 @@
+<div role="group" [attr.aria-labelledby]="id + '-label'" [attr.aria-describedby]="error() ? id + '-error' : null">
+  <span class="text-body-medium mb-2 block text-on-surface-variant" [id]="id + '-label'" [class.sr-only]="!showLabel()">{{ label() }}</span>
+  <div class="ui-otp-input-boxes">
+    @for (index of boxes(); track index) {
+      <input
+        #box
+        class="ui-otp-input-box text-title-large"
+        type="text"
+        spellcheck="false"
+        [attr.inputmode]="alphanumeric() ? 'text' : 'numeric'"
+        [attr.autocomplete]="index === 0 ? 'one-time-code' : 'off'"
+        [attr.autocapitalize]="alphanumeric() ? 'characters' : 'off'"
+        [attr.aria-label]="boxLabel()(index + 1, boxes().length)"
+        [attr.aria-invalid]="error() ? true : null"
+        [class.ui-otp-input-box-invalid]="error()"
+        [value]="charAt(index)"
+        [disabled]="isDisabled()"
+        (focus)="focusBox(index)"
+        (input)="typed(index, $event)"
+        (paste)="pasted(index, $event)"
+        (keydown)="keydown(index, $event)"
+      />
+    }
+  </div>
+  <div class="text-body-small mt-2 min-h-4 text-error" aria-live="polite" [id]="id + '-error'">{{ error() }}</div>
+</div>

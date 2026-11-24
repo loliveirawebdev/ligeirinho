@@ -1,0 +1,55 @@
+<mat-form-field #field appearance="outline" subscriptSizing="dynamic" class="w-full">
+  <mat-label>{{ label() }}</mat-label>
+  <textarea
+    #textArea
+    matInput
+    role="combobox"
+    aria-autocomplete="list"
+    aria-haspopup="listbox"
+    class="ui-mention-text"
+    [rows]="rows()"
+    [value]="value()"
+    [disabled]="isDisabled()"
+    [attr.aria-expanded]="open()"
+    [attr.aria-controls]="open() ? id + '-listbox' : null"
+    [attr.aria-activedescendant]="open() ? optionId(active()) : null"
+    (input)="onInput()"
+    (click)="detect()"
+    (keydown)="onKeydown($event)"
+    (blur)="onBlur()"
+  ></textarea>
+  @if (hint()) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+</mat-form-field>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="field.getConnectedOverlayOrigin()"
+  [cdkConnectedOverlayOpen]="open()"
+  [cdkConnectedOverlayPositions]="positions"
+  [cdkConnectedOverlayWidth]="field.getConnectedOverlayOrigin().nativeElement.offsetWidth"
+  (detach)="query.set(null)"
+>
+  <!-- The focus stays in the text area: options are pointed at with aria-activedescendant, chosen with a click. -->
+  <div class="ui-mention-panel" role="listbox" [id]="id + '-listbox'" [attr.aria-label]="suggestionsLabel()">
+    @for (person of suggestions(); track person.id; let index = $index) {
+      <div
+        role="option"
+        tabindex="-1"
+        class="ui-mention-option"
+        [id]="optionId(index)"
+        [class.ui-mention-active]="index === active()"
+        [attr.aria-selected]="index === active()"
+        (mousedown)="$event.preventDefault()"
+        (click)="choose(person)"
+        (keydown.enter)="choose(person)"
+      >
+        <span class="ui-mention-name text-body-large">{{ person.name }}</span>
+        @if (person.secondary) {
+          <span class="ui-mention-secondary text-body-small text-on-surface-variant">{{ person.secondary }}</span>
+        }
+      </div>
+    }
+  </div>
+</ng-template>

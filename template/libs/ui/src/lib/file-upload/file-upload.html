@@ -1,0 +1,80 @@
+<div
+  class="ui-file-upload-zone"
+  [class.ui-file-upload-over]="over()"
+  (dragenter)="dragOver($event)"
+  (dragover)="dragOver($event)"
+  (dragleave)="dragLeave($event)"
+  (drop)="drop($event)"
+>
+  <mat-icon class="ui-file-upload-icon" aria-hidden="true">upload_file</mat-icon>
+  <p class="ui-file-upload-title text-title-medium">{{ title() }}</p>
+  @if (hint()) {
+    <p class="ui-file-upload-hint text-body-small text-on-surface-variant" [id]="baseId + '-hint'">{{ hint() }}</p>
+  }
+  <button
+    class="ui-file-upload-browse mt-2"
+    matButton="outlined"
+    type="button"
+    [attr.aria-describedby]="hint() ? baseId + '-hint' : null"
+    (click)="picker.click()"
+  >
+    {{ browseLabel() }}
+  </button>
+  <input #picker class="sr-only" type="file" tabindex="-1" aria-hidden="true" [accept]="accept()" [multiple]="multiple()" (change)="pick($event)" />
+</div>
+
+@if (hasFiles()) {
+  <ul class="mt-3 flex flex-col gap-2" [attr.aria-label]="listLabel()">
+    @for (file of rejected(); track file.id) {
+      <li class="ui-file-upload-file ui-file-upload-failed">
+        <mat-icon class="ui-file-upload-status text-error" aria-hidden="true">error</mat-icon>
+        <div class="min-w-0 flex-1">
+          <div class="flex items-baseline gap-2">
+            <span class="ui-file-upload-name text-body-medium min-w-0 truncate" [id]="file.id">{{ file.name }}</span>
+            <span class="text-body-small shrink-0 text-on-surface-variant tabular-nums">{{ formatSize()(file.size) }}</span>
+          </div>
+          <p class="ui-file-upload-error text-body-small text-error">{{ file.error }}</p>
+        </div>
+        <button class="ui-file-upload-remove" matIconButton type="button" [attr.aria-label]="removeLabel()" [attr.aria-describedby]="file.id" (click)="dismiss(file.id)">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </li>
+    }
+    @for (file of files(); track file.id) {
+      @let nameId = baseId + '-' + file.id;
+      <li class="ui-file-upload-file" [class.ui-file-upload-failed]="file.status === 'error'">
+        <mat-icon
+          class="ui-file-upload-status"
+          [class.text-error]="file.status === 'error'"
+          [class.ui-file-upload-done]="file.status === 'done'"
+          aria-hidden="true"
+          >{{ file.status === 'error' ? 'error' : file.status === 'done' ? 'check_circle' : 'description' }}</mat-icon
+        >
+        <div class="min-w-0 flex-1">
+          <div class="flex items-baseline gap-2">
+            <span class="ui-file-upload-name text-body-medium min-w-0 truncate" [id]="nameId">{{ file.name }}</span>
+            <span class="text-body-small shrink-0 text-on-surface-variant tabular-nums">{{ formatSize()(file.size) }}</span>
+          </div>
+          @if (file.status === 'uploading') {
+            <mat-progress-bar
+              class="mt-2"
+              [mode]="file.progress === undefined ? 'indeterminate' : 'determinate'"
+              [value]="file.progress ?? 0"
+              [attr.aria-labelledby]="nameId"
+            />
+          } @else if (file.status === 'error' && file.error) {
+            <p class="ui-file-upload-error text-body-small text-error">{{ file.error }}</p>
+          }
+        </div>
+        @if (file.status === 'error') {
+          <button class="ui-file-upload-retry" matIconButton type="button" [attr.aria-label]="retryLabel()" [attr.aria-describedby]="nameId" (click)="retried.emit(file.id)">
+            <mat-icon aria-hidden="true">refresh</mat-icon>
+          </button>
+        }
+        <button class="ui-file-upload-remove" matIconButton type="button" [attr.aria-label]="removeLabel()" [attr.aria-describedby]="nameId" (click)="removed.emit(file.id)">
+          <mat-icon aria-hidden="true">close</mat-icon>
+        </button>
+      </li>
+    }
+  </ul>
+}

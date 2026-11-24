@@ -1,0 +1,101 @@
+/* Two outlined lists with the move buttons between them; stacked on phones, the arrows then pointing down and up. */
+.ui-transfer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 8px;
+}
+
+.ui-transfer-list {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+  background: var(--mat-sys-surface);
+  overflow: hidden;
+}
+
+.ui-transfer-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-block-end: 1px solid var(--mat-sys-outline-variant);
+}
+
+.ui-transfer-count {
+  flex-shrink: 0;
+}
+
+/*
+ * One edge for the whole panel: the title, the search field, Select all and each row's checkbox start 16 px in, and
+ * every label sits 15 px after its box. Material's own spacing around the checkboxes is taken back (11 px of target
+ * on Select all; the list's 8 px start, 24 px end and top alignment on the rows).
+ */
+.ui-transfer-list .ui-transfer-all {
+  margin-inline-start: -11px;
+}
+
+.ui-transfer-options {
+  height: 280px;
+  overflow-y: auto;
+  /* A disabled row is dimmed, not shaded. */
+  --mat-list-list-item-disabled-state-layer-opacity: 0;
+}
+
+/* The name and the email sit as one block in the row's middle: Material's baseline struts go. */
+.ui-transfer-options .mat-mdc-list-option.mat-mdc-list-option .mdc-list-item__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ui-transfer-options .mat-mdc-list-option.mat-mdc-list-option .mdc-list-item__primary-text,
+.ui-transfer-options .mat-mdc-list-option.mat-mdc-list-option .mdc-list-item__secondary-text {
+  margin-block: 0;
+  line-height: 20px;
+}
+
+.ui-transfer-options .mat-mdc-list-option.mat-mdc-list-option .mdc-list-item__primary-text::before,
+.ui-transfer-options .mat-mdc-list-option.mat-mdc-list-option .mdc-list-item__primary-text::after,
+.ui-transfer-options .mat-mdc-list-option.mat-mdc-list-option .mdc-list-item__secondary-text::before {
+  display: none;
+}
+
+.ui-transfer-options .mat-mdc-list-option.mat-mdc-list-option .mdc-list-item__start {
+  align-self: center;
+  margin-block-start: 0;
+  margin-inline: 5px 4px;
+}
+
+.ui-transfer-options:has(+ p) {
+  height: auto;
+}
+
+.ui-transfer-moves {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+@media (max-width: 599.98px) {
+  .ui-transfer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ui-transfer-moves {
+    flex-direction: row;
+  }
+
+  .ui-transfer-moves mat-icon {
+    transform: rotate(90deg);
+  }
+
+  .ui-transfer-options {
+    height: 220px;
+  }
+}

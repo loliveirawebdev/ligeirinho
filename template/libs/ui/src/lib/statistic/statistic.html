@@ -1,0 +1,20 @@
+<p class="text-body-medium truncate text-on-surface-variant">{{ label() }}</p>
+<p class="ui-statistic-value text-headline-medium mt-1 truncate tabular-nums">{{ value() }}</p>
+@if (change(); as moved) {
+  <p class="text-body-small mt-1 flex items-center gap-1 text-on-surface-variant">
+    <span
+      class="ui-statistic-change inline-flex items-center gap-0.5 font-medium tabular-nums"
+      [class.text-success]="moved.good"
+      [class.text-error]="!moved.good"
+    >
+      <mat-icon class="!h-4 !w-4 !text-[16px]" aria-hidden="true">{{ moved.trend === 'up' ? 'trending_up' : 'trending_down' }}</mat-icon>
+      {{ moved.value }}
+    </span>
+    @if (moved.label) {
+      <span class="truncate">{{ moved.label }}</span>
+    }
+  </p>
+}
+@if (supportingText()) {
+  <p class="text-body-small mt-1 text-on-surface-variant">{{ supportingText() }}</p>
+}

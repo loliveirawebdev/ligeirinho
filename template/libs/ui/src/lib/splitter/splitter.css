@@ -1,0 +1,90 @@
+.ui-splitter {
+  display: flex;
+  min-height: 0;
+}
+
+.ui-splitter[data-direction='column'] {
+  flex-direction: column;
+}
+
+.ui-splitter-pane {
+  flex-shrink: 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.ui-splitter-pane.ui-splitter-end {
+  flex: 1 1 0;
+}
+
+/* The divider: a line, with a wider invisible grip around it and a pill that always shows it can be dragged. */
+.ui-splitter-handle {
+  position: relative;
+  flex: 0 0 1px;
+  background: var(--mat-sys-outline-variant);
+  cursor: col-resize;
+  touch-action: none;
+  outline: none;
+}
+
+.ui-splitter[data-direction='column'] > .ui-splitter-handle {
+  cursor: row-resize;
+}
+
+.ui-splitter-handle::before {
+  content: '';
+  position: absolute;
+  inset: 0 -6px;
+}
+
+.ui-splitter[data-direction='column'] > .ui-splitter-handle::before {
+  inset: -6px 0;
+}
+
+.ui-splitter-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 32px;
+  border-radius: 2px;
+  background: var(--mat-sys-outline);
+  transform: translate(-50%, -50%);
+  transition: background-color 120ms;
+}
+
+.ui-splitter[data-direction='column'] > .ui-splitter-handle::after {
+  width: 32px;
+  height: 4px;
+}
+
+.ui-splitter-handle:hover::after,
+.ui-splitter-handle:active::after {
+  background: var(--mat-sys-on-surface-variant);
+}
+
+.ui-splitter-handle:focus-visible::after {
+  background: var(--mat-sys-primary);
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 2px;
+}
+
+/* On phones there is no room to size: side by side panes stack, the divider a plain line. */
+@media (max-width: 767px) {
+  .ui-splitter[data-direction='row'] {
+    flex-direction: column;
+  }
+
+  .ui-splitter[data-direction='row'] > .ui-splitter-pane {
+    flex-basis: auto !important;
+  }
+
+  .ui-splitter[data-direction='row'] > .ui-splitter-handle {
+    pointer-events: none;
+    visibility: hidden;
+    flex-basis: 16px;
+    background: transparent;
+  }
+}

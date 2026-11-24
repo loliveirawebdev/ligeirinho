@@ -1,0 +1,71 @@
+/* The dropzone: a dashed outline that turns primary, with a light wash, while files are dragged over it. */
+.ui-file-upload-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 24px 16px;
+  border: 1px dashed var(--mat-sys-outline);
+  border-radius: var(--mat-sys-corner-large);
+  text-align: center;
+}
+
+.ui-file-upload-zone.ui-file-upload-over {
+  border: 2px dashed var(--mat-sys-primary);
+  padding: 23px 15px;
+  background: color-mix(in srgb, var(--mat-sys-primary) 8%, transparent);
+}
+
+/* Two classes: Material's 24 px icon box loads after this file and must lose. */
+.ui-file-upload-icon.ui-file-upload-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 32px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-file-upload-over .ui-file-upload-icon {
+  color: var(--mat-sys-primary);
+}
+
+/*
+ * A file: its icon on the name's 20 px line, the bar or the error under the name, the buttons at the end. The same
+ * 12 px above the name and below whatever comes last; the 40 px buttons center on the name's line without growing it.
+ */
+.ui-file-upload-file {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 4px 12px 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+}
+
+.ui-file-upload-file > .mat-mdc-icon-button {
+  margin-block: -10px;
+}
+
+.ui-file-upload-file.ui-file-upload-failed {
+  border-color: var(--mat-sys-error);
+}
+
+/* Two classes: Material's 24 px icon box loads after this file and must lose. */
+.ui-file-upload-status.ui-file-upload-status {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.ui-file-upload-status.ui-file-upload-done {
+  color: var(--app-success);
+}
+
+.ui-file-upload-file .ui-file-upload-name {
+  line-height: 20px;
+}
+
+.ui-file-upload-file .ui-file-upload-error {
+  margin-top: 4px;
+}

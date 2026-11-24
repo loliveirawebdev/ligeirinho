@@ -1,0 +1,45 @@
+<mat-form-field class="ui-number-input w-full" appearance="outline" [subscriptSizing]="hint() ? 'fixed' : 'dynamic'">
+  <mat-label>{{ label() }}</mat-label>
+  <button
+    matIconButton
+    matPrefix
+    type="button"
+    tabindex="-1"
+    data-step="decrease"
+    [attr.aria-label]="decreaseLabel()"
+    [disabled]="isDisabled() || atMin()"
+    (click)="stepBy(-1)"
+  >
+    <mat-icon aria-hidden="true">remove</mat-icon>
+  </button>
+  <input
+    matInput
+    type="text"
+    inputmode="decimal"
+    autocomplete="off"
+    role="spinbutton"
+    [attr.aria-valuemin]="min()"
+    [attr.aria-valuemax]="max()"
+    [attr.aria-valuenow]="value()"
+    [value]="draft()"
+    [disabled]="isDisabled()"
+    (input)="typed($event)"
+    (keydown)="keydown($event)"
+    (blur)="blurred()"
+  />
+  <button
+    matIconButton
+    matSuffix
+    type="button"
+    tabindex="-1"
+    data-step="increase"
+    [attr.aria-label]="increaseLabel()"
+    [disabled]="isDisabled() || atMax()"
+    (click)="stepBy(1)"
+  >
+    <mat-icon aria-hidden="true">add</mat-icon>
+  </button>
+  @if (hint()) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+</mat-form-field>

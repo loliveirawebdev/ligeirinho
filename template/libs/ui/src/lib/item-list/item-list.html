@@ -1,0 +1,22 @@
+<mat-action-list [attr.aria-label]="label()">
+  @for (item of items(); track item.id) {
+    <button mat-list-item type="button" (click)="itemOpened.emit(item.id)">
+      @if (item.icon) {
+        <mat-icon matListItemIcon aria-hidden="true">{{ item.icon }}</mat-icon>
+      }
+      <!--
+        The text and the meta in two columns: the title and its line in the middle, the meta at the end, at the top
+        of the row beside the title, with nothing running under it.
+      -->
+      <span matListItemTitle class="ui-item-body">
+        <span class="ui-item-title">{{ item.title }}</span>
+        @if (item.meta) {
+          <span class="ui-item-meta text-body-small text-on-surface-variant tabular-nums">{{ item.meta }}</span>
+        }
+        @if (item.supportingText) {
+          <span class="ui-item-line text-body-medium text-on-surface-variant">{{ item.supportingText }}</span>
+        }
+      </span>
+    </button>
+  }
+</mat-action-list>

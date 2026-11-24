@@ -15,13 +15,25 @@
   --color-on-primary-container: var(--mat-sys-on-primary-container);
   --color-secondary-container: var(--mat-sys-secondary-container);
   --color-on-secondary-container: var(--mat-sys-on-secondary-container);
+  --color-tertiary-container: var(--mat-sys-tertiary-container);
+  --color-on-tertiary-container: var(--mat-sys-on-tertiary-container);
+  --color-success: var(--app-success);
+  --color-on-success: var(--app-on-success);
+  --color-success-container: var(--app-success-container);
+  --color-on-success-container: var(--app-on-success-container);
+  --color-warning: var(--app-warning);
+  --color-on-warning: var(--app-on-warning);
+  --color-warning-container: var(--app-warning-container);
+  --color-on-warning-container: var(--app-on-warning-container);
   --color-error: var(--mat-sys-error);
   --color-error-container: var(--mat-sys-error-container);
   --color-on-error-container: var(--mat-sys-on-error-container);
   --color-surface: var(--mat-sys-surface);
+  --color-surface-container-lowest: var(--mat-sys-surface-container-lowest);
   --color-surface-container-low: var(--mat-sys-surface-container-low);
   --color-surface-container: var(--mat-sys-surface-container);
   --color-surface-container-high: var(--mat-sys-surface-container-high);
+  --color-surface-container-highest: var(--mat-sys-surface-container-highest);
   --color-on-surface: var(--mat-sys-on-surface);
   --color-on-surface-variant: var(--mat-sys-on-surface-variant);
   --color-outline: var(--mat-sys-outline);
@@ -89,16 +101,36 @@
   ::after {
     box-sizing: border-box;
   }
+  /* Spacing is layout (Tailwind's scale), never the browser's defaults: lists, definitions and headings start at 0. */
   h1,
   h2,
   h3,
+  h4,
+  h5,
+  h6,
   p,
-  ul {
+  ul,
+  ol,
+  dl,
+  dd,
+  figure,
+  blockquote {
     margin: 0;
     padding: 0;
   }
-  ul {
+  ul,
+  ol {
     list-style: none;
+  }
+  img,
+  svg,
+  video {
+    display: block;
+  }
+  /* Not svg: Material draws some wider than their box on purpose (the spinner's arcs, the sort arrow). */
+  img,
+  video {
+    max-width: 100%;
   }
   h1,
   h2,
@@ -109,96 +141,3 @@
     text-wrap: pretty;
   }
 }
-
-/*
- * Input Group: input + action button forming a single unified block.
- * The input's right border and right corners are flat; the button touches seamlessly
- * with matching 56 px height, flat left corners, and balanced padding.
- *
- * The button's border ALWAYS tracks the input's outline in COLOR and THICKNESS:
- * - Default: 1px var(--mat-sys-outline)
- * - Hover: 1px var(--mat-sys-on-surface)
- * - Focus: 2px var(--mat-sys-primary)
- * - Disabled: 1px var(--mat-sys-outline) (or 2px primary when focused)
- * Rendered on ::after so text and icons never shift on state changes.
- */
-@layer components {
-  .input-group {
-    display: flex;
-    align-items: center;
-
-    & > mat-form-field {
-      flex: 1;
-
-      & .mat-mdc-text-field-wrapper {
-        border-top-right-radius: 0 !important;
-        border-bottom-right-radius: 0 !important;
-      }
-
-      & .mdc-notched-outline__leading {
-        border-top-left-radius: var(--radius-md) !important;
-        border-bottom-left-radius: var(--radius-md) !important;
-      }
-
-      & .mdc-notched-outline__trailing {
-        border-right: none !important;
-        border-top-right-radius: 0 !important;
-        border-bottom-right-radius: 0 !important;
-      }
-    }
-
-    & > button,
-    & > [matButton],
-    & > [mat-flat-button],
-    & > [mat-stroked-button] {
-      position: relative !important;
-      height: 56px !important;
-      box-sizing: border-box !important;
-      flex-shrink: 0 !important;
-      border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
-      border: none !important;
-      padding-left: 20px !important;
-      padding-right: 24px !important;
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 8px !important;
-
-      & mat-icon {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-      }
-
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        border-radius: inherit;
-        border-style: solid;
-        border-width: 1px 1px 1px 0;
-        border-color: var(--mat-sys-outline);
-        box-sizing: border-box;
-      }
-    }
-
-    &:hover:not(:focus-within) {
-      & > button::after,
-      & > [matButton]::after,
-      & > [mat-flat-button]::after,
-      & > [mat-stroked-button]::after {
-        border-color: var(--mat-sys-on-surface);
-      }
-    }
-
-    &:focus-within {
-      & > button::after,
-      & > [matButton]::after,
-      & > [mat-flat-button]::after,
-      & > [mat-stroked-button]::after {
-        border-width: 2px 2px 2px 0;
-        border-color: var(--mat-sys-primary);
-      }
-    }
-  }
-}
-

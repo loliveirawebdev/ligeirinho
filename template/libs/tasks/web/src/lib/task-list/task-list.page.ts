@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal, type OnInit } from '@angular/core';
+import { injectCopy } from '@app/ui';
 import type { TaskSummary } from '../task-summary';
+import { taskListCopy } from './task-list.copy';
 import { TasksApiClient } from '../tasks-api.client';
 import { TaskListView } from './task-list.view';
 import { buildTaskListViewModel, type TaskListStatus } from './task-list.view-model';
@@ -19,6 +21,7 @@ import { buildTaskListViewModel, type TaskListStatus } from './task-list.view-mo
 })
 export class TaskListPage implements OnInit {
   private readonly tasksApiClient = inject(TasksApiClient);
+  private readonly copy = injectCopy(taskListCopy);
 
   private readonly status = signal<TaskListStatus>('loading');
   private readonly tasks = signal<readonly TaskSummary[]>([]);
@@ -31,7 +34,7 @@ export class TaskListPage implements OnInit {
       tasks: this.tasks(),
       hasMorePages: this.nextCursor() !== undefined,
       isCreatingTask: this.isCreatingTask(),
-    }),
+    }, this.copy),
   );
 
   ngOnInit(): void {

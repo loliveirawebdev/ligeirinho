@@ -1,0 +1,10 @@
+/* The number sits centered between − and +, like a stepper; the buttons keep the field's height. */
+.ui-number-input input.mat-mdc-input-element {
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.ui-number-input .mat-mdc-form-field-icon-prefix,
+.ui-number-input .mat-mdc-form-field-icon-suffix {
+  padding: 0 4px;
+}

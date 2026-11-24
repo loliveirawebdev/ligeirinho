@@ -1,0 +1,194 @@
+@let m = model();
+<ng-template #note let-note>
+  <div class="flex flex-col">
+    <code class="text-label-large">{{ note.name }}</code>
+    <span class="text-body-small text-on-surface-variant">{{ note.use }}</span>
+  </div>
+</ng-template>
+
+<main class="flex w-full flex-col gap-10 px-4 pt-6 pb-16 sm:px-6 lg:px-8">
+  <h1 class="text-headline-medium">{{ m.title }}</h1>
+
+  <section class="flex flex-col gap-4" aria-labelledby="forms-text">
+    <h2 id="forms-text" class="text-title-medium">{{ m.sections.text }}</h2>
+    <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.field }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.name }}</mat-label>
+          <input matInput [value]="m.values.name" />
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.fieldIcon }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.email }}</mat-label>
+          <mat-icon matPrefix aria-hidden="true">mail</mat-icon>
+          <input matInput type="email" />
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.fieldHint }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.phone }}</mat-label>
+          <input matInput type="tel" />
+          <mat-hint>{{ m.labels.phoneHint }}</mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.fieldError }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.required }}</mat-label>
+          <input matInput [formControl]="requiredControl" />
+          <mat-error>{{ m.labels.requiredError }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.fieldDisabled }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.team }}</mat-label>
+          <input matInput disabled [value]="m.values.team" />
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.fieldClear }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.search }}</mat-label>
+          <mat-icon matPrefix aria-hidden="true">search</mat-icon>
+          <input matInput [value]="m.values.search" />
+          <button matIconButton matSuffix type="button" [attr.aria-label]="m.labels.clear">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.textarea }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.notes }}</mat-label>
+          <textarea matInput rows="3"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.date }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.start }}</mat-label>
+          <input matInput [matDatepicker]="picker" />
+          <mat-datepicker-toggle matIconSuffix [for]="picker" />
+          <mat-datepicker #picker />
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.dateRange }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.period }}</mat-label>
+          <mat-date-range-input [rangePicker]="rangePicker">
+            <input matStartDate [placeholder]="m.labels.periodStart" />
+            <input matEndDate [placeholder]="m.labels.periodEnd" />
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="rangePicker" />
+          <mat-date-range-picker #rangePicker />
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.time }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.time }}</mat-label>
+          <input matInput [matTimepicker]="timepicker" />
+          <mat-timepicker-toggle matIconSuffix [for]="timepicker" />
+          <mat-timepicker #timepicker />
+        </mat-form-field>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4" aria-labelledby="forms-choice">
+    <h2 id="forms-choice" class="text-title-medium">{{ m.sections.choice }}</h2>
+    <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.select }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.role }}</mat-label>
+          <mat-select [value]="m.roles[0]?.value">
+            @for (option of m.roles; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.selectMultiple }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.teams }}</mat-label>
+          <mat-select multiple [value]="[m.teams[0]?.value, m.teams[1]?.value]">
+            @for (option of m.teams; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.autocomplete }" />
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
+          <mat-label>{{ m.labels.country }}</mat-label>
+          <input matInput [matAutocomplete]="countries" />
+          <mat-autocomplete #countries>
+            @for (option of m.countries; track option.value) {
+              <mat-option [value]="option.label">{{ option.label }}</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.radio }" />
+        <mat-radio-group class="flex flex-col" [value]="m.plans[0]?.value" [attr.aria-label]="m.labels.plan">
+          @for (option of m.plans; track option.value; let last = $last) {
+            <mat-radio-button [value]="option.value" [disabled]="last">{{ option.label }}</mat-radio-button>
+          }
+        </mat-radio-group>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.chips }" />
+        <mat-chip-listbox [value]="m.statuses[0]?.value" [attr.aria-label]="m.labels.status">
+          @for (option of m.statuses; track option.value) {
+            <mat-chip-option [value]="option.value">{{ option.label }}</mat-chip-option>
+          }
+        </mat-chip-listbox>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4" aria-labelledby="forms-on-off">
+    <h2 id="forms-on-off" class="text-title-medium">{{ m.sections.onOff }}</h2>
+    <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.checkbox }" />
+        <div class="flex flex-col">
+          <mat-checkbox>{{ m.checkboxes.unchecked }}</mat-checkbox>
+          <mat-checkbox [checked]="true">{{ m.checkboxes.checked }}</mat-checkbox>
+          <mat-checkbox [indeterminate]="true">{{ m.checkboxes.mixed }}</mat-checkbox>
+          <mat-checkbox disabled>{{ m.checkboxes.disabled }}</mat-checkbox>
+        </div>
+      </div>
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.toggle }" />
+        <div class="flex flex-col gap-3">
+          <mat-slide-toggle>{{ m.toggles.off }}</mat-slide-toggle>
+          <mat-slide-toggle [checked]="true">{{ m.toggles.on }}</mat-slide-toggle>
+          <mat-slide-toggle disabled>{{ m.toggles.disabled }}</mat-slide-toggle>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4" aria-labelledby="forms-range">
+    <h2 id="forms-range" class="text-title-medium">{{ m.sections.range }}</h2>
+    <div class="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
+      <div class="flex flex-col gap-2">
+        <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.slider }" />
+        <mat-slider min="1" max="50" discrete>
+          <input matSliderThumb value="12" [attr.aria-label]="m.labels.seats" />
+        </mat-slider>
+      </div>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,19 @@
+@for (person of shown(); track $index) {
+  <ui-avatar
+    class="[box-shadow:0_0_0_2px_var(--mat-sys-surface)] [&:not(:first-child)]:-ms-2"
+    decorative
+    [name]="person.name"
+    [image]="person.image"
+    [size]="size()"
+  />
+}
+@if (hidden() > 0) {
+  <span
+    class="ui-avatar-more -ms-2 inline-flex items-center justify-center rounded-full bg-surface-container-highest text-on-surface-variant [box-shadow:0_0_0_2px_var(--mat-sys-surface)]"
+    [style.font]="box().font"
+    [style.width]="box().box"
+    [style.height]="box().box"
+    aria-hidden="true"
+    >+{{ hidden() }}</span
+  >
+}

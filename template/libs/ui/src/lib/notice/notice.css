@@ -1,0 +1,33 @@
+/*
+ * The tone in three places only: a 1 px border, the icon, and the action buttons (through Material's button tokens,
+ * whatever variant the screen uses). The box itself stays on the page's surface.
+ */
+.ui-notice-box {
+  border: 1px solid var(--ui-notice-color);
+  color: var(--mat-sys-on-surface);
+
+  --mat-button-filled-container-color: var(--ui-notice-color);
+  --mat-button-filled-label-text-color: var(--ui-notice-on-color);
+  --mat-button-filled-state-layer-color: var(--ui-notice-on-color);
+  --mat-button-outlined-outline-color: var(--ui-notice-color);
+  --mat-button-outlined-label-text-color: var(--ui-notice-color);
+  --mat-button-outlined-state-layer-color: var(--ui-notice-color);
+  --mat-button-outlined-ripple-color: color-mix(in srgb, var(--ui-notice-color) 12%, transparent);
+  --mat-button-text-label-text-color: var(--ui-notice-color);
+  --mat-button-text-state-layer-color: var(--ui-notice-color);
+  --mat-button-text-ripple-color: color-mix(in srgb, var(--ui-notice-color) 12%, transparent);
+}
+
+/* 20 px, the title's line height: the icon and the first line share one center. */
+/* Two classes: Material's 24 px icon box loads after this file and must lose. */
+.ui-notice-icon.ui-notice-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: var(--ui-notice-color);
+}
+
+/* The actions sit in a footer, under a divider across the whole box in a softer shade of the tone. */
+.ui-notice-actions {
+  border-top: 1px solid color-mix(in srgb, var(--ui-notice-color) 30%, transparent);
+}

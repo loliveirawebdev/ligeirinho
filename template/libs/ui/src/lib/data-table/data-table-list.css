@@ -1,0 +1,76 @@
+/* ui-data-table on phones: each row a list item, its title and then a line per column. */
+
+/* On phones the rows run edge to edge, so their text lines up with the page's title and fields. */
+.ui-data-list {
+  margin-inline: -16px;
+}
+
+/* A line per column, so each row is as tall as its lines, never a fixed height. */
+.ui-data-list .mat-mdc-list-item.mdc-list-item {
+  height: auto;
+  padding-block: 12px;
+}
+
+.ui-data-list .ui-data-detail {
+  display: block;
+}
+
+/* Title and detail keep Material's type but drop its fixed-height baseline spacers, so the detail sits right under
+ * the title. */
+.ui-data-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text,
+.ui-data-list .mdc-list-item.mdc-list-item .mdc-list-item__secondary-text {
+  margin: 0;
+  white-space: normal;
+}
+
+/* The title stands out from its lines: a size up (title-medium) and bold. */
+.ui-data-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text {
+  font-size: var(--mat-sys-title-medium-size);
+  line-height: var(--mat-sys-title-medium-line-height);
+  letter-spacing: var(--mat-sys-title-medium-tracking);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.ui-data-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text::before,
+.ui-data-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text::after,
+.ui-data-list .mdc-list-item.mdc-list-item .mdc-list-item__secondary-text::before {
+  display: none;
+}
+
+/* Each column's line; with phoneLabels the names form a quiet column and the values line up beside it. */
+.ui-data-list .ui-data-line {
+  display: block;
+}
+
+.ui-data-list .ui-data-detail-labeled {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 24px;
+}
+
+.ui-data-list .ui-data-detail-labeled .ui-data-line {
+  display: contents;
+}
+
+.ui-data-list .ui-data-line-label + .ui-data-line-value {
+  color: var(--mat-sys-on-surface);
+}
+
+/* By default the title and every value stay on one line and end in an ellipsis, so rows keep an even rhythm. */
+.ui-data-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text,
+.ui-data-list .ui-data-line,
+.ui-data-list .ui-data-line-label,
+.ui-data-list .ui-data-line-value {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* With phoneWrap they wrap as far as they need instead, breaking even a long email. */
+.ui-data-list.ui-data-list-wrap .mdc-list-item.mdc-list-item .mdc-list-item__primary-text,
+.ui-data-list.ui-data-list-wrap .ui-data-line,
+.ui-data-list.ui-data-list-wrap .ui-data-line-value {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

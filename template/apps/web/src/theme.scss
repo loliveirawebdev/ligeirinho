@@ -1,4 +1,5 @@
-// The look (rules/design.md, "The look: Material 3"): Google's Material 3, through Angular Material.
+// The look (rules/design.md, "The look: Material 3"): Google's Material 3, through Angular Material, at a compact
+// scale for work apps (14 px text, 36 px buttons, 48 px fields).
 //
 // Two blocks:
 // - THEME: the only part an app changes (its palette, its font).
@@ -6,14 +7,98 @@
 //
 // Components come from Angular Material and only read the system tokens (--mat-sys-*). Layout uses Tailwind;
 // colors and type use the token utilities in styles.css (bg-surface, text-on-surface-variant, text-title-large...).
+@use 'sass:color';
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
 @use '@angular/material' as mat;
 
 // ---------- THEME: change this per app ----------
 
-$app-palette: mat.$azure-palette; // Prebuilt: $azure, $blue, $cyan, $green, $violet, $rose, $orange... or `ng g @angular/material:theme-color`.
+// The accent: the one hue of buttons, links, selection, the current page, focus. Everything else is neutral gray.
+// Prebuilt: $azure, $blue, $cyan, $green, $violet, $rose, $orange... or `ng g @angular/material:theme-color`.
+$app-accent: mat.$azure-palette;
+// How much of the accent's hue the grays carry: 0 is pure gray, 1 a soft tint (like Tailwind's slate next to blue),
+// up to about 1.5 for a more colored app.
+$app-tint: 1;
+// A second hue for the rare accent that must differ from the first (charts, a highlight). Defaults to the accent.
+$app-tertiary: $app-accent;
 $app-font: Roboto;
 
 // ---------- BASE: the shared look ----------
+
+// How the colors talk, the same in every app: every color comes from the accent's hue. Surfaces, borders and text
+// are grays tinted with it ($app-tint), selection (chips, the current page, tonal buttons, the avatar) is a soft
+// version of it, actions are the accent itself, and the meanings are fixed (error red, success green).
+$accent-hue: color.channel(map.get($app-accent, 40), 'hue', $space: oklch);
+
+// A Material tone (CIE L*, 0 to 100) as an OKLCH lightness, so the tones match Material's.
+@function _lightness($tone) {
+  $y: math.div($tone, 903.3);
+  @if $tone > 8 {
+    $y: math.pow(math.div($tone + 16, 116), 3);
+  }
+  @return math.pow($y, math.div(1, 3));
+}
+
+@function _tone($tone, $chroma) {
+  @return color.to-gamut(color.to-space(oklch(_lightness($tone) $chroma $accent-hue), rgb), $method: local-minde);
+}
+
+// Slate's curve: barely tinted near white, most color in the middle, a little in the dark surfaces.
+@function _gray-chroma($tone) {
+  $chroma: 0.042;
+  @if $tone >= 90 {
+    $chroma: 0.004 + (100 - $tone) * 0.0009;
+  } @else if $tone >= 80 {
+    $chroma: 0.013 + (90 - $tone) * 0.0009;
+  } @else if $tone <= 24 {
+    $chroma: 0.02;
+  }
+  @return $chroma * $app-tint;
+}
+
+// Selection: the accent's hue, softer than the accent, colored whatever the tint.
+@function _selection-chroma($tone) {
+  $chroma: 0.07;
+  @if $tone >= 90 {
+    $chroma: 0.02 + (100 - $tone) * 0.002;
+  } @else if $tone <= 30 {
+    $chroma: 0.05;
+  }
+  @return $chroma;
+}
+
+@function _palette($tones, $chroma-of) {
+  $palette: ();
+  @each $tone in $tones {
+    $palette: map.set($palette, $tone, _tone($tone, call($chroma-of, $tone)));
+  }
+  @return map.merge($palette, (0: #000000, 100: #ffffff));
+}
+
+$gray: _palette(
+  (4, 6, 10, 12, 17, 20, 22, 24, 25, 30, 35, 40, 50, 60, 70, 80, 87, 90, 92, 94, 95, 96, 98, 99),
+  meta.get-function('_gray-chroma')
+);
+$selection: _palette((10, 20, 25, 30, 35, 40, 50, 60, 70, 80, 90, 95, 98, 99), meta.get-function('_selection-chroma'));
+$palette: map.merge(
+  $app-accent,
+  (
+    secondary: $selection,
+    neutral: $gray,
+    neutral-variant: $gray,
+  )
+);
+
+// A type role as Material's tokens: the shorthand plus each part.
+@mixin type-role($role, $weight, $size, $line-height, $tracking: 0) {
+  --mat-sys-#{$role}: #{$weight} #{$size} / #{$line-height} #{$app-font};
+  --mat-sys-#{$role}-size: #{$size};
+  --mat-sys-#{$role}-line-height: #{$line-height};
+  --mat-sys-#{$role}-weight: #{$weight};
+  --mat-sys-#{$role}-tracking: #{$tracking};
+}
 
 // Every --mat-sys-* token is a light-dark() pair: color-scheme picks the side. Light by default; a `dark` class on
 // <html> switches to dark (the previewer sets it for ?theme=dark).
@@ -23,12 +108,82 @@ html {
   @include mat.theme(
     (
       color: (
-        primary: $app-palette,
+        primary: $palette,
+        tertiary: $app-tertiary,
       ),
       typography: $app-font,
       density: 0,
     )
   );
+
+  // Success and warning have no Material role; they are fixed like error.
+  --app-success: light-dark(#146c2e, #6dd58c);
+  --app-on-success: light-dark(#ffffff, #00391a);
+  --app-success-container: light-dark(#c4eed0, #0f5223);
+  --app-on-success-container: light-dark(#072711, #c4eed0);
+  --app-warning: light-dark(#7a5900, #f5bf48);
+  --app-on-warning: light-dark(#ffffff, #402d00);
+  --app-warning-container: light-dark(#ffdea3, #5c4300);
+  --app-on-warning-container: light-dark(#261900, #ffdea3);
+
+  // Dialogs: the text sits 16 px under the title (Material's 13 px under it plus 4) and keeps 24 px above the
+  // actions' divider; Material's own padding leaves it touching the divider.
+  --mat-dialog-content-padding: 4px 24px 24px;
+  --mat-dialog-with-actions-content-padding: 4px 24px 24px;
+
+  // Hover, focus and press wash the element in the accent, not in gray: the state layers of rows, links, icons,
+  // chips and menus take the primary color (Material's opacities stay).
+  --mat-list-list-item-hover-state-layer-color: var(--mat-sys-primary);
+  --mat-list-list-item-focus-state-layer-color: var(--mat-sys-primary);
+  --mat-icon-button-state-layer-color: var(--mat-sys-primary);
+  --mat-icon-button-ripple-color: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+  --mat-chip-hover-state-layer-color: var(--mat-sys-primary);
+  --mat-chip-focus-state-layer-color: var(--mat-sys-primary);
+  // The menu's tokens carry their opacity (the others take it from a separate token).
+  // Step headers show no hover, focus or press: no state layer, no ripple (below); only the pointer.
+  --mat-stepper-header-hover-state-layer-color: transparent;
+  --mat-stepper-header-focus-state-layer-color: transparent;
+  --mat-menu-item-hover-state-layer-color: color-mix(
+    in srgb,
+    var(--mat-sys-primary) calc(var(--mat-sys-hover-state-layer-opacity) * 100%),
+    transparent
+  );
+  --mat-menu-item-focus-state-layer-color: color-mix(
+    in srgb,
+    var(--mat-sys-primary) calc(var(--mat-sys-focus-state-layer-opacity) * 100%),
+    transparent
+  );
+
+  // The compact scale: M3's type roles one step smaller, so a screen holds a work day's worth of content. Same
+  // weights and hierarchy as M3; only the sizes change.
+  @include type-role(display-small, 400, 2rem, 2.5rem);
+  @include type-role(headline-large, 400, 1.75rem, 2.25rem);
+  @include type-role(headline-medium, 400, 1.5rem, 2rem);
+  @include type-role(headline-small, 400, 1.25rem, 1.75rem);
+  @include type-role(title-large, 400, 1.125rem, 1.625rem);
+  @include type-role(title-medium, 500, 0.9375rem, 1.375rem, 0.01em);
+  @include type-role(title-small, 500, 0.875rem, 1.25rem, 0.007em);
+  @include type-role(body-large, 400, 0.875rem, 1.25rem, 0.01em);
+  @include type-role(body-medium, 400, 0.875rem, 1.25rem, 0.01em);
+  @include type-role(body-small, 400, 0.75rem, 1rem, 0.02em);
+  @include type-role(label-large, 500, 0.875rem, 1.25rem, 0.007em);
+  @include type-role(label-medium, 500, 0.75rem, 1rem, 0.04em);
+  @include type-role(label-small, 500, 0.6875rem, 1rem, 0.04em);
+
+  // Controls a size down: 36 px buttons, 48 px fields, 32 px chips. The 48 px touch target Material draws around
+  // buttons, chips and checkboxes stays, so they remain easy to hit.
+  @each $variant in (filled, outlined, protected, tonal, text) {
+    --mat-button-#{$variant}-container-height: 36px;
+  }
+  --mat-icon-button-state-layer-size: 40px;
+  --mat-form-field-container-height: 48px;
+  // (48 - 20 px of text) / 2: the typed text centered with the icons and the label.
+  --mat-form-field-container-vertical-padding: 14px;
+  --mat-table-header-container-height: 48px;
+  --mat-table-row-item-container-height: 48px;
+  // A raised card is an outlined card (its surface and its border, below) with a shadow a step up, not a tinted block.
+  --mat-card-elevated-container-color: var(--mat-sys-surface);
+  --mat-card-elevated-container-elevation: var(--mat-sys-level2);
 }
 
 html.dark {
@@ -39,7 +194,153 @@ body {
   margin: 0;
   background: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-large);
-  letter-spacing: var(--mat-sys-body-large-tracking);
+  font: var(--mat-sys-body-medium);
+  letter-spacing: var(--mat-sys-body-medium-tracking);
   -webkit-font-smoothing: antialiased;
+}
+
+// The select's arrow: Material draws a 10 × 5 px triangle with no token for its size, too small beside 20 px icons.
+// Every mat-select shows Material Symbols' expand_more instead, at the icon size, turning while the list is open.
+// (Two classes: Material's own rule loads after this file and must lose.)
+.mat-mdc-select-arrow-wrapper .mat-mdc-select-arrow {
+  width: 20px;
+  height: 20px;
+  transition: transform 150ms ease;
+
+  svg {
+    display: none;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 -960 960 960'%3E%3Cpath d='M480-345 240-585l56-56 184 184 184-184 56 56-240 240Z'/%3E%3C/svg%3E")
+      center / contain no-repeat;
+  }
+}
+
+.mat-mdc-select[aria-expanded='true'] .mat-mdc-select-arrow-wrapper .mat-mdc-select-arrow {
+  transform: rotate(180deg);
+}
+
+// Card actions: a footer under a divider that spans the card, the buttons at the end (like ui-notice's actions).
+.mat-mdc-card-actions.mat-mdc-card-actions {
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+// Dialog actions: like a card's, a footer under a divider that spans the dialog, the buttons at the end.
+.mat-mdc-dialog-actions.mat-mdc-dialog-actions {
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 0;
+  padding: 12px 24px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+// The expansion panel's chevron: a long title or description squeezes it to a sliver; it keeps its 24 px, centered.
+.mat-expansion-panel-header .mat-expansion-indicator {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+
+  svg {
+    width: 24px;
+    height: 24px;
+    margin: 0;
+  }
+}
+
+// The raised card keeps the outlined card's border under its shadow (it also shows where a shadow doesn't, in dark).
+.mat-mdc-card.mat-mdc-card-elevated {
+  border: var(--mat-card-outlined-outline-width, 1px) solid
+    var(--mat-card-outlined-outline-color, var(--mat-sys-outline-variant));
+}
+
+// Expansion panels: one outlined block, like an outlined card. No shadows, and the open panel stays in place instead
+// of pulling apart from the others; panels inside an accordion share their borders.
+// (Material's shadow rule is `:not([class*='mat-elevation-z'])` and loads later, hence the extra class.)
+.mat-expansion-panel.mat-expansion-panel.mat-expansion-panel {
+  border: 1px solid var(--mat-sys-outline-variant);
+  box-shadow: none;
+}
+
+.mat-accordion .mat-expansion-panel.mat-expansion-panel {
+  margin: 0;
+  border-radius: 0;
+}
+
+.mat-accordion .mat-expansion-panel.mat-expansion-panel:not(:first-of-type) {
+  border-top: 0;
+}
+
+.mat-accordion .mat-expansion-panel.mat-expansion-panel:first-of-type {
+  border-top-left-radius: var(--mat-expansion-container-shape, 12px);
+  border-top-right-radius: var(--mat-expansion-container-shape, 12px);
+}
+
+.mat-accordion .mat-expansion-panel.mat-expansion-panel:last-of-type {
+  border-bottom-left-radius: var(--mat-expansion-container-shape, 12px);
+  border-bottom-right-radius: var(--mat-expansion-container-shape, 12px);
+}
+
+// The bottom sheet as M3 draws it: a drag handle on top, rows that run edge to edge, no focus ring on open.
+.mat-bottom-sheet-container.mat-bottom-sheet-container {
+  padding: 0 0 8px;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 4px;
+    margin: 16px auto 8px;
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--mat-sys-on-surface-variant) 40%, transparent);
+  }
+
+  .mat-mdc-list-item {
+    padding-inline: 24px;
+  }
+}
+
+// Stepper headers: 8 px around the number and label, not 24, so the number lines up with the page; the steps'
+// content and line follow the number.
+.mat-step-header.mat-step-header {
+  padding-inline: 8px 24px;
+}
+
+.mat-vertical-stepper-header.mat-step-header {
+  width: fit-content;
+  padding-inline-end: 16px;
+}
+
+.mat-stepper-vertical .mat-vertical-content-container {
+  margin-inline-start: 20px;
+}
+
+.mat-stepper-vertical .mat-vertical-content {
+  padding-inline: 20px 8px;
+}
+
+.mat-stepper-horizontal .mat-horizontal-content-container {
+  padding-inline: 8px;
+}
+
+.mat-step-header .mat-ripple {
+  display: none;
+}
+
+// The sort arrow at 16 px: Material's 24 px is an icon's size, loud beside 14 px column names.
+.mat-sort-header-arrow.mat-sort-header-arrow svg {
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
 }

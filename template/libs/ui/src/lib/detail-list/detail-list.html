@@ -1,0 +1,8 @@
+<dl>
+  @for (item of items(); track item.label) {
+    <div class="border-outline-variant grid gap-1 border-b py-3 last:border-b-0 sm:grid-cols-3 sm:gap-6">
+      <dt class="text-body-medium text-on-surface-variant min-w-0" [class.truncate]="truncate()">{{ item.label }}</dt>
+      <dd class="text-body-large min-w-0 break-words sm:col-span-2" [class.truncate]="truncate()">{{ item.value }}</dd>
+    </div>
+  }
+</dl>

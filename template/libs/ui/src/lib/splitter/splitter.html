@@ -1,0 +1,14 @@
+<div class="ui-splitter-pane" [style.flex-basis.%]="current()"><ng-content select="[uiSplitterStart]" /></div>
+<div
+  class="ui-splitter-handle"
+  role="separator"
+  tabindex="0"
+  [attr.aria-label]="handleLabel()"
+  [attr.aria-orientation]="direction() === 'row' ? 'vertical' : 'horizontal'"
+  [attr.aria-valuenow]="current()"
+  [attr.aria-valuemin]="min()"
+  [attr.aria-valuemax]="max()"
+  (pointerdown)="startDrag($event)"
+  (keydown)="moveByKey($event)"
+></div>
+<div class="ui-splitter-pane ui-splitter-end"><ng-content select="[uiSplitterEnd]" /></div>

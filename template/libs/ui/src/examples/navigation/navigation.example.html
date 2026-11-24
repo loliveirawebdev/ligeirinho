@@ -1,0 +1,187 @@
+@let m = model();
+<ng-template #note let-note>
+  <div class="flex flex-col">
+    <code class="text-label-large">{{ note.name }}</code>
+    <span class="text-body-small text-on-surface-variant">{{ note.use }}</span>
+  </div>
+</ng-template>
+
+<main class="flex w-full flex-col gap-10 px-4 pt-6 pb-16 sm:px-6 lg:px-8">
+  <h1 class="text-headline-medium">{{ m.title }}</h1>
+
+  <section class="flex flex-col gap-6" aria-labelledby="navigation-tabs">
+    <h2 id="navigation-tabs" class="text-title-medium">{{ m.sections.tabs }}</h2>
+    <div class="flex flex-col gap-2">
+      <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.tabs }" />
+      <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+        @for (tab of m.tabs; track tab.label) {
+          <mat-tab [label]="tab.label">
+            <p class="text-body-medium text-on-surface-variant py-4">{{ tab.content }}</p>
+          </mat-tab>
+        }
+      </mat-tab-group>
+    </div>
+    <div class="flex flex-col gap-2">
+      <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.tabsIcons }" />
+      <mat-tab-group>
+        @for (tab of m.tabs; track tab.label) {
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon class="mr-2" aria-hidden="true">{{ tab.icon }}</mat-icon>
+              {{ tab.label }}
+            </ng-template>
+            <p class="text-body-medium text-on-surface-variant py-4">{{ tab.content }}</p>
+          </mat-tab>
+        }
+      </mat-tab-group>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="navigation-menu">
+    <h2 id="navigation-menu" class="text-title-medium">{{ m.sections.menu }}</h2>
+    <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.menu }" />
+    <div>
+      <button matButton="outlined" type="button" [matMenuTriggerFor]="menu">
+        {{ m.menu.open }}
+        <mat-icon iconPositionEnd aria-hidden="true">arrow_drop_down</mat-icon>
+      </button>
+    </div>
+    <mat-menu #menu="matMenu">
+      @for (item of m.menu.items; track item.label) {
+        <button mat-menu-item type="button">
+          <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </button>
+      }
+      <button mat-menu-item type="button" [matMenuTriggerFor]="destinations">
+        <mat-icon aria-hidden="true">{{ m.menu.moveTo.icon }}</mat-icon>
+        <span>{{ m.menu.moveTo.label }}</span>
+      </button>
+      <button mat-menu-item type="button" disabled>
+        <mat-icon aria-hidden="true">{{ m.menu.disabled.icon }}</mat-icon>
+        <span>{{ m.menu.disabled.label }}</span>
+      </button>
+      <mat-divider />
+      <button mat-menu-item type="button">
+        <mat-icon aria-hidden="true">{{ m.menu.remove.icon }}</mat-icon>
+        <span>{{ m.menu.remove.label }}</span>
+      </button>
+    </mat-menu>
+    <mat-menu #destinations="matMenu">
+      @for (destination of m.menu.destinations; track destination) {
+        <button mat-menu-item type="button">{{ destination }}</button>
+      }
+    </mat-menu>
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="navigation-context-menu">
+    <h2 id="navigation-context-menu" class="text-title-medium">{{ m.sections.contextMenu }}</h2>
+    <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.contextMenu }" />
+    <div
+      class="border-outline-variant text-body-medium text-on-surface-variant flex h-32 items-center justify-center rounded-md border border-dashed px-4 text-center"
+      tabindex="0"
+      (contextmenu)="openContextMenu($event)"
+    >
+      {{ m.contextMenu.target }}
+    </div>
+    <span
+      class="fixed"
+      aria-hidden="true"
+      [style.left.px]="contextPoint().left"
+      [style.top.px]="contextPoint().top"
+      [matMenuTriggerFor]="contextMenu"
+      #contextTrigger="matMenuTrigger"
+    ></span>
+    <mat-menu #contextMenu="matMenu">
+      @for (item of m.contextMenu.items; track item.label) {
+        <button mat-menu-item type="button">
+          <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </button>
+      }
+      <mat-divider />
+      <button mat-menu-item type="button">
+        <mat-icon aria-hidden="true">{{ m.contextMenu.remove.icon }}</mat-icon>
+        <span>{{ m.contextMenu.remove.label }}</span>
+      </button>
+    </mat-menu>
+  </section>
+
+  <section class="flex flex-col gap-6" aria-labelledby="navigation-stepper">
+    <h2 id="navigation-stepper" class="text-title-medium">{{ m.sections.stepper }}</h2>
+    <div class="flex flex-col gap-2">
+      <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.stepper }" />
+      <mat-stepper #horizontal class="-mx-2">
+        <ng-template matStepperIcon="edit"><mat-icon aria-hidden="true">check</mat-icon></ng-template>
+        @for (step of m.steps; track step.label; let i = $index; let last = $last; let first = $first) {
+          <mat-step [label]="step.label" [completed]="i < horizontal.selectedIndex">
+            <p class="text-body-medium text-on-surface-variant py-4">{{ step.content }}</p>
+            <div class="flex gap-2">
+              @if (!first) {
+                <button matButton type="button" matStepperPrevious>{{ m.stepActions.back }}</button>
+              }
+              <button matButton="filled" type="button" matStepperNext>
+                {{ last ? m.stepActions.done : m.stepActions.next }}
+              </button>
+            </div>
+          </mat-step>
+        }
+      </mat-stepper>
+    </div>
+    <div class="flex flex-col gap-2">
+      <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.stepperVertical }" />
+      <mat-stepper #vertical orientation="vertical" class="-mx-2">
+        <ng-template matStepperIcon="edit"><mat-icon aria-hidden="true">check</mat-icon></ng-template>
+        @for (step of m.steps; track step.label; let i = $index; let last = $last; let first = $first) {
+          <mat-step [label]="step.label" [completed]="i < vertical.selectedIndex">
+            <p class="text-body-medium text-on-surface-variant pb-4">{{ step.content }}</p>
+            <div class="flex gap-2">
+              @if (!first) {
+                <button matButton type="button" matStepperPrevious>{{ m.stepActions.back }}</button>
+              }
+              <button matButton="filled" type="button" matStepperNext>
+                {{ last ? m.stepActions.done : m.stepActions.next }}
+              </button>
+            </div>
+          </mat-step>
+        }
+      </mat-stepper>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="navigation-toolbar">
+    <h2 id="navigation-toolbar" class="text-title-medium">{{ m.sections.toolbar }}</h2>
+    <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.toolbar }" />
+    <mat-toolbar class="border-outline-variant rounded-md border">
+      <span class="text-title-medium">{{ m.toolbar.title }}</span>
+      <span class="flex-1"></span>
+      @for (action of m.toolbar.actions; track action.label) {
+        <button matIconButton type="button" [attr.aria-label]="action.label" [matTooltip]="action.label">
+          <mat-icon aria-hidden="true">{{ action.icon }}</mat-icon>
+        </button>
+      }
+    </mat-toolbar>
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="navigation-side-sheet">
+    <h2 id="navigation-side-sheet" class="text-title-medium">{{ m.sections.sideSheet }}</h2>
+    <ng-container *ngTemplateOutlet="note; context: { $implicit: m.notes.sideSheet }" />
+    <mat-drawer-container class="border-outline-variant h-96 rounded-md border">
+      <mat-drawer #sheet position="end" mode="over" autoFocus="dialog" class="w-80 max-w-full">
+        <div class="flex items-center justify-between gap-2 py-2 ps-6 pe-2">
+          <h3 class="text-title-large">{{ m.sideSheet.title }}</h3>
+          <button matIconButton type="button" [attr.aria-label]="m.sideSheet.close" (click)="sheet.close()">
+            <mat-icon aria-hidden="true">close</mat-icon>
+          </button>
+        </div>
+        <div class="px-6 pb-6">
+          <ui-detail-list [items]="m.sideSheet.facts" />
+        </div>
+      </mat-drawer>
+      <mat-drawer-content class="flex flex-col items-start gap-4 p-6">
+        <p class="text-body-medium text-on-surface-variant">{{ m.sideSheet.page }}</p>
+        <button matButton="tonal" type="button" (click)="sheet.open()">{{ m.sideSheet.open }}</button>
+      </mat-drawer-content>
+    </mat-drawer-container>
+  </section>
+</main>

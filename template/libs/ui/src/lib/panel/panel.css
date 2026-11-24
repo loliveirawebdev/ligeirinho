@@ -1,0 +1,67 @@
+/* An outlined surface, like an outlined card. */
+.ui-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--mat-sys-corner-medium);
+  background: var(--mat-sys-surface);
+}
+
+.ui-panel-body {
+  flex: 1;
+  min-width: 0;
+  padding: 16px;
+}
+
+.ui-panel-header + .ui-panel-body {
+  padding-top: 12px;
+}
+
+/* A split: the body holds the panels edge to edge, divided by the outline's color. */
+.ui-panel[data-split] > .ui-panel-body {
+  display: flex;
+  padding: 0;
+}
+
+.ui-panel[data-split='column'] > .ui-panel-body {
+  flex-direction: column;
+}
+
+.ui-panel[data-split] > .ui-panel-header + .ui-panel-body {
+  margin-top: 12px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+/* The panels inside give up their outline; the split draws the lines between them. */
+.ui-panel[data-split] > .ui-panel-body > .ui-panel {
+  flex: 1 1 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.ui-panel[data-split='row'] > .ui-panel-body > .ui-panel + .ui-panel {
+  border-inline-start: 1px solid var(--mat-sys-outline-variant);
+}
+
+.ui-panel[data-split='column'] > .ui-panel-body > .ui-panel + .ui-panel {
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+/* On phones a row is too narrow: its panels stack, divided across instead. */
+@media (max-width: 767px) {
+  .ui-panel[data-split='row'] > .ui-panel-body {
+    flex-direction: column;
+  }
+
+  /* Over a panel's own size, set inline. */
+  .ui-panel[data-split='row'] > .ui-panel-body > .ui-panel {
+    flex-basis: auto !important;
+  }
+
+  .ui-panel[data-split='row'] > .ui-panel-body > .ui-panel + .ui-panel {
+    border-inline-start: 0;
+    border-top: 1px solid var(--mat-sys-outline-variant);
+  }
+}

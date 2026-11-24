@@ -1,0 +1,12 @@
+<div class="ui-notice-box flex flex-col gap-3 rounded-md p-4" [attr.data-tone]="tone()" [attr.role]="role()">
+  <div class="flex items-start gap-3">
+    <mat-icon class="ui-notice-icon shrink-0" aria-hidden="true">{{ look().icon }}</mat-icon>
+    <div class="min-w-0 flex-1">
+      <p class="text-title-small">{{ title() }}</p>
+      @if (message()) {
+        <p class="text-body-medium text-on-surface-variant mt-1">{{ message() }}</p>
+      }
+    </div>
+  </div>
+  <div class="ui-notice-actions -mx-4 flex flex-wrap justify-end gap-2 px-4 pt-3 empty:hidden"><ng-content select="[uiNoticeAction]" /></div>
+</div>

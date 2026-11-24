@@ -1,0 +1,149 @@
+/* ui-data-table: picking rows (selection) and putting them in order (reorder). */
+
+/* The handle and checkbox columns: as narrow as their control, above the row's stretched open button. */
+.ui-data-table .ui-data-tool {
+  width: 1px;
+  padding-inline-end: 0;
+}
+
+.ui-data-tool > *,
+.ui-data-list-row > .ui-data-handle,
+.ui-data-list-row > mat-checkbox {
+  position: relative;
+  z-index: 1;
+}
+
+.ui-data-handle {
+  all: unset;
+  /* Again after `all: unset`: above the row's stretched open button. */
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 40px;
+  border-radius: var(--mat-sys-corner-small);
+  color: var(--mat-sys-on-surface-variant);
+  cursor: grab;
+}
+
+.ui-data-handle:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+}
+
+.ui-data-handle mat-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+}
+
+/* A picked row keeps a quiet tint, a step stronger than the hover. */
+.ui-data-table .ui-data-selected,
+.ui-data-list-row.ui-data-selected {
+  background: color-mix(in srgb, var(--mat-sys-primary) 10%, transparent);
+}
+
+/*
+ * The first control of a row starts where a plain row's text does, the room Material leaves around it (11 px for
+ * the checkbox, 6 px for the handle) taken back: on the cell's 16 px in the table, at the title's 12 px on phones.
+ */
+.ui-data-table .ui-data-tool:first-child > mat-checkbox {
+  margin-inline-start: -11px;
+}
+
+.ui-data-table .ui-data-tool:first-child > .ui-data-handle {
+  margin-inline-start: -6px;
+}
+
+.ui-data-list-row > mat-checkbox:first-child {
+  margin-inline-start: -7px;
+}
+
+.ui-data-list-row > .ui-data-handle:first-child {
+  margin-inline-start: -2px;
+}
+
+/* On phones the handle and checkbox sit before the row's button, in its line. */
+.ui-data-list-row {
+  display: flex;
+  align-items: flex-start;
+  padding-inline-start: 8px;
+}
+
+/* In line with the row's title, however many lines follow it. */
+.ui-data-list-row > .ui-data-handle,
+.ui-data-list-row > mat-checkbox {
+  margin-top: 4px;
+}
+
+.ui-data-list-row > .mat-mdc-list-item {
+  flex: 1;
+  min-width: 0;
+  padding-inline-start: 4px;
+}
+
+/* While dragging: the row lifts under the pointer, its place stays open, the others make room. */
+.ui-data-row.cdk-drag-preview,
+.ui-data-list-row.cdk-drag-preview {
+  display: table;
+  background: var(--mat-sys-surface-container-high);
+  box-shadow: var(--mat-sys-level3);
+  border-radius: var(--mat-sys-corner-small);
+}
+
+.ui-data-list-row.cdk-drag-preview {
+  display: flex;
+}
+
+.cdk-drag-placeholder.ui-data-row,
+.cdk-drag-placeholder.ui-data-list-row {
+  opacity: 0.4;
+}
+
+.cdk-drop-list-dragging .ui-data-row:not(.cdk-drag-placeholder),
+.cdk-drop-list-dragging .ui-data-list-row:not(.cdk-drag-placeholder),
+.cdk-drag-animating {
+  transition: transform 200ms var(--mat-sys-motion-easing-standard, ease);
+}
+
+/* The bulk bar: M3's floating toolbar, held at the bottom of the screen over the rows while any is picked. */
+.ui-data-bulk {
+  position: sticky;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 16px auto 0;
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--mat-sys-corner-full);
+  background: var(--mat-sys-surface-container);
+  box-shadow: var(--mat-sys-level3);
+  color: var(--mat-sys-on-surface);
+}
+
+.ui-data-bulk > * {
+  flex-shrink: 0;
+}
+
+.ui-data-bulk-count {
+  white-space: nowrap;
+  padding-inline-end: 8px;
+}
+
+/* One line always; on a narrow screen the actions scroll sideways inside the bar. */
+.ui-data-bulk > .ui-data-bulk-actions {
+  display: flex;
+  flex-shrink: 1;
+  min-width: 0;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.ui-data-bulk-actions > * {
+  flex-shrink: 0;
+}

@@ -1,0 +1,59 @@
+/*
+ * Rows as tall as their text: the icon centered on the row, the line right under the title, the meta in its own
+ * column at the top. Material pins the icon to the top of two-line rows and spaces the text with fixed baseline
+ * spacers; this drops them.
+ */
+.ui-item-list .mat-mdc-list-item.mdc-list-item {
+  height: auto;
+  min-height: 56px;
+  padding-block: 8px;
+  align-items: center;
+}
+
+.ui-item-list .mdc-list-item.mdc-list-item .mdc-list-item__start {
+  align-self: center;
+  margin-top: 0;
+}
+
+.ui-item-list .mdc-list-item.mdc-list-item .mdc-list-item__content {
+  min-width: 0;
+  align-self: center;
+}
+
+.ui-item-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text,
+.ui-item-list .mdc-list-item.mdc-list-item .mdc-list-item__secondary-text {
+  margin: 0;
+}
+
+.ui-item-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text {
+  line-height: var(--mat-sys-body-large-line-height);
+}
+
+.ui-item-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text::before,
+.ui-item-list .mdc-list-item.mdc-list-item .mdc-list-item__primary-text::after,
+.ui-item-list .mdc-list-item.mdc-list-item .mdc-list-item__secondary-text::before {
+  display: none;
+}
+
+/* Two columns: the title and its line share the first, the meta (a date, a count) has the second to itself, at the
+   top beside the title and never cut. The title and line end in an ellipsis. */
+.ui-item-list .mdc-list-item.mdc-list-item .ui-item-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 16px;
+  align-items: baseline;
+}
+
+.ui-item-list .ui-item-title,
+.ui-item-list .ui-item-line {
+  grid-column: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ui-item-list .ui-item-meta {
+  grid-column: 2;
+  grid-row: 1;
+  white-space: nowrap;
+}

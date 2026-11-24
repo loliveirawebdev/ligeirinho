@@ -1,0 +1,53 @@
+@let text = model().text;
+<ui-app-shell
+  [productName]="model().shell.productName"
+  [navigation]="model().shell.navigation"
+  [navigationLabel]="model().shell.navigationLabel"
+  [menuLabel]="model().shell.menuLabel"
+  [actions]="model().shell.actions"
+  [user]="model().shell.user"
+>
+  <ui-page-header [title]="text.title" [supportingText]="text.summary">
+    <button uiPageActions matButton="filled" type="button">
+      <mat-icon aria-hidden="true">person_add</mat-icon>
+      {{ text.inviteAction }}
+    </button>
+  </ui-page-header>
+
+  <ui-filter-bar
+    class="mt-6"
+    [searchLabel]="text.searchLabel"
+    [query]="model().query"
+    [filtersLabel]="text.filtersLabel"
+    [filters]="model().filters"
+    [selectedFilter]="model().selectedFilter"
+  />
+
+  <div class="mt-4">
+    @switch (model().status) {
+      @case ('loading') {
+        <ui-loading-state [label]="text.loading" />
+      }
+      @case ('failed') {
+        <ui-notice tone="error" [title]="text.loadFailedTitle" [message]="text.loadFailedMessage">
+          <button uiNoticeAction matButton="outlined" type="button">{{ text.retryAction }}</button>
+        </ui-notice>
+      }
+      @default {
+        @if (model().rows.length === 0) {
+          <ui-empty-state icon="search_off" [title]="text.emptyTitle" [message]="text.emptyMessage">
+            <button uiEmptyAction matButton="tonal" type="button">{{ text.clearSearchAction }}</button>
+          </ui-empty-state>
+        } @else {
+          <ui-data-table
+            fullBleed
+            [label]="text.tableLabel"
+            [columns]="model().columns"
+            [rows]="model().rows"
+            [paging]="model().more"
+          />
+        }
+      }
+    }
+  </div>
+</ui-app-shell>

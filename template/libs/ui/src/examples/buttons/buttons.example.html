@@ -1,0 +1,119 @@
+@let m = model();
+<main class="flex w-full flex-col gap-10 px-4 pt-6 pb-16 sm:px-6 lg:px-8">
+  <h1 class="text-headline-medium">{{ m.title }}</h1>
+
+  <section class="flex flex-col gap-2" aria-labelledby="buttons-text">
+    <h2 id="buttons-text" class="text-title-medium">{{ m.textButtons.title }}</h2>
+    <div class="grid grid-cols-[minmax(14rem,22rem)_repeat(4,max-content)] justify-start items-center gap-x-6 gap-y-4 overflow-x-auto">
+      <span></span>
+      <span class="text-label-medium text-on-surface-variant">{{ m.columns.plain }}</span>
+      <span class="text-label-medium text-on-surface-variant">{{ m.columns.withIcon }}</span>
+      <span class="text-label-medium text-on-surface-variant">{{ m.columns.iconAtEnd }}</span>
+      <span class="text-label-medium text-on-surface-variant">{{ m.columns.disabled }}</span>
+      @for (row of m.textButtons.rows; track row.emphasis) {
+        <div class="flex flex-col">
+          <code class="text-label-large">{{ row.name }}</code>
+          <span class="text-body-small text-on-surface-variant">{{ row.use }}</span>
+        </div>
+        <button type="button" [matButton]="row.emphasis">{{ m.sample.action }}</button>
+        <button type="button" [matButton]="row.emphasis">
+          <mat-icon aria-hidden="true">{{ m.sample.icon }}</mat-icon>
+          {{ m.sample.action }}
+        </button>
+        <button type="button" [matButton]="row.emphasis">
+          {{ m.sample.action }}
+          <mat-icon iconPositionEnd aria-hidden="true">{{ m.sample.iconAtEnd }}</mat-icon>
+        </button>
+        <button type="button" disabled [matButton]="row.emphasis">{{ m.sample.action }}</button>
+      }
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="buttons-icon">
+    <h2 id="buttons-icon" class="text-title-medium">{{ m.iconButtons.title }}</h2>
+    <div class="flex flex-col">
+      <code class="text-label-large">{{ m.iconButtons.name }}</code>
+      <span class="text-body-small text-on-surface-variant">{{ m.iconButtons.use }}</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      @for (icon of m.sample.iconNames; track icon) {
+        <button matIconButton type="button" [attr.aria-label]="m.sample.iconLabel" [matTooltip]="m.sample.iconLabel">
+          <mat-icon aria-hidden="true">{{ icon }}</mat-icon>
+        </button>
+      }
+      <button matIconButton type="button" disabled [attr.aria-label]="m.sample.iconLabel">
+        <mat-icon aria-hidden="true">{{ m.sample.iconNames[0] }}</mat-icon>
+      </button>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-4" aria-labelledby="buttons-fab">
+    <h2 id="buttons-fab" class="text-title-medium">{{ m.fabs.title }}</h2>
+    <div class="flex flex-wrap items-end gap-10">
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col">
+          <code class="text-label-large">{{ m.fabs.fab.name }}</code>
+          <span class="text-body-small text-on-surface-variant">{{ m.fabs.fab.use }}</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <button matFab type="button" [attr.aria-label]="m.sample.action">
+            <mat-icon aria-hidden="true">{{ m.sample.icon }}</mat-icon>
+          </button>
+          <button matFab type="button" disabled [attr.aria-label]="m.sample.action">
+            <mat-icon aria-hidden="true">{{ m.sample.icon }}</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col">
+          <code class="text-label-large">{{ m.fabs.miniFab.name }}</code>
+          <span class="text-body-small text-on-surface-variant">{{ m.fabs.miniFab.use }}</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <button matMiniFab type="button" [attr.aria-label]="m.sample.action">
+            <mat-icon aria-hidden="true">{{ m.sample.icon }}</mat-icon>
+          </button>
+          <button matMiniFab type="button" disabled [attr.aria-label]="m.sample.action">
+            <mat-icon aria-hidden="true">{{ m.sample.icon }}</mat-icon>
+          </button>
+        </div>
+      </div>
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col">
+          <code class="text-label-large">{{ m.fabs.extendedFab.name }}</code>
+          <span class="text-body-small text-on-surface-variant">{{ m.fabs.extendedFab.use }}</span>
+        </div>
+        <div class="flex items-center gap-4">
+          <button matFab extended type="button">
+            <mat-icon aria-hidden="true">{{ m.sample.icon }}</mat-icon>
+            {{ m.sample.action }}
+          </button>
+          <button matFab extended type="button" disabled>
+            <mat-icon aria-hidden="true">{{ m.sample.icon }}</mat-icon>
+            {{ m.sample.action }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-2" aria-labelledby="buttons-toggle">
+    <h2 id="buttons-toggle" class="text-title-medium">{{ m.toggle.title }}</h2>
+    <div class="flex flex-col">
+      <code class="text-label-large">{{ m.toggle.name }}</code>
+      <span class="text-body-small text-on-surface-variant">{{ m.toggle.use }}</span>
+    </div>
+    <div class="flex flex-wrap items-center gap-6">
+      <mat-button-toggle-group [value]="m.toggle.selected" [attr.aria-label]="m.toggle.title">
+        @for (option of m.toggle.options; track option.value) {
+          <mat-button-toggle [value]="option.value">{{ option.label }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+      <mat-button-toggle-group disabled [value]="m.toggle.selected" [attr.aria-label]="m.toggle.title">
+        @for (option of m.toggle.options; track option.value) {
+          <mat-button-toggle [value]="option.value">{{ option.label }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    </div>
+  </section>
+</main>

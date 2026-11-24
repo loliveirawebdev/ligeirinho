@@ -1,0 +1,12 @@
+@if (title()) {
+  <header class="ui-panel-header flex items-start gap-3 px-4 pt-4">
+    <div class="min-w-0 flex-1">
+      <h2 class="text-title-medium truncate">{{ title() }}</h2>
+      @if (subtitle()) {
+        <p class="text-body-small mt-0.5 text-on-surface-variant">{{ subtitle() }}</p>
+      }
+    </div>
+    <div class="flex shrink-0 items-center gap-1 empty:hidden"><ng-content select="[uiPanelActions]" /></div>
+  </header>
+}
+<div class="ui-panel-body"><ng-content /></div>
