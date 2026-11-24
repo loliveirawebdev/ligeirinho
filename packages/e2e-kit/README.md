@@ -38,12 +38,16 @@ entry, scenario, width and theme):
    [tabindex]:not([tabindex="-1"])`) is inside the viewport horizontally and not cut off by an
    `overflow: hidden|clip` ancestor;
 3. every visible clickable is at least 44 × 44 CSS px;
-4. zero axe-core violations for WCAG 2.1 A/AA (rule ids and targets are printed).
+4. every icon (`mat-icon`, `.material-symbols-*`, `.material-icons`) is drawn as a glyph, not as its name in text
+   (the font didn't load, or the name isn't in it: `"arrow_bak" drawn as 96px of text`);
+5. zero axe-core violations for WCAG 2.1 A/AA (rule ids and targets are printed).
 
 With no scenarios the test passes with a `no-scenarios` annotation. Optional: `height` (viewport height for
 `widths`, default 900), `viewports` (exact sizes, e.g. `[{ width: 390, height: 844 }, { width: 844, height: 390 }]`
 for a phone in portrait and landscape; tests are named `responsive 390x844 light`; use it with or instead of
-`widths`) and `test` (your own extended Playwright `test`, for fixtures or auth).
+`widths`), `screenshotsDir` (saves a full-page screenshot of every scenario as
+`<entry>/<scenario>-<viewport>-<theme>.png`, for the visual review in rules/design.md) and `test` (your own extended
+Playwright `test`, for fixtures or auth).
 
 ### Heuristics
 
@@ -64,6 +68,7 @@ For custom specs, each check has a soft-assertion form and a finder that returns
 | `checkNoHorizontalScroll(page, label?)` | `findHorizontalOverflow(page)` |
 | `checkClickablesInView(page, label?)` | `findClickablesOutOfView(page)` |
 | `checkTouchTargetSize(page, label?)` | `findSmallTouchTargets(page)` |
+| `checkIconsRendered(page, label?)` | `findIconsShownAsText(page)` |
 | `checkAccessibility(page, label?)` | `findAccessibilityViolations(page)` |
 
 ## Develop

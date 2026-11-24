@@ -6,5 +6,6 @@ responsiveChecks({
   previewPath: '/__preview',
   widths: [390, 768],
   themes: ['light'],
+  screenshotsDir: 'test-results/fake-previewer-screens',
   test: fakePreviewerTest({ card: { default: goodPage, other: goodPage } }),
 });

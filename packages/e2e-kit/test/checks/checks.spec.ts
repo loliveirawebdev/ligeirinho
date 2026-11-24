@@ -7,6 +7,7 @@ import {
   findAccessibilityViolations,
   findClickablesOutOfView,
   findHorizontalOverflow,
+  findIconsShownAsText,
   findSmallTouchTargets,
 } from '../../src/index.js';
 import {
@@ -14,6 +15,8 @@ import {
   clippedButtonPage,
   decoyTouchTargetPage,
   goodPage,
+  iconAsTextPage,
+  iconDrawnPage,
   materialHitAreaPage,
   offscreenButtonPage,
   standaloneSmallLinkPage,
@@ -107,5 +110,19 @@ test.describe('accessibility', () => {
 
     expect(violations.map((violation) => violation.ruleId).sort()).toEqual(['color-contrast', 'label']);
     expect(violations.find((violation) => violation.ruleId === 'label')?.targets).toEqual(['input']);
+  });
+});
+
+test.describe('icons rendered', () => {
+  test('catches an icon drawn as its name', async ({ page }) => {
+    await page.setContent(iconAsTextPage);
+
+    expect(await findIconsShownAsText(page)).toEqual([{ name: 'arrow_back', width: expect.any(Number) }]);
+  });
+
+  test('passes glyph-sized and SVG icons', async ({ page }) => {
+    await page.setContent(iconDrawnPage);
+
+    expect(await findIconsShownAsText(page)).toEqual([]);
   });
 });

@@ -31,3 +31,9 @@ export {
   type AccessibilityViolation,
 } from './checks/accessibility.js';
 export { CLICKABLE_SELECTOR } from './checks/clickable-inspection.js';
+export {
+  ICON_SELECTOR,
+  checkIconsRendered,
+  findIconsShownAsText,
+  type IconShownAsText,
+} from './checks/icons-rendered.js';

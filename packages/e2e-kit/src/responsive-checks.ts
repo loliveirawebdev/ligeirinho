@@ -1,6 +1,9 @@
 import { type Page, type TestType, expect, test as playwrightTest } from '@playwright/test';
 import { checkAccessibility } from './checks/accessibility.js';
+import { mkdir } from 'node:fs/promises';
+import path from 'node:path';
 import { checkClickablesInView } from './checks/clickables-in-view.js';
+import { checkIconsRendered } from './checks/icons-rendered.js';
 import { checkNoHorizontalScroll } from './checks/no-horizontal-scroll.js';
 import { checkTouchTargetSize } from './checks/touch-target-size.js';
 import { type PreviewTheme, buildRenderUrl, readPreviewManifest } from './preview-manifest.js';
@@ -18,6 +21,11 @@ export interface ResponsiveChecksOptions<
   readonly themes: readonly PreviewTheme[];
   /** Viewport height for `widths`. Default 900. */
   readonly height?: number;
+  /**
+   * Saves a full-page screenshot of every scenario here, as `<entry>/<scenario>-<viewport>-<theme>.png`, for the
+   * visual review (rules/design.md "The review"). Default: none.
+   */
+  readonly screenshotsDir?: string;
   /** Your own extended `test` (fixtures, auth). Default: Playwright's `test`. */
   readonly test?: TestType<TestArgs, WorkerArgs>;
 }
@@ -37,6 +45,8 @@ interface CheckedViewport extends ResponsiveViewport {
 interface ScenarioToCheck {
   readonly url: string;
   readonly label: string;
+  /** Where its screenshot goes, relative to `screenshotsDir`. */
+  readonly screenshotPath: string;
 }
 
 const DEFAULT_HEIGHT = 900;
@@ -49,8 +59,8 @@ const RENDER_MARKER = `html[${RENDER_STATE_ATTRIBUTE}]`;
 /**
  * Declares one test per (width or viewport, theme). Each test reads the previewer's scenario list and opens every
  * scenario on its own render page, one at a time, after its `play` steps ran. Soft assertions report every problem
- * in a single run: a failed play, horizontal scroll, clickables out of view, touch targets under 44 × 44 px and
- * WCAG 2.1 A/AA axe violations.
+ * in a single run: a failed play, horizontal scroll, clickables out of view, touch targets under 44 × 44 px, icons
+ * drawn as text and WCAG 2.1 A/AA axe violations. With `screenshotsDir`, it also saves a screenshot of each one.
  */
 export function responsiveChecks<TestArgs extends { page: Page }, WorkerArgs extends object>(
   options: ResponsiveChecksOptions<TestArgs, WorkerArgs>,
@@ -104,7 +114,7 @@ async function checkEveryScenario(
   await page.setViewportSize({ width: viewport.width, height: viewport.height });
   await page.emulateMedia({ colorScheme: theme });
   for (const scenario of scenarios) {
-    await playwrightTest.step(scenario.label, () => checkScenario(page, scenario));
+    await playwrightTest.step(scenario.label, () => checkScenario(page, scenario, options.screenshotsDir));
   }
 }
 
@@ -119,11 +129,12 @@ async function listScenarios(
     entry.scenarios.map((scenarioName) => ({
       url: buildRenderUrl(manifest.basePath, entry.id, scenarioName, theme),
       label: `${entry.id}/${scenarioName} ${viewportName} ${theme}`,
+      screenshotPath: path.join(entry.id, `${scenarioName}-${viewportName}-${theme}.png`),
     })),
   );
 }
 
-async function checkScenario(page: Page, scenario: ScenarioToCheck): Promise<void> {
+async function checkScenario(page: Page, scenario: ScenarioToCheck, screenshotsDir: string | undefined): Promise<void> {
   await page.goto(scenario.url);
   await page.locator(RENDER_MARKER).waitFor({ state: 'attached' });
   const renderState = await page.locator('html').getAttribute(RENDER_STATE_ATTRIBUTE);
@@ -141,5 +152,14 @@ async function checkScenario(page: Page, scenario: ScenarioToCheck): Promise<voi
   await checkNoHorizontalScroll(page, scenario.label);
   await checkClickablesInView(page, scenario.label);
   await checkTouchTargetSize(page, scenario.label);
+  await checkIconsRendered(page, scenario.label);
   await checkAccessibility(page, scenario.label);
+  if (screenshotsDir !== undefined) {
+    await saveScreenshot(page, path.join(screenshotsDir, scenario.screenshotPath));
+  }
+}
+
+async function saveScreenshot(page: Page, filePath: string): Promise<void> {
+  await mkdir(path.dirname(filePath), { recursive: true });
+  await page.screenshot({ path: filePath, fullPage: true, animations: 'disabled' });
 }

@@ -1,4 +1,5 @@
 import { execFile } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
 import { promisify } from 'node:util';
@@ -75,6 +76,13 @@ test('declares one test per width and theme, and passes good scenarios', () => {
     ['responsive 390px light', 'passed'],
     ['responsive 768px light', 'passed'],
   ]);
+});
+
+test('saves a screenshot of every scenario when asked', () => {
+  const screens = path.join(import.meta.dirname, '..', 'test-results', 'fake-previewer-screens', 'card');
+
+  expect(existsSync(path.join(screens, 'default-390px-light.png'))).toBe(true);
+  expect(existsSync(path.join(screens, 'other-768px-light.png'))).toBe(true);
 });
 
 test('names exact viewports by width and height', () => {

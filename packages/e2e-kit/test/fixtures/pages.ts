@@ -85,3 +85,16 @@ export const playFailedPage = goodPage.replace(
   '<html lang="en">',
   '<html lang="en" data-ligeirinho-preview="play-failed" data-ligeirinho-preview-error="step &quot;Open the menu&quot; failed: no menu button">',
 );
+
+const iconBox = 'mat-icon { display: inline-block; width: 24px; height: 24px; overflow: hidden; font-size: 24px; line-height: 1; }';
+
+/** No icon font on the page: the name is drawn as text, clipped by the 24 px box. */
+export const iconAsTextPage = page('Icon as text', '<mat-icon aria-hidden="true">arrow_back</mat-icon>', iconBox);
+
+/** A glyph-sized icon (one character stands in for the ligature) and an SVG icon. */
+export const iconDrawnPage = page(
+  'Icon drawn',
+  `<mat-icon aria-hidden="true">a</mat-icon>
+   <mat-icon aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M4 12h16" /></svg></mat-icon>`,
+  iconBox,
+);
