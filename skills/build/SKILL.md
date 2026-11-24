@@ -35,7 +35,7 @@ Run `git diff --staged` and check:
 - [ ] Lists paginated; new queries with an index; no N+1.
 - [ ] Secrets out of code, logs and URLs; sensitive operations audited.
 - [ ] No dead code, no TODOs, comments only for the why.
-- [ ] Raw elements only in the design system; nothing that depends on hover; touch targets ≥ 44 px.
+- [ ] Raw elements only in the design system; nothing that depends on hover; touch targets ≥ 40 px.
 
 If your agent has no hooks, also run `commands.test` yourself right before each commit and don't commit if it fails.
 
