@@ -143,6 +143,9 @@ html {
   // Step headers show no hover, focus or press: no state layer, no ripple (below); only the pointer.
   --mat-stepper-header-hover-state-layer-color: transparent;
   --mat-stepper-header-focus-state-layer-color: transparent;
+  // Steps not reached yet are only an outline (the ring is drawn below); the current and done ones stay filled.
+  --mat-stepper-header-icon-background-color: transparent;
+  --mat-stepper-header-icon-foreground-color: var(--mat-sys-on-surface-variant);
   --mat-menu-item-hover-state-layer-color: color-mix(
     in srgb,
     var(--mat-sys-primary) calc(var(--mat-sys-hover-state-layer-opacity) * 100%),
@@ -202,6 +205,12 @@ body {
 // The select's arrow: Material draws a 10 × 5 px triangle with no token for its size, too small beside 20 px icons.
 // Every mat-select shows Material Symbols' keyboard_arrow_down instead, at the icon size, turning while the list is open.
 // (Two classes: Material's own rule loads after this file and must lose.)
+// The wrapper shrinks from Material's 24 px to the text's 20 px line: taller, it made a select 4 px taller than an
+// input beside it.
+.mat-mdc-form-field .mat-mdc-select-arrow-wrapper {
+  height: 20px;
+}
+
 .mat-mdc-select-arrow-wrapper .mat-mdc-select-arrow {
   width: 20px;
   height: 20px;
@@ -336,6 +345,11 @@ body {
 
 .mat-step-header .mat-ripple {
   display: none;
+}
+
+// The outline of a step not reached yet: an inset ring, so the icon keeps its 24 px.
+.mat-step-icon:not(.mat-step-icon-selected, .mat-step-icon-state-done, .mat-step-icon-state-edit, .mat-step-icon-state-error) {
+  box-shadow: inset 0 0 0 1px var(--mat-sys-outline);
 }
 
 // The sort arrow at 16 px: Material's 24 px is an icon's size, loud beside 14 px column names.
