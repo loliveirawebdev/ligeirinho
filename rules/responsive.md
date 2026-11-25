@@ -27,8 +27,8 @@ and checks:
 4. every icon drawn as a glyph, not its name;
 5. no axe violations (accessibility), at 390.
 
-`make check` checks the screens of the projects a change reaches (all of them when it touches `libs/ui`, which
-every screen uses, `apps/web` or `apps/e2e`); `make gate` and CI check them all.
+`make check` checks only the screens of the projects a change touches (a change to the theme or to a `libs/ui`
+component checks that component's own screens, not every screen using it); `make gate` and CI check them all.
 
 A new screen gets these checks **just by having scenarios**: the test reads the previewer's scenario list, nobody
 has to write anything.

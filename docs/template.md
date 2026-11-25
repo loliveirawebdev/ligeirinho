@@ -30,16 +30,20 @@ Vitest 5, Playwright 1.65, Angular Material 22 (Material 3) with Tailwind 4 for 
 
 ## The gate (`make check`)
 
-`tools/check.sh` runs, for what changed since `main` (everything when an infrastructure file changed):
+`tools/check.sh` runs, for what changed since `origin/main` (on `main` with nothing unpushed: the uncommitted
+changes). A local run never widens to a full one; the full run is CI's:
 
 1. the preview registry is up to date;
 2. `nx affected -t lint typecheck test build`;
-3. `ligeirinho-jscpd` (copy-paste) and `gitleaks` (secrets);
+3. `ligeirinho-jscpd` (copy-paste) and `gitleaks` (secrets, only in the new commits and changed files);
 4. integration tests against a fresh test database;
-5. the OpenAPI contract: Spectral with `@ligeirinho/spectral-ruleset` and `ligeirinho-bruno drift`;
-6. the e2e journeys and the responsive checks.
+5. the OpenAPI contract, when the API is affected: Spectral with `@ligeirinho/spectral-ruleset` and
+   `ligeirinho-bruno drift`;
+6. the e2e journeys of the areas the change touches and the responsive checks of the screens it touches (skipped
+   when it touches neither).
 
-`make gate` runs the same for everything in a fresh container, as CI does.
+`make gate` runs the same for everything in a fresh container. CI runs it on every push to `main` and every pull
+request (`.github/workflows/gate.yml`); the local hooks never do.
 
 ## Releasing the packages
 

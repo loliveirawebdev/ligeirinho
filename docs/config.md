@@ -9,8 +9,8 @@ version: 1
 
 commands:
   test: make test            # fast; runs before every commit (toolbox up, docker compose exec)
-  gate: make check           # affected only; the close stage requires it green
-  full_gate: make gate       # everything, fresh container; CI and before a release
+  gate: make check           # only what changed, never widens; the close stage requires it green
+  full_gate: make gate       # everything, fresh container; CI runs it, not the local hooks
   preview: make preview      # starts the previewer at /__preview
   e2e: make e2e              # on demand
 

@@ -27,6 +27,7 @@ rule that forbids `locator('.class')`); `e2e-kit` config with `trace: 'retain-on
 
 The whole stack in Docker with a clean database:
 
-- `make check` → journeys affected by the change;
-- full gate and CI → all of them;
+- `make check` → only the journeys of the areas the change touches (`libs/<area>/…` → `<area>.journey.spec.ts`)
+  and the journey specs it changed;
+- full gate and CI (`.github/workflows/gate.yml`) → all of them;
 - `make e2e` → on demand.

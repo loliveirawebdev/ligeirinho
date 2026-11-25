@@ -12,8 +12,8 @@ Everything runs in Docker; the host only needs Docker and make. `make help` list
 | `make dev` | API on localhost:3000, web app on localhost:4200 |
 | `make preview` | web app; screens with scenarios at localhost:4200/__preview |
 | `make test` | lint, types and unit tests of what changed (before every commit) |
-| `make check` | the gate for what changed since main |
-| `make gate` | the full gate in a fresh container (CI) |
+| `make check` | the gate for what changed since origin/main, never more (local) |
+| `make gate` | the full gate in a fresh container (CI runs it, `.github/workflows/gate.yml`) |
 | `make seed` / `make bruno-env` | example data and test tokens for Bruno |
 
 ## Specific to this repo

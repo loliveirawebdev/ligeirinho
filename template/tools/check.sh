@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # The gate, run inside the toolbox. Modes:
-#   affected     only what changed since main (make check)
+#   affected     only what changed since origin/main (make check, local): never widens to a full run
 #   all          everything (make gate, CI)
 #   integration  integration tests only
-#   e2e          every e2e journey and responsive check
+#   e2e          every e2e journey and responsive check (on demand)
 set -euo pipefail
 
 mode="${1:-affected}"
@@ -11,10 +11,11 @@ nx() { pnpm exec nx "$@"; }
 
 step() { printf '\n\033[1m▶ %s\033[0m\n' "$*"; }
 
+# What a local run compares with: the last commit CI has seen. On main with nothing unpushed that's HEAD, so only
+# the uncommitted changes are checked.
 base_commit() {
   git merge-base HEAD origin/main 2>/dev/null \
     || git merge-base HEAD main 2>/dev/null \
-    || git rev-parse HEAD~1 2>/dev/null \
     || git rev-parse HEAD
 }
 
@@ -26,13 +27,36 @@ scope_arguments() {
   fi
 }
 
-# A change to infrastructure files can break anything, so it turns an affected run into a full one.
-# So does running on main itself: there is nothing to compare with (a new project, CI on main).
-infrastructure_changed() {
+# Files changed since the base: committed, uncommitted and new.
+changed_files() {
+  # --relative: paths from this folder, which is the repository root in a project (not in ligeirinho's template/).
+  { git diff --name-only --relative "$(base_commit)"; git ls-files --others --exclude-standard; } | sort -u
+}
+
+# The roots of the projects holding a changed file (not the projects that depend on them: Nx's affected list covers
+# those for lint, types and unit tests; the slow checks below look only at what was touched).
+touched_project_roots() {
+  local graph_dir
+  graph_dir="$(mktemp -d)"
+  nx graph --file="$graph_dir/graph.json" >/dev/null
+  changed_files | node -e '
+    const nodes = Object.values(require(process.argv[1]).graph.nodes);
+    const roots = nodes.map((node) => node.data.root).filter((root) => root && root !== ".");
+    const touched = new Set();
+    for (const file of require("fs").readFileSync(0, "utf8").split("\n").filter(Boolean)) {
+      const owner = roots.filter((root) => file.startsWith(root + "/")).sort((a, b) => b.length - a.length)[0];
+      if (owner) touched.add(owner);
+    }
+    console.log([...touched].join(" "));
+  ' "$graph_dir/graph.json"
+  rm -rf "$graph_dir"
+}
+
+project_is_affected() {
   [ "$mode" != "affected" ] && return 0
-  [ "$(git rev-parse --abbrev-ref HEAD)" = "main" ] && return 0
-  git diff --name-only "$(base_commit)" -- package.json pnpm-lock.yaml nx.json tsconfig.base.json \
-    eslint.config.mjs compose.yaml docker prisma tools | grep -q .
+  nx show projects --affected --base="$(base_commit)" --json | node -e '
+    process.exit(JSON.parse(require("fs").readFileSync(0, "utf8")).includes(process.argv[1]) ? 0 : 1);
+  ' "$1"
 }
 
 reset_test_database() {
@@ -49,53 +73,97 @@ run_integration_tests() {
   DATABASE_URL="$TEST_DATABASE_URL" nx $(scope_arguments) -t test-integration
 }
 
-# Which screens the responsive checks open. A full run checks every one. An affected run checks only the screens of
-# the projects the change reaches (LIGEIRINHO_PREVIEW_ENTRIES, read by @ligeirinho/e2e-kit), unless it touched the
-# app's own files (theme, styles, routes) or the e2e specs, which reach every screen.
-choose_responsive_screens() {
+# Which e2e specs an affected run picks (Playwright filters, relative to apps/e2e), from the touched projects:
+#   - the journey of every touched area (libs/<area>/… → src/journeys/<area>.journey.spec.ts) and every journey
+#     spec that changed itself;
+#   - the responsive checks, only for the screens of the touched projects (LIGEIRINHO_PREVIEW_ENTRIES, read by
+#     @ligeirinho/e2e-kit). A change to the theme or a shared component checks only its own screens here; CI checks
+#     them all.
+e2e_filters=()
+choose_e2e_specs() {
+  e2e_filters=()
   unset LIGEIRINHO_PREVIEW_ENTRIES
   [ "$mode" = "affected" ] || return 0
-  if git diff --name-only "$(base_commit)" -- apps/web apps/e2e | grep -q .; then
-    return 0
+
+  local roots root area journey entries
+  roots="$(touched_project_roots)"
+  local -A journeys=()
+  for root in $roots; do
+    if [[ "$root" == libs/*/* ]]; then
+      area="${root#libs/}"
+      area="${area%%/*}"
+      journey="apps/e2e/src/journeys/$area.journey.spec.ts"
+      [ -f "$journey" ] && journeys["$journey"]=1
+    fi
+  done
+  while IFS= read -r journey; do
+    [ -f "$journey" ] && journeys["$journey"]=1
+  done < <(changed_files | grep -E '^apps/e2e/src/journeys/.+\.spec\.ts$' || true)
+  for journey in "${!journeys[@]}"; do
+    e2e_filters+=("${journey#apps/e2e/}")
+  done
+
+  entries=""
+  if [ -n "$roots" ]; then
+    # shellcheck disable=SC2046,SC2086
+    entries="$(pnpm exec ligeirinho-preview-registry $(printf -- '--entries-in %s ' $roots))" || entries=""
   fi
-  local graph_dir roots entries
-  graph_dir="$(mktemp -d)"
-  nx graph --file="$graph_dir/graph.json" >/dev/null
-  roots="$(nx show projects --affected --base="$(base_commit)" \
-    | node -e '
-      const nodes = require(process.argv[1]).graph.nodes;
-      const listed = require("fs").readFileSync(0, "utf8").trim();
-      // A JSON array when piped, one name per line on a terminal.
-      const names = listed.startsWith("[") ? JSON.parse(listed) : listed.split("\n").filter(Boolean);
-      console.log(names.map((name) => nodes[name]?.data.root).filter(Boolean).join(" "));
-    ' "$graph_dir/graph.json")"
-  rm -rf "$graph_dir"
-  if [ -z "$roots" ]; then
-    export LIGEIRINHO_PREVIEW_ENTRIES=""
-    echo "Responsive checks: no screen is reached by this change"
-    return 0
-  fi
-  # shellcheck disable=SC2046
-  if entries="$(pnpm exec ligeirinho-preview-registry $(printf -- '--entries-in %s ' $roots))"; then
-    export LIGEIRINHO_PREVIEW_ENTRIES="$entries"
-    echo "Responsive checks only for the screens this change reaches: ${entries:-none}"
-  fi
+  export LIGEIRINHO_PREVIEW_ENTRIES="$entries"
+  [ -n "$entries" ] && e2e_filters+=("src/responsive.spec.ts")
+
+  local picked="${!journeys[*]}"
+  echo "Journeys: ${picked:-none}"
+  echo "Responsive checks for: ${entries:-no screen}"
 }
 
 run_e2e() {
-  choose_responsive_screens
+  choose_e2e_specs
+  if [ "$mode" = "affected" ] && [ "${#e2e_filters[@]}" -eq 0 ]; then
+    step "E2E: no journey or screen touched by this change, skipped"
+    return 0
+  fi
   reset_test_database
   step "Building the API for e2e"
   nx build api
   step "E2E journeys and responsive checks"
-  TEST_DATABASE_URL="$TEST_DATABASE_URL" nx e2e e2e
+  TEST_DATABASE_URL="$TEST_DATABASE_URL" nx e2e e2e ${e2e_filters[@]+-- "${e2e_filters[@]}"}
 }
 
 check_contract() {
+  if ! project_is_affected api; then
+    step "OpenAPI contract: the API didn't change, skipped"
+    return 0
+  fi
   step "OpenAPI contract"
   nx run api:openapi
   pnpm exec spectral lint dist/openapi.json --fail-severity=warn
   pnpm exec ligeirinho-bruno drift --openapi dist/openapi.json --collection bruno
+}
+
+check_secrets() {
+  step "Secrets"
+  if [ "$mode" = "affected" ]; then
+    local base
+    base="$(base_commit)"
+    if [ "$base" != "$(git rev-parse HEAD)" ]; then
+      gitleaks git --no-banner --redact --log-opts="$base..HEAD" .
+    fi
+    # Uncommitted and new files too: they are about to be committed.
+    local files
+    files="$(changed_files | while IFS= read -r file; do [ -f "$file" ] && echo "$file"; done)"
+    if [ -n "$files" ]; then
+      local staging
+      staging="$(mktemp -d)"
+      while IFS= read -r file; do
+        mkdir -p "$staging/$(dirname "$file")"
+        cp "$file" "$staging/$file"
+      done <<<"$files"
+      gitleaks dir --no-banner --redact "$staging"
+      rm -rf "$staging"
+    fi
+  else
+    gitleaks git --no-banner --redact .
+  fi
 }
 
 check_code() {
@@ -106,8 +174,7 @@ check_code() {
   nx $(scope_arguments) -t lint typecheck test build
   step "Copied code"
   pnpm exec ligeirinho-jscpd apps libs tools
-  step "Secrets"
-  gitleaks git --no-banner --redact .
+  check_secrets
 }
 
 case "$mode" in
@@ -115,12 +182,10 @@ case "$mode" in
     run_integration_tests
     ;;
   e2e)
+    mode="all"
     run_e2e
     ;;
   affected | all)
-    if infrastructure_changed; then
-      mode="all"
-    fi
     check_code
     run_integration_tests
     check_contract

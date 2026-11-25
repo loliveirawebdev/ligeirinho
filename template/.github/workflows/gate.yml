@@ -1,0 +1,34 @@
+# The full gate: everything, in a fresh container, on every push to main and every pull request. Locally
+# `make check` looks only at what changed; this is where the rest is caught (the e2e journeys of other areas,
+# every screen at every width, the whole git history for secrets).
+name: gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # gitleaks scans the whole history.
+          fetch-depth: 0
+      - name: Start the toolbox and databases, install, migrate
+        run: make up
+      - name: Full gate
+        run: make gate
+      - name: Keep the e2e traces
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: e2e-traces
+          path: apps/e2e/test-results
+          if-no-files-found: ignore
